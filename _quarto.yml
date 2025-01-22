@@ -1,0 +1,23 @@
+project:
+  type: book
+
+book:
+  title: "Applied Business Research"
+  author: "Eric Weisbrod, with collaboration from ACCT 995 Students"
+  date: "1/22/2025"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+
