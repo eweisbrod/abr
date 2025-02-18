@@ -1,0 +1,60 @@
+# Obtaining and Merging Data
+
+This is my first time working on a Quarto book. So, this first post will be very rough for now. I will try to provide a few different examples of ways to obtain and merge data in R, and a few tips of things to keep in mind.
+
+```{r,echo=FALSE}
+# Load Libraries [i.e., packages]
+library(dbplyr)
+library(RPostgres)
+library(DBI)
+library(glue)
+library(arrow)
+library(haven)
+library(tictoc) #very optional timer, mostly as a teaching example
+library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+
+```
+
+Obtain some data from WRDS.
+
+```{r}
+
+if(exists("wrds")){
+  dbDisconnect(wrds)  # because otherwise WRDS might time out
+}
+
+wrds <- dbConnect(Postgres(),
+                  host='wrds-pgdata.wharton.upenn.edu',
+                  port=9737,
+                  user=keyring::key_get("WRDS_user"),
+                  password=keyring::key_get("WRDS_pw"),
+                  sslmode='require',
+                  dbname='wrds')
+wrds  # checking if connection exists
+
+
+# Create WRDS Table References -------------------------------------------------
+crsp.msf <- tbl(wrds,in_schema("crsp","msf"))
+crsp.mcti <- tbl(wrds,in_schema("crsp","mcti"))
+stocknames <- tbl(wrds,in_schema("crsp","stocknames"))
+
+stocknames |> filter(ticker == "SPY")
+#SPY permno is 84398
+
+
+stocknames |> filter(ticker == "SHY")
+#shy permno is 89470
+
+# Pull CRSP MSI Data -----------------------------------------------------------
+
+#Data seems to begin in feb 1993, lets start in 1995 as a nice round number
+mkt_index <- crsp.msf |> 
+  filter(date >= "1995-01-01",
+         permno == 84398L) |> 
+  select(date,ret) |> 
+  collect() |> 
+  mutate(month = month(date),
+         year = year(date))
+
+mkt_index |> head()
+```
