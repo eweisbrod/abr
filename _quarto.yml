@@ -9,6 +9,7 @@ book:
     - index.qmd
     - intro.qmd
     - obtain-data.qmd
+    - regression-table.qmd
     - summary.qmd
     - references.qmd
 

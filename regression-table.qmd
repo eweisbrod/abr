@@ -1,0 +1,45 @@
+---
+title: "Regression Tables"
+format:
+  html:
+    html-math-method: mathjax
+---
+
+```{css, echo=FALSE}
+.table, th, td {
+  font-size: 0.9em;
+} 
+.table tbody td, .table thead tr {
+    white-space: nowrap;
+}
+```
+
+Test of embedding a regression in Quarto.
+
+```{r}
+#| label: tbl-4
+#| echo: FALSE
+#| message: FALSE
+
+
+# Load the Table 4 script
+
+source("E:/e679w418/_git/abr/table-4.R")
+
+modelsummary(models, 
+             #cluster standard errors by gvkey and calyear
+             vcov = ~ gvkey + calyear,
+             #t-stats in parenthesis under coefficients
+             statistic = "statistic",
+             #add significance stars
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             estimate="{estimate}{stars}",
+             #apply the coefficient map for coef labels
+             coef_map = cm,
+             gof_map = gm,
+             escape = FALSE
+
+)
+
+```
+
