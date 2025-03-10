@@ -8,6 +8,7 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - project-setup.qmd
     - obtain-data.qmd
     - regression-table.qmd
     - summary.qmd
