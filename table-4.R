@@ -14,7 +14,8 @@ library(tictoc) #very optional, mostly as a teaching example
 library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 
-data_path <- "R:/weisbrod/example"
+
+data_path <- Sys.getenv('data_path')
 
 #Set this option for the modelsummary output
 options(modelsummary_format_numeric_latex = "plain")

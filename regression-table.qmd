@@ -24,7 +24,7 @@ Test of embedding a regression in Quarto.
 
 # Load the Table 4 script
 
-source("E:/e679w418/_git/abr/table-4.R")
+source("table-4.R")
 
 modelsummary(models, 
              #cluster standard errors by gvkey and calyear
