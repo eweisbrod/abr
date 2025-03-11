@@ -161,6 +161,9 @@ This plot would look nice with recessions shaded. We can get recession dates fro
 #load the fredr package
 library(fredr)
 
+#Unblock the below and run to set your password
+#keyring::key_set("fred_api_key")
+
 #set my API key which is saved in keyring
 fredr_set_key(keyring::key_get("fred_api_key"))
 
