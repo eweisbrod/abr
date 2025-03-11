@@ -131,6 +131,29 @@
 \def\fps@figure{htbp}
 \makeatother
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{tabularray}
+\usepackage[normalem]{ulem}
+\usepackage{graphicx}
+\UseTblrLibrary{booktabs}
+\UseTblrLibrary{rotating}
+\UseTblrLibrary{siunitx}
+\NewTableCommand{\tinytableDefineColor}[3]{\definecolor{#1}{#2}{#3}}
+\newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
+\newcommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -260,28 +283,29 @@ This document is a Quarto template for creating an academic paper
 formatted for potential publication in Elsevier journals. If you have
 received this document as a PDF, a live version including the code used
 to create this document can be found at:
-\url{https://www.overleaf.com/read/ctmwnmdcypzh}. I have added some
-material so that the tables and figures go along with the example Github
-coding project that I have created at:
-\url{https://github.com/eweisbrod/example-project}.
+\url{https://github.com/eweisbrod/abr}.
 
-\% Use citet for in-text cites and citep for parenthetical cites Here
-are some examples of in-text and parenthetical citations. To add
-citations to the paper, you must add the bibtex reference information to
-the ``Bibliography.bib'' file that is part of the Overleaf project. The
+Here are some examples of in-text and parenthetical citations. You can
+use latex citation styles inside a Quarto PDF. To add citations to the
+paper, you must add the bibtex reference information to the
+``Bibliography.bib'' file that is part of the Qaurto project. The
 easiest way to do this is to look up the paper you wish to cite on
 Google scholar, then click on the ``cite'' link below the paper, select
-bibtex, and cut and paste the reference info into Overleaf. The bibtex
-reference will include a shorthand way to refer to the paper in the
-latex cite commands (e.g., ``blankespoor2019individual'').
+bibtex, and cut and paste the reference info into the bib file. The
+bibtex reference will include a shorthand way to refer to the paper in
+the latex cite commands (e.g., ``blankespoor2019individual'').
 \citet{blankespoor2019individual} is an in-text cite. There are also
 parenthetical cites
 \citep[e.g,][]{doyle2006extreme, livnat2006comparing,black2017non, Bradshaw2018}.\footnote{There are also footnotes. }
 
 \section{Bibliography styles}\label{bibliography-styles}
 
-Here are two sample references: \citet{Feynman1963118}
+You can also use Quarto syntax to do citations. Here are two sample
+citations using Quarto syntax: \citet{Feynman1963118}
 \citet{Dirac1953888}.
+
+Here is some information about the bibliography styles from the Elsevier
+template:
 
 With this template using elsevier class, natbib will be used. Three
 bibliographic style ﬁles (*.bst) are provided and their use controled by
@@ -353,41 +377,57 @@ Figure~\ref{fig-meaningless} is generated using an R chunk.
 \section{Tables coming from R}\label{tables-coming-from-r}
 
 Tables can also be generated using R chunks, as shown in
-Table~\ref{tbl-simple} example.
+Table~\ref{tbl-simple} example. One benefit of using Quarto is that you
+could add inline code to your document referencing, for example,
+coefficients. The coefficient on \(ROA_t\) in Table~\ref{tbl-simple} is
+0.839.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{head}\NormalTok{(mtcars)[,}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{])}
-\end{Highlighting}
-\end{Shaded}
+\newpage
 
-\begin{longtable}[]{@{}lrrrr@{}}
+\begin{table}
 
-\caption{\label{tbl-simple}Caption centered above table}
+\caption{\label{tbl-simple}A Regression Table}
 
-\tabularnewline
+\centering{
 
-\toprule\noalign{}
-& mpg & cyl & disp & hp \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Mazda RX4 & 21.0 & 6 & 160 & 110 \\
-Mazda RX4 Wag & 21.0 & 6 & 160 & 110 \\
-Datsun 710 & 22.8 & 4 & 108 & 93 \\
-Hornet 4 Drive & 21.4 & 6 & 258 & 110 \\
-Hornet Sportabout & 18.7 & 8 & 360 & 175 \\
-Valiant & 18.1 & 6 & 225 & 105 \\
+\centering
+\begin{tblr}[         %% tabularray outer open
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]Q[]},
+column{2,3,4,5,6}={}{halign=c,},
+column{1}={}{halign=l,},
+hline{8}={1,2,3,4,5,6}{solid, black, 0.05em},
+}                     %% tabularray inner close
+\toprule
+& Base & No FE & Year FE & Two-Way FE & With Controls \\ \midrule %% TinyTableHeader
+$ROA_{t}$ & 0.839*** & 0.756*** & 0.769*** & 0.639*** & 0.624*** \\
+& (62.732) & (48.155) & (48.621) & (38.634) & (35.596) \\
+$LOSS$ &  & -0.030*** & -0.028*** & -0.015*** & -0.017*** \\
+&  & (-7.949) & (-7.755) & (-7.556) & (-8.111) \\
+$ROA_{t} \times LOSS$ &  & 0.032 & 0.012 & -0.285*** & -0.294*** \\
+&  & (1.470) & (0.535) & (-13.307) & (-12.620) \\
+Year FE &  &  & X & X & X \\
+Firm FE &  &  &  & X & X \\
+Controls &  &  &  &  & X \\
+N & 163,298 & 163,298 & 163,298 & 161,635 & 161,635 \\
+$R^2$ & 0.594 & 0.597 & 0.603 & 0.707 & 0.707 \\
+$R^2$ Within &  &  & 0.580 & 0.184 & 0.186 \\
+\bottomrule
+\end{tblr}
 
-\end{longtable}
+}
 
-\section*{References}\label{references}
-\addcontentsline{toc}{section}{References}
+\end{table}%
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\newpage
+
+Some text after the table.
+
+\newpage
 
 
+\renewcommand\refname{References}
   \bibliography{bibliography.bib}
 
 

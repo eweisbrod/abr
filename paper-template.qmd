@@ -62,6 +62,7 @@ Also, you can use ctrl+shift+c to add comments
  -->
  \newpage
 
+
 <!-- 
 The native Quarto pagebreak command is this: 
 {{< pagebreak >}} 
@@ -69,15 +70,20 @@ The native Quarto pagebreak command is this:
 
 # Introduction
 
-This document is a Quarto template for creating an academic paper formatted for potential publication in Elsevier journals. If you have received this document as a PDF, a live version including the code used to create this document can be found at: \url{https://www.overleaf.com/read/ctmwnmdcypzh}. I have added some material so that the tables and figures go along with the example Github coding project that I have created at: \url{https://github.com/eweisbrod/example-project}. 
+This document is a Quarto template for creating an academic paper formatted for potential publication in Elsevier journals. If you have received this document as a PDF, a live version including the code used to create this document can be found at: \url{https://github.com/eweisbrod/abr}. 
 
-% Use citet for in-text cites and citep for parenthetical cites
-Here are some examples of in-text and parenthetical citations. To add citations to the paper, you must add the bibtex reference information to the ``Bibliography.bib" file that is part of the Overleaf project. The easiest way to do this is to look up the paper you wish to cite on Google scholar, then click on the "cite" link below the paper, select bibtex, and cut and paste the reference info into Overleaf. The bibtex reference will include a shorthand way to refer to the paper in the latex cite commands (e.g., "blankespoor2019individual"). \citet{blankespoor2019individual} is an in-text cite. There are also parenthetical cites \citep[e.g,][]{doyle2006extreme, livnat2006comparing,black2017non, Bradshaw2018}.\footnote{There are also footnotes. } 
+<!-- 
+Use citet for in-text cites and citep for parenthetical cites
+-->
+
+Here are some examples of in-text and parenthetical citations. You can use latex citation styles inside a Quarto PDF. To add citations to the paper, you must add the bibtex reference information to the ``Bibliography.bib" file that is part of the Qaurto project. The easiest way to do this is to look up the paper you wish to cite on Google scholar, then click on the "cite" link below the paper, select bibtex, and cut and paste the reference info into the bib file. The bibtex reference will include a shorthand way to refer to the paper in the latex cite commands (e.g., "blankespoor2019individual"). \citet{blankespoor2019individual} is an in-text cite. There are also parenthetical cites \citep[e.g,][]{doyle2006extreme, livnat2006comparing,black2017non, Bradshaw2018}.\footnote{There are also footnotes. } 
 
 
 # Bibliography styles
 
-Here are two sample references:  @Feynman1963118 @Dirac1953888.
+You can also use Quarto syntax to do citations. Here are two sample citations using Quarto syntax: @Feynman1963118 @Dirac1953888.
+
+Here is some information about the bibliography styles from the Elsevier template:
 
 With this template using elsevier class, natbib will be used. Three bibliographic style ﬁles (*.bst) are provided and their use controled by `cite-style` option: 
 
@@ -127,15 +133,56 @@ plot(runif(25), runif(25))
 
 # Tables coming from R
 
-Tables can also be generated using R chunks, as shown in @tbl-simple example.
+```{r}
+#| label: regressions
+#| echo: FALSE
+#| message: FALSE
+
+#run the regressions in the source document before referencing their results inline. 
+source("table-4.R")
+
+```
+
+
+Tables can also be generated using R chunks, as shown in @tbl-simple example. One benefit of using Quarto is that you could add inline code to your document referencing, for example, coefficients. The coefficient on $ROA_t$ in @tbl-simple is `r broom::tidy(models$Base) |> 
+  filter(term == "roa") |> 
+  select(estimate) |> 
+  as.numeric() |> 
+  format(digits = 3)`\.
+  
+\newpage
 
 ```{r}
 #| label: tbl-simple
-#| tbl-cap: Caption centered above table
-#| echo: true
-knitr::kable(head(mtcars)[,1:4])
+#| tbl-cap: A Regression Table
+#| echo: FALSE
+#| message: FALSE
+
+
+#now we can tabulate the models from the above chunk.
+modelsummary(models, 
+             #cluster standard errors by gvkey and calyear
+             vcov = ~ gvkey + calyear,
+             #t-stats in parenthesis under coefficients
+             statistic = "statistic",
+             #add significance stars
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             estimate="{estimate}{stars}",
+             #apply the coefficient map for coef labels
+             coef_map = cm,
+             gof_map = gm,
+             escape = FALSE
+
+)
+
 ```
+
+\newpage
+
+Some text after the table.
+
+\newpage
 
 # References {-}
 
----
+
