@@ -10,6 +10,7 @@ book:
     - intro.qmd
     - project-setup.qmd
     - obtain-data.qmd
+    - merge-data.qmd
     - regression-table.qmd
     - summary.qmd
     - references.qmd
