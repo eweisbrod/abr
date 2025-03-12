@@ -4,15 +4,16 @@ This chapter will go over how to merge in data from various sources. This will i
 
 ## Common Sources of Firm-Level Data
 
-Belwo is a matrix of common sources and identifiers that link across each database:
+Below is a table of common sources and identifiers that link across each database:
 
-|                  |  Compustat   | CRSP CCMLINK | CRSP DSF/MSF |
-|------------------|:------------:|:------------:|:------------:|
-| **Compustat**    |              | GVKEY-PERMNO |    PERMNO    |
-| **CRSP CCMLINK** | PERMNO-GVKEY |              |              |
-| **CRSP DSF/MSF** |              |              |              |
-
-
-
+| Database | Identifiers | Other Firm Identifiers | Can Be Linked To |
+|------------------|:----------------:|:----------------:|:-----------------:|
+| **Compustat** | GVKEY | Ticker, CIK | CRSP, Audit Analytics |
+| **CRSP** | PERMNO | Ticker, CUSIP | Compustat, IBES |
+| **IBES** | TICKER | OFTIC, CUSIP | CRSP |
+| **TAQ** | SYMBOL |  |  |
+| **TRACE** |  |  |  |
+| **Audit Analytics** | CIK |  | Compustat |
+| **XBRL** | CIK |  | Compustat |
 
 Not just copying from Eric's because Ryan Clark is a baby
