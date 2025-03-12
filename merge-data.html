@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; Regression Tables – Applied Business Research</title>
+<title>4&nbsp; Merging Data (In Progress) – Applied Business Research</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./summary.html" rel="next">
-<link href="./merge-data.html" rel="prev">
+<link href="./regression-table.html" rel="next">
+<link href="./obtain-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -81,7 +81,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./regression-table.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Tables</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./merge-data.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -132,13 +132,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./merge-data.html" class="sidebar-item-text sidebar-link">
+  <a href="./merge-data.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./regression-table.html" class="sidebar-item-text sidebar-link active">
+  <a href="./regression-table.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Tables</span></span></a>
   </div>
 </li>
@@ -159,15 +159,21 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#common-sources-of-firm-level-data" id="toc-common-sources-of-firm-level-data" class="nav-link active" data-scroll-target="#common-sources-of-firm-level-data"><span class="header-section-number">4.1</span> Common Sources of Firm-Level Data</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Tables</span></h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></h1>
 </div>
 
 
@@ -184,231 +190,44 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="cell">
-<style type="text/css">
-.table, th, td {
-  font-size: 0.9em;
-} 
-.table tbody td, .table thead tr {
-    white-space: nowrap;
-}
-</style>
-</div>
-<p>Test of embedding a regression in Quarto.</p>
-<div class="cell">
-<div id="tbl-4" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5.1
-</figcaption>
-<div aria-describedby="tbl-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<!-- preamble start -->
-
-    <script>
-
-      function styleCell_su7j906h670ubkita132(i, j, css_id) {
-          var table = document.getElementById("tinytable_su7j906h670ubkita132");
-          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
-          if (cell) {
-              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
-              cell.classList.add(css_id);
-          } else {
-              console.warn(`Cell at (${i}, ${j}) not found.`);
-          }
-      }
-      function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_su7j906h670ubkita132');
-        var newRow = table.insertRow(i);
-        var newCell = newRow.insertCell(0);
-        newCell.setAttribute("colspan", colspan);
-        // newCell.innerText = content;
-        // this may be unsafe, but innerText does not interpret <br>
-        newCell.innerHTML = content;
-      }
-      function spanCell_su7j906h670ubkita132(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_su7j906h670ubkita132");
-        const targetRow = table.rows[i];
-        const targetCell = targetRow.cells[j];
-        for (let r = 0; r < rowspan; r++) {
-          // Only start deleting cells to the right for the first row (r == 0)
-          if (r === 0) {
-            // Delete cells to the right of the target cell in the first row
-            for (let c = colspan - 1; c > 0; c--) {
-              if (table.rows[i + r].cells[j + c]) {
-                table.rows[i + r].deleteCell(j + c);
-              }
-            }
-          }
-          // For rows below the first, delete starting from the target column
-          if (r > 0) {
-            for (let c = colspan - 1; c >= 0; c--) {
-              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
-                table.rows[i + r].deleteCell(j);
-              }
-            }
-          }
-        }
-        // Set rowspan and colspan of the target cell
-        targetCell.rowSpan = rowspan;
-        targetCell.colSpan = colspan;
-      }
-      // tinytable span after
-      window.addEventListener('load', function () {
-          var cellsToStyle = [
-            // tinytable style arrays after
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_yh15po63ve4iijxykoxs',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_tpjnmciho10swj91jbao',}, 
-          { positions: [ { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 }, { i: 12, j: 5 },  ], css_id: 'tinytable_css_rsgqg7dgadx5f4nbz56e',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_lzxqufcu1lr54nr5bak2',}, 
-          { positions: [ { i: 12, j: 0 },  ], css_id: 'tinytable_css_hkduwkor9cd1258lhrlu',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 }, { i: 1, j: 2 }, { i: 11, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 2, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 1, j: 3 }, { i: 2, j: 3 }, { i: 7, j: 3 }, { i: 8, j: 3 }, { i: 5, j: 3 }, { i: 10, j: 3 }, { i: 11, j: 3 }, { i: 3, j: 4 }, { i: 9, j: 3 }, { i: 1, j: 4 }, { i: 2, j: 4 }, { i: 7, j: 4 }, { i: 4, j: 4 }, { i: 5, j: 4 }, { i: 10, j: 4 }, { i: 11, j: 4 }, { i: 8, j: 4 }, { i: 9, j: 4 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 10, j: 5 }, { i: 7, j: 5 }, { i: 8, j: 5 }, { i: 9, j: 5 }, { i: 11, j: 5 },  ], css_id: 'tinytable_css_cbwuttbex1itt9qlu439',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 10, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 11, j: 0 },  ], css_id: 'tinytable_css_6vcpyu80iwmv8pe137ts',}, 
-          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 4 }, { i: 6, j: 5 }, { i: 6, j: 2 },  ], css_id: 'tinytable_css_45812kg9qw6resags69e',}, 
-          ];
-
-          // Loop over the arrays to style the cells
-          cellsToStyle.forEach(function (group) {
-              group.positions.forEach(function (cell) {
-                  styleCell_su7j906h670ubkita132(cell.i, cell.j, group.css_id);
-              });
-          });
-      });
-    </script>
-
-    <style>
-      /* tinytable css entries after */
-      .table td.tinytable_css_yh15po63ve4iijxykoxs, .table th.tinytable_css_yh15po63ve4iijxykoxs { text-align: left; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_tpjnmciho10swj91jbao, .table th.tinytable_css_tpjnmciho10swj91jbao { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_rsgqg7dgadx5f4nbz56e, .table th.tinytable_css_rsgqg7dgadx5f4nbz56e { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_lzxqufcu1lr54nr5bak2, .table th.tinytable_css_lzxqufcu1lr54nr5bak2 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_hkduwkor9cd1258lhrlu, .table th.tinytable_css_hkduwkor9cd1258lhrlu { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_cbwuttbex1itt9qlu439, .table th.tinytable_css_cbwuttbex1itt9qlu439 { text-align: center; }
-      .table td.tinytable_css_6vcpyu80iwmv8pe137ts, .table th.tinytable_css_6vcpyu80iwmv8pe137ts { text-align: left; }
-      .table td.tinytable_css_45812kg9qw6resags69e, .table th.tinytable_css_45812kg9qw6resags69e { text-align: center; border-bottom: solid black 0.05em; }
-    </style>
-    <div class="container">
-      <table class="table table-borderless" id="tinytable_su7j906h670ubkita132" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
-        <thead>
-        
-              <tr>
-                <th scope="col"> </th>
-                <th scope="col">Base</th>
-                <th scope="col">No FE</th>
-                <th scope="col">Year FE</th>
-                <th scope="col">Two-Way FE</th>
-                <th scope="col">With Controls</th>
-              </tr>
-        </thead>
-        
-        <tbody>
-                <tr>
-                  <td>$ROA_{t}$</td>
-                  <td>0.839***</td>
-                  <td>0.756***</td>
-                  <td>0.769***</td>
-                  <td>0.639***</td>
-                  <td>0.624***</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>(62.732)</td>
-                  <td>(48.155)</td>
-                  <td>(48.621)</td>
-                  <td>(38.634)</td>
-                  <td>(35.596)</td>
-                </tr>
-                <tr>
-                  <td>$LOSS$</td>
-                  <td></td>
-                  <td>-0.030***</td>
-                  <td>-0.028***</td>
-                  <td>-0.015***</td>
-                  <td>-0.017***</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td>(-7.949)</td>
-                  <td>(-7.755)</td>
-                  <td>(-7.556)</td>
-                  <td>(-8.111)</td>
-                </tr>
-                <tr>
-                  <td>$ROA_{t} \times LOSS$</td>
-                  <td></td>
-                  <td>0.032</td>
-                  <td>0.012</td>
-                  <td>-0.285***</td>
-                  <td>-0.294***</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td>(1.470)</td>
-                  <td>(0.535)</td>
-                  <td>(-13.307)</td>
-                  <td>(-12.620)</td>
-                </tr>
-                <tr>
-                  <td>Year FE</td>
-                  <td></td>
-                  <td></td>
-                  <td>X</td>
-                  <td>X</td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <td>Firm FE</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>X</td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <td>Controls</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <td>N</td>
-                  <td>163,298</td>
-                  <td>163,298</td>
-                  <td>163,298</td>
-                  <td>161,635</td>
-                  <td>161,635</td>
-                </tr>
-                <tr>
-                  <td>$R^2$</td>
-                  <td>0.594</td>
-                  <td>0.597</td>
-                  <td>0.603</td>
-                  <td>0.707</td>
-                  <td>0.707</td>
-                </tr>
-                <tr>
-                  <td>$R^2$ Within</td>
-                  <td></td>
-                  <td></td>
-                  <td>0.580</td>
-                  <td>0.184</td>
-                  <td>0.186</td>
-                </tr>
-        </tbody>
-      </table>
-    </div>
-<!-- hack to avoid NA insertion in last line -->
-</div>
-</div>
-</figure>
-</div>
-</div>
+<p>This chapter will go over how to merge in data from various sources. This will include examples of how to merge in firm-level data from various sources, and time-series data from FRED/Fama-French Factors/CRSP Index Files.</p>
+<section id="common-sources-of-firm-level-data" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="common-sources-of-firm-level-data"><span class="header-section-number">4.1</span> Common Sources of Firm-Level Data</h2>
+<p>Belwo is a matrix of common sources and identifiers that link across each database:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: center;">Compustat</th>
+<th style="text-align: center;">CRSP CCMLINK</th>
+<th style="text-align: center;">CRSP DSF/MSF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Compustat</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">GVKEY-PERMNO</td>
+<td style="text-align: center;">PERMNO</td>
+</tr>
+<tr class="even">
+<td><strong>CRSP CCMLINK</strong></td>
+<td style="text-align: center;">PERMNO-GVKEY</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td><strong>CRSP DSF/MSF</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Not just copying from Eric’s because Ryan Clark is a baby</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -833,13 +652,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./merge-data.html" class="pagination-link" aria-label="Merging Data (In Progress)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span>
+      <a href="./obtain-data.html" class="pagination-link" aria-label="Obtaining and Merging Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Obtaining and Merging Data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./summary.html" class="pagination-link" aria-label="Summary">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./regression-table.html" class="pagination-link" aria-label="Regression Tables">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Tables</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
