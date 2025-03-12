@@ -3,3 +3,7 @@
 This chapter will have links and explainers on how to get your quarto and other GitHub projects going...
 
 The top finance/accounting/aio journals are about to be flooded with highly reproducible KU research.
+
+## Installing Git
+
+One reference for installing git on your machine can be found [here](https://github.com/git-guides/install-git).
