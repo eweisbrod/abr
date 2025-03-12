@@ -24,7 +24,17 @@
     "href": "project-setup.html",
     "title": "2  Project Setup",
     "section": "",
-    "text": "2.1 Installing Git\nOne reference for installing git on your machine can be found here.",
+    "text": "2.1 Git vs. GitHub\nGit is the underlying code that helps manage version control of your projects. You can find more information about the details of Git here. Information about how to install git on your machine can be found here.\nGitHub is a web-based user interface that makes Git easier to work with by allowing “point-and-click” version control rather than typing git commands. You will want to set up a GitHub account here. The rest of this chapter will reference the use of GitHub, although everything discussed can also be accomplished through the Git language.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Project Setup</span>"
+    ]
+  },
+  {
+    "objectID": "project-setup.html#language-of-github",
+    "href": "project-setup.html#language-of-github",
+    "title": "2  Project Setup",
+    "section": "2.2 Language of GitHub",
+    "text": "2.2 Language of GitHub\nIt is important to remember that GitHub acts as a version control interface for your research projects. So, while we will discuss the verbiage of GitHub, at its core all that it is doing is keeping track of the changes that you make to your code. It may be helpful to translate the Git language into words you regularly associate with project management.\nRepository - A repository is where all the code for a specific project lives. You can think of it like the project folder where your code is stored. The benefit of a repository is that it is stored online, allowing you to easily access it from any machine. You will most likely want to make your repository private, so that only you and people you identify as co-authors can access your code.\nFork - “Forking” a repository is equivalent to making a copy of someone else’s repository. If a repository is made public, then anyone can fork the repository to have their own copy. This is likely not something that will commonly occur in your own research, as we will discuss next. You can think of forking a repository as the same as copying someone else’s code folder and pasting it onto your computer.\nClone - “Cloning” is where the power of GitHub really begins. Cloning a repository is the same as giving your local machine (e.g., computer) access to the code in the repository. Think of it like installing Dropbox on another computer. Now you have access to all the files stored on Dropbox. Cloning a repository is the exact same thing for code. Once you have cloned the repository, you can now work on the code from that machine. The power comes in by being able to clone the repository on multiple computers, and your coauthors doing the same, allowing you all to work on the same set of code.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Project Setup</span>"
     ]
