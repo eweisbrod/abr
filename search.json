@@ -54,7 +54,7 @@
     "href": "merge-data.html",
     "title": "4  Merging Data (In Progress)",
     "section": "",
-    "text": "4.1 Common Sources of Firm-Level Data\nBelwo is a matrix of common sources and identifiers that link across each database:\nNot just copying from Eric’s because Ryan Clark is a baby",
+    "text": "4.1 Common Sources of Firm-Level Data\nBelow is a table of common sources and identifiers that link across each database:\nNot just copying from Eric’s because Ryan Clark is a baby",
     "crumbs": [
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Merging Data (In Progress)</span>"
     ]
@@ -64,7 +64,7 @@
     "href": "merge-data.html#common-sources-of-firm-level-data",
     "title": "4  Merging Data (In Progress)",
     "section": "",
-    "text": "Compustat\nCRSP CCMLINK\nCRSP DSF/MSF\n\n\n\n\nCompustat\n\nGVKEY-PERMNO\nPERMNO\n\n\nCRSP CCMLINK\nPERMNO-GVKEY\n\n\n\n\nCRSP DSF/MSF",
+    "text": "Database\nIdentifiers\nOther Firm Identifiers\nCan Be Linked To\n\n\n\n\nCompustat\nGVKEY\nTicker, CIK\nCRSP, Audit Analytics\n\n\nCRSP\nPERMNO\nTicker, CUSIP\nCompustat, IBES\n\n\nIBES\nTICKER\nOFTIC, CUSIP\nCRSP\n\n\nTAQ\nSYMBOL\n\n\n\n\nTRACE\n\n\n\n\n\nAudit Analytics\nCIK\n\nCompustat\n\n\nXBRL\nCIK\n\nCompustat",
     "crumbs": [
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Merging Data (In Progress)</span>"
     ]

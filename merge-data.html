@@ -193,34 +193,64 @@ ul.task-list li input[type="checkbox"] {
 <p>This chapter will go over how to merge in data from various sources. This will include examples of how to merge in firm-level data from various sources, and time-series data from FRED/Fama-French Factors/CRSP Index Files.</p>
 <section id="common-sources-of-firm-level-data" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="common-sources-of-firm-level-data"><span class="header-section-number">4.1</span> Common Sources of Firm-Level Data</h2>
-<p>Belwo is a matrix of common sources and identifiers that link across each database:</p>
+<p>Below is a table of common sources and identifiers that link across each database:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 26%">
+</colgroup>
 <thead>
 <tr class="header">
-<th></th>
-<th style="text-align: center;">Compustat</th>
-<th style="text-align: center;">CRSP CCMLINK</th>
-<th style="text-align: center;">CRSP DSF/MSF</th>
+<th>Database</th>
+<th style="text-align: center;">Identifiers</th>
+<th style="text-align: center;">Other Firm Identifiers</th>
+<th style="text-align: center;">Can Be Linked To</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><strong>Compustat</strong></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">GVKEY-PERMNO</td>
-<td style="text-align: center;">PERMNO</td>
+<td style="text-align: center;">GVKEY</td>
+<td style="text-align: center;">Ticker, CIK</td>
+<td style="text-align: center;">CRSP, Audit Analytics</td>
 </tr>
 <tr class="even">
-<td><strong>CRSP CCMLINK</strong></td>
-<td style="text-align: center;">PERMNO-GVKEY</td>
+<td><strong>CRSP</strong></td>
+<td style="text-align: center;">PERMNO</td>
+<td style="text-align: center;">Ticker, CUSIP</td>
+<td style="text-align: center;">Compustat, IBES</td>
+</tr>
+<tr class="odd">
+<td><strong>IBES</strong></td>
+<td style="text-align: center;">TICKER</td>
+<td style="text-align: center;">OFTIC, CUSIP</td>
+<td style="text-align: center;">CRSP</td>
+</tr>
+<tr class="even">
+<td><strong>TAQ</strong></td>
+<td style="text-align: center;">SYMBOL</td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;"></td>
 </tr>
 <tr class="odd">
-<td><strong>CRSP DSF/MSF</strong></td>
+<td><strong>TRACE</strong></td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td><strong>Audit Analytics</strong></td>
+<td style="text-align: center;">CIK</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Compustat</td>
+</tr>
+<tr class="odd">
+<td><strong>XBRL</strong></td>
+<td style="text-align: center;">CIK</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Compustat</td>
 </tr>
 </tbody>
 </table>
