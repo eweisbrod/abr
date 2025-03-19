@@ -193,20 +193,22 @@ ul.task-list li input[type="checkbox"] {
 <p>This chapter will go over how to merge in data from various sources. This will include examples of how to merge in firm-level data from various sources, and time-series data from FRED/Fama-French Factors/CRSP Index Files.</p>
 <section id="common-sources-of-firm-level-data" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="common-sources-of-firm-level-data"><span class="header-section-number">4.1</span> Common Sources of Firm-Level Data</h2>
-<p>Below is a table of common sources and identifiers that link across each database:</p>
+<p>Below is a table of common sources and firm identifiers that allow researchers to link data from different data sources:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 24%">
-<col style="width: 24%">
-<col style="width: 24%">
-<col style="width: 26%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Database</th>
+<th>Data Source</th>
 <th style="text-align: center;">Identifiers</th>
 <th style="text-align: center;">Other Firm Identifiers</th>
 <th style="text-align: center;">Can Be Linked To</th>
+<th style="text-align: left;">Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -215,46 +217,60 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;">GVKEY</td>
 <td style="text-align: center;">Ticker, CIK</td>
 <td style="text-align: center;">CRSP, Audit Analytics</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
 <td><strong>CRSP</strong></td>
 <td style="text-align: center;">PERMNO</td>
 <td style="text-align: center;">Ticker, CUSIP</td>
 <td style="text-align: center;">Compustat, IBES</td>
+<td style="text-align: left;">To link to Compustat data, researchers should use the CRSP-Compustat link file for PERMNO-GVKEY mapping.</td>
 </tr>
 <tr class="odd">
-<td><strong>IBES</strong></td>
+<td><strong>I/B/E/S</strong></td>
 <td style="text-align: center;">TICKER</td>
 <td style="text-align: center;">OFTIC, CUSIP</td>
 <td style="text-align: center;">CRSP</td>
+<td style="text-align: left;">The “TICKER” variable is the I/B/E/S firm identifier <strong>not</strong> the trading symbol. The trading symbol is the “OFTIC” variable.</td>
 </tr>
 <tr class="even">
 <td><strong>TAQ</strong></td>
 <td style="text-align: center;">SYMBOL</td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
 <td><strong>TRACE</strong></td>
+<td style="text-align: center;">CUSIP</td>
 <td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">CRSP</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
 <td><strong>Audit Analytics</strong></td>
 <td style="text-align: center;">CIK</td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;">Compustat</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
 <td><strong>XBRL</strong></td>
 <td style="text-align: center;">CIK</td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;">Compustat</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td><strong>RavenPack</strong></td>
+<td style="text-align: center;">RP_ENTITY_ID</td>
+<td style="text-align: center;">CUSIP</td>
+<td style="text-align: center;">CRSP, IBES</td>
+<td style="text-align: left;"></td>
 </tr>
 </tbody>
 </table>
-<p>Not just copying from Eric’s because Ryan Clark is a baby</p>
+<p>Blocking out for next attempt</p>
 
 
 </section>
