@@ -1,6 +1,308 @@
 # Obtaining and Merging Data
 
-This is my first time working on a Quarto book. So, this first post will be very rough for now. I will try to provide a few different examples of ways to obtain and merge data in R, and a few tips of things to keep in mind. 
+Parquet files offer significant advantages when dealing with large datasets that need to be retrieved, stored, and merged efficiently. Their columnar storage format allows reading only the necessary columns instead of scanning the entire dataset, making data retrieval much faster compared to traditional formats like CSV or Stata. Additionally, Parquet optimizes input/output operations, reducing the amount of data that needs to be read from disk, which speeds up processing times when merging multiple datasets.
+
+Another key benefit of Parquet is its efficient storage and compression capabilities. Unlike CSV or Stata files, which store data in a row-based format, Parquet applies built-in compression algorithms such as Gzip or Snappy, significantly reducing file size. This not only saves disk space but also speeds up data transfer, especially when obtaining datasets from remote servers like WRDS, AWS, or PostgreSQL databases.
+
+Parquet files also ensure schema consistency and data type preservation, which is crucial when merging datasets from different sources. In contrast to CSV files, where numerical values may sometimes be interpreted as text, Parquet maintains strict data types. It also efficiently handles missing values, reducing potential errors and inconsistencies when performing joins and merges.
+
+When merging large datasets, Parquet’s columnar format and filtering capabilities help reduce memory usage and processing time. Instead of loading entire datasets into memory, users can select and load only the relevant columns before merging, significantly optimizing resource allocation. Additionally, Parquet is highly compatible with modern data science tools, supporting parallel computing and batch processing with frameworks like Spark, Dask, and DuckDB.
+
+Parquet’s cross-platform support makes it ideal for working in R, Python (pandas, pyarrow, Polars), SQL databases, and cloud platforms such as AWS S3 and Google BigQuery. This ensures seamless integration with existing workflows, whether working on local machines or in cloud-based data pipelines. Given its speed, storage efficiency, and compatibility, Parquet is a preferred format for obtaining and merging large financial datasets from sources like Compustat, CRSP, and other WRDS databases.
+
+Let's first learn how to obtain data from WRDS. The code below shows how to connect to WRDS.
+
+```{r}
+# Setup ------------------------------------------------------------------------
+
+# Load Libraries [i.e., packages]
+library(dbplyr)
+library(RPostgres)
+library(DBI)
+library(glue)
+library(arrow)
+library(haven)
+library(tictoc) #very optional timer, mostly as a teaching example
+library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+
+
+#load helper scripts
+#similar to "include" statement in SAS.
+source("src/-Global-Parameters.R")
+source("src/utils.R")
+
+
+# Log into wrds ----------------------------------------------------------------
+
+if(exists("wrds")){
+  dbDisconnect(wrds)  # because otherwise WRDS might time out
+}
+
+wrds <- dbConnect(Postgres(),
+                  host='wrds-pgdata.wharton.upenn.edu',
+                  port=9737,
+                  user=rstudioapi::askForSecret("WRDS user"),
+                  password=rstudioapi::askForSecret("WRDS pw"),
+                  sslmode='require',
+                  dbname='wrds')
+wrds  # checking if connection exists
+
+```
+
+The R script below retrieves and processes financial data from the **Compustat** database using **PostgreSQL** on the **WRDS server**. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is then filtered to retain **U.S. firms from 1967 onward** while excluding financial and utility firms.
+
+```{r}
+# See a list of tables in a schema ---------------------------------------------
+# Just an example to play with the Postgres server
+
+# List all of the tables in Compustat (comp)
+wrds |>
+  DBI::dbListObjects(DBI::Id(schema = 'comp')) |> 
+  dplyr::pull(table) |> 
+  purrr::map(~slot(.x, 'name'))  |> 
+  dplyr::bind_rows()  |>  
+  View()
+# can replace "comp" with any schema such as "crsp" "ibes" etc.
+# schemas on the Postgres server are similar to WRDS SAS libraries
+
+# Load table references and download data --------------------------------------
+
+# Load funda as a tbl
+comp.funda <- tbl(wrds,in_schema("comp", "funda"))
+comp.company <- tbl(wrds,in_schema("comp", "company"))
+
+# Optional line:
+#if you want to see how long a block of code takes you can start a tictoc timer
+#it will tell you how long it takes between when you run tic() and when you run 
+# toc()
+tictoc::tic()
+
+# Get some raw Compustat data from funda
+raw_funda <-
+  comp.funda |> 
+  #Apply standard Compustat filters
+  filter(indfmt=='INDL', datafmt=='STD', popsrc=='D' ,consol=='C') |>
+  #Select the variables we want to download
+  #the pattern for inline renaming is 
+  #new_name = old_name
+  select(conm, gvkey, datadate, fyear, fyr, cstat_cusip=cusip, #inline renaming
+         cik, cstat_ticker= tic, sich, ib, spi, at, xrd, ceq, sale,
+         csho, prcc_f
+  ) |> 
+  #Merge with the Compustat Company file for header SIC code and GICs code
+  inner_join(select(comp.company, gvkey, sic, fic, gind), by="gvkey") |> 
+  #Use historical sic [sich] when available. Otherwise use header sic [sic]
+  mutate(sic4 = coalesce(sich, as.numeric(sic))) |> 
+  #Calculate two digit sic code
+  mutate(sic2 = floor(sic4/100)) |> 
+  #Delete financial and utility industries
+  #For some research projects this is common to remove highly regulated firms
+  #with unique accounting practices
+  filter(!between(sic2,60,69),
+         sic2 != 49) |> 
+  # replace missings with 0 for defined vars
+  mutate(across(c(spi, xrd),
+            ~ coalesce(., 0))) |> 
+  # create a few additional variables
+  mutate(
+    # Some example code to align the data in June calendar time. 
+    # Some papers use June of each year and assume a 3 month reporting lag.
+    # Effectively this is coded as aligning datadate as of March each year.
+    # See, for example, Hou, Van Dijk, and Zhang (2012 JAE) figure 1
+    # This example also demonstrates injecting sql into dplyr code
+    calyear = if_else( fyr > 3,
+                       sql("extract(year from datadate)")+1,
+                       sql("extract(year from datadate)")),
+    # mve is market value of equity
+    mve = csho * prcc_f,
+    # define earnings (e) as earnings before special items
+    e= ib-spi,
+  ) |>
+  # filter to fiscal years after 1955, not much in Compustat before that 
+  filter(1967 < fyear) |> 
+  # filter to US companies
+  filter(fic=="USA") |> 
+  # everything above manupulates the data inside the WRDS postgres server
+  #behind the scenes it generates efficient sql code
+  # below line downloads to local machine RAM
+  collect()
+  #if you comment out the above collect() and instead run below command
+  # you can see the behind the scenes sql
+  #show_query()
+
+#stop the tictoc timer
+tictoc::toc()
+
+
+# Save the data to disk --------------------------------------------------------
+
+# saving to Stata is convenient for working with coauthors
+# glue package allows for dynamic file paths 
+# then each coauthor can specify their own local data folder
+tic()
+write_dta(raw_funda,glue("{data_path}/raw-data-R.dta")) 
+toc()
+#looks like about 162 MB on my machine
+
+# if the data will stay in R or another advanced/modern language like Python
+# then Parquet files are a nice open-source file format for data science
+# they are fast and small and have some other advanced features as well
+
+# in this example, we have customized the write_parquet function a bit to 
+# default to a high level of gzip compression to save space
+# therefore, the write_parquet function is using the function defined in the 
+# utils script
+tic()
+write_parquet(raw_funda,glue("{data_path}/raw-data-R.parquet"))
+toc()
+# the parquet operations are faster and the file is only 32MB on my machine
+
+```
+
+Then we play with transforming data. The R script below processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
+
+```{r}
+# Setup ------------------------------------------------------------------------
+
+# Load Libraries [i.e., packages]
+library(lubridate)
+library(glue)
+library(arrow)
+library(haven)
+library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+
+
+
+#load helper scripts
+source("src/-Global-Parameters.R")
+source("src/utils.R")
+
+
+# read in the data from the previous step --------------------------------------
+
+#let's work with the parquet version
+data1 <- read_parquet(glue("{data_path}/raw-data-R.parquet"))
+
+#note: if you choose to collect your raw data in SAS or Stata
+# these could easily be read in using haven::read_dta() or haven::read_sas()
+
+
+# Some quick peeks at the data -------------------------------------------------
+
+#since the data is structured as a dplyr tibble, just calling its name
+#will preview the first 10 rows (similar to a head function)
+data1 
+
+#can also glimpse
+glimpse(data1)
+
+#or summarize
+summary(data1)
+
+
+# Manipulate a few variables ---------------------------------------------------
+
+#many of the below steps could be combined into one. They also could have been
+#done on the WRDS server
+#I just separate them for teaching purposes
+
+data2 <- data1 |>
+  #filter based on the global parameters for the sample period that we set in
+  # the global-parameters script.
+  filter(calyear >= beg_year,
+         calyear <= end_year) |> 
+  #I am going to scale by total assets (at) so I am going to set a minimum at
+  # to avoid small denominators
+  filter(at >= 10) |> 
+  mutate(
+    #use the FF utility functions to assign fama french industries
+    FF12 = assign_FF12(sic4),
+    ff12num = assign_FF12_num(sic4),
+    FF49 = assign_FF49(sic4),
+    ff49num = assign_FF49_num(sic4),
+    # code a loss dummy, I like 1/0 but true/false is also fine
+    loss = if_else(e < 0 , 1, 0),
+    # scale e by ending total assets
+    # FSA purists would probably use average total assets, but just an example
+    roa = e / at ,
+    # scale r&d by ending total assets
+    rd = xrd / at
+  ) |> 
+  # let's do an earnings persistence regression with lead earnings as y
+  # so for each gvkey we need the next earnings for that gvkey
+  # first make sure the data is sorted properly
+  arrange(gvkey,datadate) |> 
+  # then group by firm (gvkey) 
+  # this will restrict the lead function to only look at the next obs 
+  # for the same firm
+  group_by(gvkey) |> 
+  mutate(roa_lead_1 = lead(roa,1L),
+         datadate_lead_1 = lead(datadate,1L)) |> 
+  #check to make sure no gaps or fiscal year changes
+  filter(month(datadate_lead_1) == month(datadate),
+         year(datadate_lead_1) == year(datadate) + 1) |> 
+  #not a bad idea to ungroup once you are finished
+  ungroup() |> 
+  #Filter multiple variables to require non-missing values
+  filter(if_all(c(at, mve,rd,ff12num,starts_with("roa")), ~ !is.na(.x)))
+
+
+# Play around ------------------------------------------------------------------
+
+#how many observations in each FF12 industry?
+data2 |> 
+  group_by(FF12) |> 
+  count()
+
+#percentage of losses by industry?
+data2 |> 
+  group_by(FF12) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n())
+
+#as a quick figure?
+data2 |> 
+  group_by(FF12) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n()) |> 
+  ggplot(aes(x = FF12, y= pct_loss)) + 
+  scale_y_continuous(name = "Freq. of Losses", labels = scales::percent) +
+  geom_col() +
+  coord_flip() +
+  theme_bw() 
+
+# Winsorize the data -----------------------------------------------------------
+
+#check the tail values as an example
+quantile(data2$roa, probs = c(0,.01,.99,1))
+
+#default winsorization
+data3 <- data2 |> 
+  #default is 1% / 99 % , this winsorizes rd and all roa vars at that cut
+  mutate(across(c(mve,at,rd,starts_with("roa")), winsorize_x))
+
+
+#check the winsorized tail values
+quantile(data3$roa, probs = c(0,.01,.99,1))
+
+
+#alternate version, if we want to change the tails
+data3b <- data2 |> 
+  #winsorize 2.5% / 97.5 % 
+  mutate(
+    across(c(rd,starts_with("roa")), ~ winsorize_x(.x,cuts = c(0.025,0.025)))
+  )
+
+#check
+quantile(data2$roa, probs = c(0,.025,.975,1))
+quantile(data3b$roa, probs = c(0,.025,.975,1))
+
+# Save the winsorized data  ----------------------------------------------------
+
+# just saving to Stata format this time for brevity
+write_dta(data3,glue("{data_path}/regdata-R.dta"))
+
+```
+
+This is my first time working on a Quarto book. So, this first post will be very rough for now. I will try to provide a few different examples of ways to obtain and merge data in R, and a few tips of things to keep in mind.
 
 We already know how to obtain data from WRDS. Let's use this to obtain some returns for the S&P 500. We could use the formal index data, but let's take a shortcut and just use the popular SPY ETF that tracks the S&P 500. To do this, we need to find the CRSP identifier (PERMNO) for the ticker "SPY." We can look in the WRDS stocknames file for this, and then use the SPY PERMNO to pull data from the CRSP monthly stock file.
 
@@ -254,3 +556,11 @@ merged_data |>
 
 
 ```
+
+Some other useful materials:
+
+[https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html ](https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html "https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html")
+
+[https://iangow.github.io/far_book/web-data.html ](https://iangow.github.io/far_book/web-data.html "https://iangow.github.io/far_book/web-data.html")
+
+[https://iangow.github.io/far_book/identifiers.html ](https://iangow.github.io/far_book/identifiers.html "https://iangow.github.io/far_book/identifiers.html")
