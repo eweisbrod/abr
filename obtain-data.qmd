@@ -28,8 +28,8 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 #load helper scripts
 #similar to "include" statement in SAS.
-source("E:/y371y552/Git/example-project/src/-Global-Parameters.R")
-source("E:/y371y552/Git/example-project/src/utils.R")
+source("E:/acct_995_data/abr/-Global-Parameters.R")
+source("E:/acct_995_data/abr/utils.R")
 
 
 # Log into wrds ----------------------------------------------------------------
@@ -173,8 +173,9 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 
 
-source("E:/y371y552/Git/example-project/src/-Global-Parameters.R")
-source("E:/y371y552/Git/example-project/src/utils.R")
+source("E:/acct_995_data/abr/-Global-Parameters.R")
+source("E:/acct_995_data/abr/utils.R")
+
 
 
 # read in the data from the previous step --------------------------------------
