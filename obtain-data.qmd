@@ -28,8 +28,8 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 #load helper scripts
 #similar to "include" statement in SAS.
-source("src/-Global-Parameters.R")
-source("src/utils.R")
+source("E:/y371y552/Git/example-project/src/-Global-Parameters.R")
+source("E:/y371y552/Git/example-project/src/utils.R")
 
 
 # Log into wrds ----------------------------------------------------------------
@@ -37,15 +37,15 @@ source("src/utils.R")
 if(exists("wrds")){
   dbDisconnect(wrds)  # because otherwise WRDS might time out
 }
-
 wrds <- dbConnect(Postgres(),
-                  host='wrds-pgdata.wharton.upenn.edu',
-                  port=9737,
-                  user=rstudioapi::askForSecret("WRDS user"),
-                  password=rstudioapi::askForSecret("WRDS pw"),
-                  sslmode='require',
-                  dbname='wrds')
-wrds  # checking if connection exists
+                  host = 'wrds-pgdata.wharton.upenn.edu',
+                  port = 9737,
+                  user = Sys.getenv("WRDS_USER"),
+                  password = Sys.getenv("WRDS_PW"),
+                  sslmode = 'require',
+                  dbname = 'wrds')
+
+
 
 ```
 
@@ -140,7 +140,7 @@ tictoc::toc()
 # glue package allows for dynamic file paths 
 # then each coauthor can specify their own local data folder
 tic()
-write_dta(raw_funda,glue("{data_path}/raw-data-R.dta")) 
+write_dta(raw_funda,glue("E:/y371y552/Git/example-project/raw-data-R.dta")) 
 toc()
 #looks like about 162 MB on my machine
 
@@ -153,7 +153,7 @@ toc()
 # therefore, the write_parquet function is using the function defined in the 
 # utils script
 tic()
-write_parquet(raw_funda,glue("{data_path}/raw-data-R.parquet"))
+write_parquet(raw_funda,glue("E:/y371y552/Git/example-project/raw-data-R.parquet"))
 toc()
 # the parquet operations are faster and the file is only 32MB on my machine
 
@@ -173,15 +173,14 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 
 
-#load helper scripts
-source("src/-Global-Parameters.R")
-source("src/utils.R")
+source("E:/y371y552/Git/example-project/src/-Global-Parameters.R")
+source("E:/y371y552/Git/example-project/src/utils.R")
 
 
 # read in the data from the previous step --------------------------------------
 
 #let's work with the parquet version
-data1 <- read_parquet(glue("{data_path}/raw-data-R.parquet"))
+data1 <- read_parquet(glue("E:/y371y552/Git/example-project/raw-data-R.parquet"))
 
 #note: if you choose to collect your raw data in SAS or Stata
 # these could easily be read in using haven::read_dta() or haven::read_sas()
@@ -298,7 +297,7 @@ quantile(data3b$roa, probs = c(0,.025,.975,1))
 # Save the winsorized data  ----------------------------------------------------
 
 # just saving to Stata format this time for brevity
-write_dta(data3,glue("{data_path}/regdata-R.dta"))
+write_dta(data3,glue("E:/y371y552/Git/example-project/regdata-R.dta"))
 
 ```
 
@@ -339,12 +338,12 @@ if(exists("wrds")){
 }
 
 wrds <- dbConnect(Postgres(),
-                  host='wrds-pgdata.wharton.upenn.edu',
-                  port=9737,
-                  user=keyring::key_get("WRDS_user"),
-                  password=keyring::key_get("WRDS_pw"),
-                  sslmode='require',
-                  dbname='wrds')
+                  host = 'wrds-pgdata.wharton.upenn.edu',
+                  port = 9737,
+                  user = Sys.getenv("WRDS_USER"),
+                  password = Sys.getenv("WRDS_PW"),
+                  sslmode = 'require',
+                  dbname = 'wrds')
 
 
 # Create WRDS Table References -------------------------------------------------
@@ -467,7 +466,8 @@ library(fredr)
 #keyring::key_set("fred_api_key")
 
 #set my API key which is saved in keyring
-fredr_set_key(keyring::key_get("fred_api_key"))
+fred_api_key <- Sys.getenv("FRED_API_KEY")
+
 
 #collect the data from the series USRECD
 # https://fred.stlouisfed.org/series/USRECD
@@ -559,8 +559,8 @@ merged_data |>
 
 Some other useful materials:
 
-[https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html ](https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html "https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html")
+<https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html>
 
-[https://iangow.github.io/far_book/web-data.html ](https://iangow.github.io/far_book/web-data.html "https://iangow.github.io/far_book/web-data.html")
+<https://iangow.github.io/far_book/web-data.html>
 
-[https://iangow.github.io/far_book/identifiers.html ](https://iangow.github.io/far_book/identifiers.html "https://iangow.github.io/far_book/identifiers.html")
+<https://iangow.github.io/far_book/identifiers.html>
