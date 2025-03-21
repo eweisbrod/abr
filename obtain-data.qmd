@@ -40,8 +40,8 @@ if(exists("wrds")){
 wrds <- dbConnect(Postgres(),
                   host = 'wrds-pgdata.wharton.upenn.edu',
                   port = 9737,
-                  user = Keyring:Key_get("WRDS_USER"),
-                  password = Keyring:Key_get("WRDS_PW"),
+                  user = keyring:Key_get("WRDS_USER"),
+                  password = keyring:Key_get("WRDS_PW"),
                   sslmode = 'require',
                   dbname = 'wrds')
 
