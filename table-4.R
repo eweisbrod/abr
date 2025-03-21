@@ -14,7 +14,8 @@ library(tictoc) #very optional, mostly as a teaching example
 library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 
-
+#before you can call the data path, you need to set it in your environment using
+#usethis::edit_r_environ("project")
 data_path <- Sys.getenv('data_path')
 
 #Set this option for the modelsummary output

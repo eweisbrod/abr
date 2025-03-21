@@ -55,29 +55,33 @@ format:
       cite-style: authoryear
 ---
 
-
+```{=html}
 <!-- 
 Note that you can use native LaTeX commands in the document.
 Also, you can use ctrl+shift+c to add comments
  -->
- \newpage
+```
 
+\newpage
 
+```{=html}
 <!-- 
 The native Quarto pagebreak command is this: 
 {{< pagebreak >}} 
 -->
+```
 
 # Introduction
 
-This document is a Quarto template for creating an academic paper formatted for potential publication in Elsevier journals. If you have received this document as a PDF, a live version including the code used to create this document can be found at: \url{https://github.com/eweisbrod/abr}. 
+This document is a Quarto template for creating an academic paper formatted for potential publication in Elsevier journals. If you have received this document as a PDF, a live version including the code used to create this document can be found at: \url{https://github.com/eweisbrod/abr}.
 
+```{=html}
 <!-- 
 Use citet for in-text cites and citep for parenthetical cites
 -->
+```
 
-Here are some examples of in-text and parenthetical citations. You can use latex citation styles inside a Quarto PDF. To add citations to the paper, you must add the bibtex reference information to the ``Bibliography.bib" file that is part of the Qaurto project. The easiest way to do this is to look up the paper you wish to cite on Google scholar, then click on the "cite" link below the paper, select bibtex, and cut and paste the reference info into the bib file. The bibtex reference will include a shorthand way to refer to the paper in the latex cite commands (e.g., "blankespoor2019individual"). \citet{blankespoor2019individual} is an in-text cite. There are also parenthetical cites \citep[e.g,][]{doyle2006extreme, livnat2006comparing,black2017non, Bradshaw2018}.\footnote{There are also footnotes. } 
-
+Here are some examples of in-text and parenthetical citations. You can use latex citation styles inside a Quarto PDF. To add citations to the paper, you must add the bibtex reference information to the \`\`Bibliography.bib" file that is part of the Qaurto project. The easiest way to do this is to look up the paper you wish to cite on Google scholar, then click on the "cite" link below the paper, select bibtex, and cut and paste the reference info into the bib file. The bibtex reference will include a shorthand way to refer to the paper in the latex cite commands (e.g., "blankespoor2019individual"). \citet{blankespoor2019individual} is an in-text cite. There are also parenthetical cites \citep[e.g,][]{doyle2006extreme, livnat2006comparing,black2017non, Bradshaw2018}.\footnote{There are also footnotes. }
 
 # Bibliography styles
 
@@ -85,29 +89,27 @@ You can also use Quarto syntax to do citations. Here are two sample citations us
 
 Here is some information about the bibliography styles from the Elsevier template:
 
-With this template using elsevier class, natbib will be used. Three bibliographic style ﬁles (*.bst) are provided and their use controled by `cite-style` option: 
+With this template using elsevier class, natbib will be used. Three bibliographic style ﬁles (\*.bst) are provided and their use controled by `cite-style` option:
 
-- `citestyle: number` (default)  will use `elsarticle-num.bst` - can be used for the numbered scheme
-- `citestyle: numbername` will use `elsarticle-num-names.bst` - can be used for numbered with new options of natbib.sty
-- `citestyle: authoryear` will use `elsarticle-harv.bst` — can be used for author year scheme
+-   `citestyle: number` (default) will use `elsarticle-num.bst` - can be used for the numbered scheme
+-   `citestyle: numbername` will use `elsarticle-num-names.bst` - can be used for numbered with new options of natbib.sty
+-   `citestyle: authoryear` will use `elsarticle-harv.bst` — can be used for author year scheme
 
 This `citestyle` will insert the right `.bst` and set the correct `classoption` for `elsarticle` document class.
 
-Using `natbiboptions` variable in YAML header, you can set more options for `natbib` itself . Example 
+Using `natbiboptions` variable in YAML header, you can set more options for `natbib` itself . Example
 
-```yaml
+``` yaml
 natbiboptions: longnamesfirst,angle,semicolon
 ```
 
-## Using CSL 
+## Using CSL
 
-If `cite-method` is set to `citeproc` in `elsevier_article()`, then pandoc is used for citations instead of `natbib`. In this case, the `csl` option is used to format the references. By default, this template will provide an appropriate style, but alternative `csl` files are available from <https://www.zotero.org/styles?q=elsevier>. These can be downloaded
-and stored locally, or the url can be used as in the example header.
+If `cite-method` is set to `citeproc` in `elsevier_article()`, then pandoc is used for citations instead of `natbib`. In this case, the `csl` option is used to format the references. By default, this template will provide an appropriate style, but alternative `csl` files are available from <https://www.zotero.org/styles?q=elsevier>. These can be downloaded and stored locally, or the url can be used as in the example header.
 
 # Equations
 
-Here is an equation:
-$$ 
+Here is an equation: $$ 
   f_{X}(x) = \left(\frac{\alpha}{\beta}\right)
   \left(\frac{x}{\beta}\right)^{\alpha-1}
   e^{-\left(\frac{x}{\beta}\right)^{\alpha}}; 
@@ -119,6 +121,8 @@ Inline equations work as well: $\sum_{i = 2}^\infty\{\alpha_i^\beta\}$
 # Figures and tables
 
 @fig-meaningless is generated using an R chunk.
+
+Can we also use latex references for quarto figures? Lets try to reference \autoref{fig-meaningless}.
 
 ```{r}
 #| label: fig-meaningless
@@ -143,13 +147,8 @@ source("table-4.R")
 
 ```
 
+Tables can also be generated using R chunks, as shown in @tbl-simple example. One benefit of using Quarto is that you could add inline code to your document referencing, for example, coefficients. The coefficient on $ROA_t$ in @tbl-simple is `r broom::tidy(models$Base) |>    filter(term == "roa") |>    select(estimate) |>    as.numeric() |>    format(digits = 3)`.
 
-Tables can also be generated using R chunks, as shown in @tbl-simple example. One benefit of using Quarto is that you could add inline code to your document referencing, for example, coefficients. The coefficient on $ROA_t$ in @tbl-simple is `r broom::tidy(models$Base) |> 
-  filter(term == "roa") |> 
-  select(estimate) |> 
-  as.numeric() |> 
-  format(digits = 3)`\.
-  
 \newpage
 
 ```{r}
@@ -183,6 +182,4 @@ Some text after the table.
 
 \newpage
 
-# References {-}
-
-
+# References {.unnumbered}
