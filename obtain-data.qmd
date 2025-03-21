@@ -40,8 +40,8 @@ if(exists("wrds")){
 wrds <- dbConnect(Postgres(),
                   host = 'wrds-pgdata.wharton.upenn.edu',
                   port = 9737,
-                  user = Sys.getenv("WRDS_USER"),
-                  password = Sys.getenv("WRDS_PW"),
+                  user = keyring::key_get("WRDS_user"),
+                  password = keyring::key_get("WRDS_pw"),
                   sslmode = 'require',
                   dbname = 'wrds')
 
@@ -140,7 +140,7 @@ tictoc::toc()
 # glue package allows for dynamic file paths 
 # then each coauthor can specify their own local data folder
 tic()
-write_dta(raw_funda,glue("E:/y371y552/Git/example-project/raw-data-R.dta")) 
+write_dta(raw_funda,glue("{data_path}/raw-data-R.dta")) 
 toc()
 #looks like about 162 MB on my machine
 
@@ -153,7 +153,7 @@ toc()
 # therefore, the write_parquet function is using the function defined in the 
 # utils script
 tic()
-write_parquet(raw_funda,glue("E:/y371y552/Git/example-project/raw-data-R.parquet"))
+write_parquet(raw_funda,glue("{data_path}/raw-data-R.parquet"))
 toc()
 # the parquet operations are faster and the file is only 32MB on my machine
 
@@ -181,7 +181,7 @@ source("E:/acct_995_data/abr/utils.R")
 # read in the data from the previous step --------------------------------------
 
 #let's work with the parquet version
-data1 <- read_parquet(glue("E:/y371y552/Git/example-project/raw-data-R.parquet"))
+data1 <- read_parquet(glue("{data_path}/raw-data-R.parquet"))
 
 #note: if you choose to collect your raw data in SAS or Stata
 # these could easily be read in using haven::read_dta() or haven::read_sas()
@@ -298,7 +298,7 @@ quantile(data3b$roa, probs = c(0,.025,.975,1))
 # Save the winsorized data  ----------------------------------------------------
 
 # just saving to Stata format this time for brevity
-write_dta(data3,glue("E:/y371y552/Git/example-project/regdata-R.dta"))
+write_dta(data3,glue("{data_path}/regdata-R.dta"))
 
 ```
 
@@ -341,8 +341,8 @@ if(exists("wrds")){
 wrds <- dbConnect(Postgres(),
                   host = 'wrds-pgdata.wharton.upenn.edu',
                   port = 9737,
-                  user = Sys.getenv("WRDS_USER"),
-                  password = Sys.getenv("WRDS_PW"),
+                  user = keyring::key_get("WRDS_user"),
+                  password = keyring::key_get("WRDS_pw"),
                   sslmode = 'require',
                   dbname = 'wrds')
 
@@ -467,8 +467,7 @@ library(fredr)
 #keyring::key_set("fred_api_key")
 
 #set my API key which is saved in keyring
-fred_api_key <- Sys.getenv("FRED_API_KEY")
-
+fredr_set_key(keyring::key_get("fred_api_key"))
 
 #collect the data from the series USRECD
 # https://fred.stlouisfed.org/series/USRECD
