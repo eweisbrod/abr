@@ -9,6 +9,7 @@ book:
     - index.qmd
     - intro.qmd
     - project-setup.qmd
+    - global-params-packs-util.qmd
     - obtain-data.qmd
     - merge-data.qmd
     - regression-table.qmd
