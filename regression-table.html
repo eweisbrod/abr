@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; Regression Tables – Applied Business Research</title>
+<title>6&nbsp; Regression Tables – Applied Business Research</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -81,7 +81,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./regression-table.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Tables</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./regression-table.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -126,26 +126,32 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./global-params-packs-util.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installing Packages, Setting Global Parameters, and Creating Necessary Functions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./obtain-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Obtaining and Merging Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Obtaining and Merging Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./merge-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./regression-table.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Tables</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -167,7 +173,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regression Tables</span></h1>
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></h1>
 </div>
 
 
@@ -199,7 +205,7 @@ ul.task-list li input[type="checkbox"] {
 <div id="tbl-4" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5.1
+Table&nbsp;6.1
 </figcaption>
 <div aria-describedby="tbl-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -207,8 +213,8 @@ Table&nbsp;5.1
 
     <script>
 
-      function styleCell_t4c7djn0cgjy50own3ue(i, j, css_id) {
-          var table = document.getElementById("tinytable_t4c7djn0cgjy50own3ue");
+      function styleCell_oeuxvlx752j2fn3t7tww(i, j, css_id) {
+          var table = document.getElementById("tinytable_oeuxvlx752j2fn3t7tww");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -218,7 +224,7 @@ Table&nbsp;5.1
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_t4c7djn0cgjy50own3ue');
+        var table = document.getElementById('tinytable_oeuxvlx752j2fn3t7tww');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -226,8 +232,8 @@ Table&nbsp;5.1
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_t4c7djn0cgjy50own3ue(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_t4c7djn0cgjy50own3ue");
+      function spanCell_oeuxvlx752j2fn3t7tww(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_oeuxvlx752j2fn3t7tww");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -257,20 +263,20 @@ Table&nbsp;5.1
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 12, j: 0 },  ], css_id: 'tinytable_css_yjnm311519c1wbtnaorf',}, 
-          { positions: [ { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 }, { i: 12, j: 5 },  ], css_id: 'tinytable_css_sq3mptbmkb5jhkeqi94u',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 }, { i: 1, j: 2 }, { i: 11, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 2, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 1, j: 3 }, { i: 2, j: 3 }, { i: 7, j: 3 }, { i: 8, j: 3 }, { i: 5, j: 3 }, { i: 10, j: 3 }, { i: 11, j: 3 }, { i: 3, j: 4 }, { i: 9, j: 3 }, { i: 1, j: 4 }, { i: 2, j: 4 }, { i: 7, j: 4 }, { i: 4, j: 4 }, { i: 5, j: 4 }, { i: 10, j: 4 }, { i: 11, j: 4 }, { i: 8, j: 4 }, { i: 9, j: 4 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 10, j: 5 }, { i: 7, j: 5 }, { i: 8, j: 5 }, { i: 9, j: 5 }, { i: 11, j: 5 },  ], css_id: 'tinytable_css_kv36a0d6ycgm1biqzpvb',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_iyuyej0ax7srq33lg5ga',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 10, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 11, j: 0 },  ], css_id: 'tinytable_css_ho4ot80how47vfvj2dnu',}, 
-          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 4 }, { i: 6, j: 5 }, { i: 6, j: 2 },  ], css_id: 'tinytable_css_aberfucr9fezyn3znvmt',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_9dyqf1l2png7l2qulhyv',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_0mlfwosta3pyw6gmjetk',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 10, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 11, j: 0 },  ], css_id: 'tinytable_css_z3i547tqe6xnotiy6lp9',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 }, { i: 1, j: 2 }, { i: 11, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 2, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 1, j: 3 }, { i: 2, j: 3 }, { i: 7, j: 3 }, { i: 8, j: 3 }, { i: 5, j: 3 }, { i: 10, j: 3 }, { i: 11, j: 3 }, { i: 3, j: 4 }, { i: 9, j: 3 }, { i: 1, j: 4 }, { i: 2, j: 4 }, { i: 7, j: 4 }, { i: 4, j: 4 }, { i: 5, j: 4 }, { i: 10, j: 4 }, { i: 11, j: 4 }, { i: 8, j: 4 }, { i: 9, j: 4 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 10, j: 5 }, { i: 7, j: 5 }, { i: 8, j: 5 }, { i: 9, j: 5 }, { i: 11, j: 5 },  ], css_id: 'tinytable_css_yhn0d7t7wmvcizaf3ebs',}, 
+          { positions: [ { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 }, { i: 12, j: 5 },  ], css_id: 'tinytable_css_y6t1fepek2vta75s2lnk',}, 
+          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 4 }, { i: 6, j: 5 }, { i: 6, j: 2 },  ], css_id: 'tinytable_css_w4jh2f74tjp9xo0ikij2',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_t2l2eb98ufu6wt190t12',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_oo6a28llkasfza3t7kfv',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_1dpz1qzjzf2o8n6xl2nj',}, 
+          { positions: [ { i: 12, j: 0 },  ], css_id: 'tinytable_css_017z46vhi4y3mauikhof',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_t4c7djn0cgjy50own3ue(cell.i, cell.j, group.css_id);
+                  styleCell_oeuxvlx752j2fn3t7tww(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -278,17 +284,17 @@ Table&nbsp;5.1
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_yjnm311519c1wbtnaorf, .table th.tinytable_css_yjnm311519c1wbtnaorf { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_sq3mptbmkb5jhkeqi94u, .table th.tinytable_css_sq3mptbmkb5jhkeqi94u { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_kv36a0d6ycgm1biqzpvb, .table th.tinytable_css_kv36a0d6ycgm1biqzpvb { text-align: center; }
-      .table td.tinytable_css_iyuyej0ax7srq33lg5ga, .table th.tinytable_css_iyuyej0ax7srq33lg5ga { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_ho4ot80how47vfvj2dnu, .table th.tinytable_css_ho4ot80how47vfvj2dnu { text-align: left; }
-      .table td.tinytable_css_aberfucr9fezyn3znvmt, .table th.tinytable_css_aberfucr9fezyn3znvmt { text-align: center; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_9dyqf1l2png7l2qulhyv, .table th.tinytable_css_9dyqf1l2png7l2qulhyv { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_0mlfwosta3pyw6gmjetk, .table th.tinytable_css_0mlfwosta3pyw6gmjetk { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_z3i547tqe6xnotiy6lp9, .table th.tinytable_css_z3i547tqe6xnotiy6lp9 { text-align: left; }
+      .table td.tinytable_css_yhn0d7t7wmvcizaf3ebs, .table th.tinytable_css_yhn0d7t7wmvcizaf3ebs { text-align: center; }
+      .table td.tinytable_css_y6t1fepek2vta75s2lnk, .table th.tinytable_css_y6t1fepek2vta75s2lnk { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_w4jh2f74tjp9xo0ikij2, .table th.tinytable_css_w4jh2f74tjp9xo0ikij2 { text-align: center; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_t2l2eb98ufu6wt190t12, .table th.tinytable_css_t2l2eb98ufu6wt190t12 { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_oo6a28llkasfza3t7kfv, .table th.tinytable_css_oo6a28llkasfza3t7kfv { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_1dpz1qzjzf2o8n6xl2nj, .table th.tinytable_css_1dpz1qzjzf2o8n6xl2nj { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_017z46vhi4y3mauikhof, .table th.tinytable_css_017z46vhi4y3mauikhof { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_t4c7djn0cgjy50own3ue" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_oeuxvlx752j2fn3t7tww" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -312,11 +318,11 @@ Table&nbsp;5.1
                 </tr>
                 <tr>
                   <td></td>
-                  <td>(62.732)</td>
-                  <td>(48.155)</td>
-                  <td>(48.621)</td>
-                  <td>(38.634)</td>
-                  <td>(35.596)</td>
+                  <td>(62.731)</td>
+                  <td>(48.158)</td>
+                  <td>(48.625)</td>
+                  <td>(38.635)</td>
+                  <td>(35.599)</td>
                 </tr>
                 <tr>
                   <td>$LOSS$</td>
@@ -331,8 +337,8 @@ Table&nbsp;5.1
                   <td></td>
                   <td>(-7.949)</td>
                   <td>(-7.755)</td>
-                  <td>(-7.556)</td>
-                  <td>(-8.111)</td>
+                  <td>(-7.560)</td>
+                  <td>(-8.117)</td>
                 </tr>
                 <tr>
                   <td>$ROA_{t} \times LOSS$</td>
@@ -834,12 +840,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./merge-data.html" class="pagination-link" aria-label="Merging Data (In Progress)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./summary.html" class="pagination-link" aria-label="Summary">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
