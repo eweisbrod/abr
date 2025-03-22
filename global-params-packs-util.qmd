@@ -2,7 +2,7 @@
 
 In this chapter we will use some tricks to setup our project environment in such a way that can be easily shared. We will start with installing some packages, then work on setting a data path, and finally create some functions that can be used repeatedly in the project.
 
-# Install Necessary Packages
+## Install Necessary Packages
 
 This script uses an R package called 'pacman' to check if the other packages used in this example are installed on your machine. If not, it installs them.
 
@@ -39,7 +39,7 @@ pacman::p_load(tidyverse,
                )
 ```
 
-## Log into wrds to check
+### Log into wrds to check
 
 We will try to log into WRDS site here using Postgres. Just in case, check to make sure there is not already a connection open.
 
@@ -52,13 +52,16 @@ if(exists("wrds")){
 Now log on by uncommenting the below code, it will prompt for your WRDS username and password. You can use the 'Keyring' in the prompt to save the username and password securely.
 
 ```{r}
+#keyring::key_set("WRDS_user")
+#keyring::key_set("WRDS_pw")
+
 #wrds <- dbConnect(Postgres(),
- #                 host='wrds-pgdata.wharton.upenn.edu',
-  #                port=9737,
-   #               user=rstudioapi::askForSecret("WRDS user"),
-    #              password=rstudioapi::askForSecret("WRDS pw"),
-     #             sslmode='require',
-      #            dbname='wrds')
+#                  host = 'wrds-pgdata.wharton.upenn.edu', 
+#                  port = 9737,              
+#                  user = keyring::key_get("WRDS_USER"),        
+#                  password = keyring::key_get("WRDS_PW"),    
+#                  sslmode = 'require',                 
+#                  dbname = 'wrds')
 ```
 
 Run the below line. If you are connected you should see something like the below output in your console:
@@ -66,7 +69,6 @@ Run the below line. If you are connected you should see something like the below
 ```{r}
 #<PqConnection>wrds@wrds-pgdata.wharton.upenn.edu:9737
 ```
-
 
 If the above two commands time out, you may be stuck behind a firewall etc. Remember to close the connection after testing
 
@@ -76,13 +78,13 @@ if(exists("wrds")){
 }
 ```
 
-# Define Global Parameters
+## Define Global Parameters
 
-In this section, we will first setup a data folder path and create a project specific-parameter. 
+In this section, we will first setup a data folder path and create a project specific-parameter.
 
-## Setup the Data Folder Path
+### Setup the Data Folder Path
 
-A useful trick for sharing codes with coauthors is to store the path to your local data folder in your project-level R environment file (.Renviron). 
+A useful trick for sharing codes with coauthors is to store the path to your local data folder in your project-level R environment file (.Renviron).
 
 **Step 1**: Uncomment and run the below line to edit your .Renviron file.
 
@@ -96,7 +98,7 @@ A useful trick for sharing codes with coauthors is to store the path to your loc
 #DATA_PATH = 'E:/acct_995_data/abr'
 ```
 
-Replace the quoted directory name in the example with the path to whatever folder you would like to store your data in. Notice the slashes might go the other way from Windows. 
+Replace the quoted directory name in the example with the path to whatever folder you would like to store your data in. Notice the slashes might go the other way from Windows.
 
 It is recommended to not store your data in the Git project folder. Github is designed for hosting code, not data. We can use a separate folder, usually in Dropbox if there is enough space on Dropbox.
 
@@ -116,7 +118,7 @@ If the above process is too complicated and you don't have coauthors you can jus
 
 You would then replace "E:/acct_995_data/abr" with your own data path.
 
-## Setup any project-specific parameters
+### Setup any project-specific parameters
 
 For example, you might want to define sample years here and then you can refer to them throughout the code as needed, there are many use-cases.
 
@@ -132,11 +134,11 @@ the assignment arrow is an R grammar style, but equal signs work too.
 end_year = 2022
 ```
 
-# Utilities
+## Utilities
 
 In this section, we will create some useful utility functions that we can later use throughout the project repeatedly.
 
-## R Options
+### R Options
 
 The below line will get rid of scientific notation which is unnecessary sometimes.
 
@@ -151,7 +153,7 @@ options(knitr.kable.NA = '')
 message("set R formatting options") #Check whether the R formatting options are applied.
 ```
 
-## Parquet functions
+### Parquet functions
 
 This allows for use of reading and writing parquet files without library(arrow). This also sets default compression method for writing.
 
@@ -163,7 +165,7 @@ write_parquet <- function(x, p) {
 message("imported parquet functions") #Check whether the parquet function is defined 
 ```
 
-## Industry functions
+### Industry functions
 
 This section will use Fama-French industry classification to assign names and numbers to various industries. We will use the 12 and 49 industry classifications.
 
@@ -456,7 +458,7 @@ assign_FF49_num <- function(sic) {
 message("imported industry functions") #Check whether all industry functions are defined
 ```
 
-## Variable transformation functions
+### Variable transformation functions
 
 Below is a general function to standardize a variable to mean zero, and standard deviation of one. This is sometimes handy to compare different time series.
 
