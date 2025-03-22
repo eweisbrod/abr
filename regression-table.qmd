@@ -14,32 +14,332 @@ format:
 }
 ```
 
-Test of embedding a regression in Quarto.
+In this chapter, we will explore how to use R, specifically the `modelsummary` package, to generate some of the most common and essential tables used in empirical research. The goal is to automate the workflow of table generation in a reproducible way, ensuring that tables are consistent and accurate, all while avoiding manual edits. To meet reproducibility standards, the tables will be exported in Latex format.
+
+## 6.1 Basic Preview Table
+
+Let's start by loading the necessary packages and libraries.
 
 ```{r}
-#| label: tbl-4
+#| label: packages
 #| echo: FALSE
 #| message: FALSE
+# Load Libraries [i.e., packages]
+library(modelsummary)
+library(sjlabelled)
+library(kableExtra)
+library(formattable)
+library(lubridate)
+library(glue)
+library(haven)
+library(fixest)
+library(usethis)
+library(tictoc) #very optional, mostly as a teaching example
+library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+```
 
-
-# Load the Table 4 script
-
-source("table-4.R")
-
-modelsummary(models, 
-             #cluster standard errors by gvkey and calyear
-             vcov = ~ gvkey + calyear,
-             #t-stats in parenthesis under coefficients
-             statistic = "statistic",
-             #add significance stars
-             stars = c('*' = .1, '**' = .05, '***' = .01),
-             estimate="{estimate}{stars}",
-             #apply the coefficient map for coef labels
-             coef_map = cm,
-             gof_map = gm,
-             escape = FALSE
-
-)
+```{r}
+#| label: sources
+#| echo: FALSE
+#| message: FALSE
+#load helper scripts
+data_path<- "E:/acct_995_data/abr"#replace with your own path
+source(glue("{data_path}/-Global-Parameters.R"))
+source(glue("{data_path}/utils.R"))
 
 ```
 
+This section loads the necessary helper scripts into the environment. Make sure to adjust the `data_path` to your own working directory to ensure that the required scripts are correctly sourced.
+
+For clean and simple outputs, we set this option for `modelsummary` to ensure that numeric values are displayed without additional formatting, like scientific notation or rounding, making the results easier to read.
+
+```{r}
+options(modelsummary_format_numeric_latex = "plain")
+```
+
+### Read in the data from the previous step
+
+We now load the data for our analysis. Given that there are fewer firms in 1969s, we will start the dataset from year 1970 onward.
+
+```{r}
+#| label: read-data
+#| echo: FALSE
+#| message: FALSE
+regdata <- read_dta("E:/acct_995_data/abr/regdata-R.dta") |> 
+  select(gvkey,datadate,calyear,roa,roa_lead_1,loss,at,mve,rd,FF12,ff12num) |> 
+  #add variable labels 
+  sjlabelled::var_labels(
+    roa_lead_1 = "$ROA_{t+1}$",
+    roa = "$ROA_t$",
+    loss = "$LOSS$",
+    rd = "$R\\&D$",
+    at = "$TA$",
+    mve = "$SIZE$"
+  )
+```
+
+The `sjlabelled::var_labels` function is used to assign meaningful labels to the variables for better readability, especially when producing tables or graphs.
+
+### Observations by Decade
+
+The goal is to demonstrate how to export a basic manual table or data frame into a paper. Initially, I grouped the data by year, but it was too lengthy. Instead, I will manually group the data by decade for better clarity.
+
+```{r}
+#| label: table1
+#| echo: FALSE
+#| message: FALSE
+table1 <- regdata |> 
+  #use case_when to group calyears into decades with labels
+  mutate(Year = case_when(
+    calyear %in% 1970:1979 ~ "1970 - 1979",
+    calyear %in% 1980:1989 ~ "1980 - 1989",
+    calyear %in% 1990:1999 ~ "1990 - 1999",
+    calyear %in% 2000:2009 ~ "2000 - 2009",
+    calyear %in% 2010:2019 ~ "2010 - 2019",
+    calyear >= 2020 ~ "2020 - 2022")
+  ) |> 
+  group_by(Year) |> 
+  #within each year, count the obs and calculate loss percentage
+  summarize(`Total Firms` = formattable::comma(n(), digits=0),
+            `Loss Firms` = formattable::comma(sum(loss),digits=0),
+            `Pct. Losses` = formattable::percent(sum(loss)/n(), digits=2)
+            )
+
+```
+
+Here, we create a new row that summarizes the total number of firms, loss firms, and the percentage of firms with losses across the entire dataset. This total row is then appended to the previously computed table.
+
+```{r}
+
+#add a total row
+totalrow <- regdata |> 
+  summarize(`Total Firms` = formattable::comma(n(), digits=0),
+            `Loss Firms` = formattable::comma(sum(loss),digits=0),
+            `Pct. Losses` = formattable::percent(sum(loss)/n(), digits=2)
+  )|> 
+  mutate(Year = "Total")
+
+#bind together the existing and total rows
+table1 <- bind_rows(table1, totalrow) 
+```
+
+Then we can take a quick look at the updated table.
+
+```{r}
+table1
+```
+
+You can use the `KableExtra` package and directly use it in your Latex document (e.g., Overleaf). Here's how to export the table into a Latex-friendly format:
+
+```{r}
+latex_code <- kbl(table1,
+                  format = "latex",
+                  booktabs = TRUE,
+                  linesep = "")  # Generate LaTeX table
+
+cat(latex_code)
+```
+
+## 6.2 Summary Statistics Table
+
+In empirical research, it is common to present descriptive statistics for key variables. These typically include the mean, median, standard deviation, minimum, and maximum values. Such statistics can be highly informative and sometimes provide researchers with unexpected insights. In this section, we will demonstrate how to generate a clean and reproducible summary statistics table.
+
+```{r}
+##Create formatting functions --------------------------------------------------
+
+#set number formats for descriptive table
+my_fmt <- function(x) formattable::comma(x, digits=3)
+
+
+#N function to handle special format for N with no decimals 
+NN <- function(x) {
+  out <-  if (is.logical(x) && all(is.na(x))) {
+    length(x)
+    # number of non-missing observations
+  } else {
+    sum(!is.na(x))
+  }
+  out <- formattable::comma(out, digits=0)
+  return(out)
+}
+```
+
+Here, we define functions for formatting the numeric values in the summary table. The `my_fmt` function is used to format numbers with three decimal places, and `NN` is a helper function for counting the number of non-missing observations (i.e., valid data points).
+
+### Preparing the Date for Descriptive Statistics
+
+Next, we select the variables that will be included in the summary statistics table and apply the variable labels to make the table more readable.
+
+```{r}
+
+#If you make a subset of the data 
+#you can handle the variable labels with sjlabelled 
+descripdata <- regdata |>
+  select(
+  roa_lead_1,
+  roa,
+  loss,
+  rd,
+  at,
+  mve) |> 
+  label_to_colnames()
+```
+
+### Run the `datasummary` function
+
+Now, we are ready to run the `datasummary` to generate a summary statistics table for the selected variables. This function formats the variables and outputs them in a clear and structured way.
+
+```{r}
+datasummary( All(descripdata) ~ (N = NN) + Mean * Arguments(fmt = my_fmt) + 
+               SD * Arguments(fmt = my_fmt) + 
+               Min * Arguments(fmt = my_fmt) + 
+               P25 * Arguments(fmt = my_fmt) + 
+               Median * Arguments(fmt = my_fmt) + 
+               P75 * Arguments(fmt = my_fmt) + 
+               Max * Arguments(fmt = my_fmt), 
+             # use escape = F to pass the latex formatting along  
+             escape = F,
+             #output = 'latex',
+             data = descripdata) #|> 
+  #save_kable(glue("{data_path}/output/descrip-r.tex"))
+```
+
+By commenting out the `output = 'latex'` line, we ensure the table is displayed in a readable format in the console. If you need the LaTeX code, simply uncomment it. Additionally, the last line can be uncommented to save the LaTeX table to a .tex file for use in your LaTeX document.
+
+## 6.3 Correlation Matrix Table
+
+Next, we examine how to generate a correlation matrix using `datasummary`. The matrix will display the Pearson correlation above the diagonal and the Spearman correlation below the diagonal. This provides a comprehensive view of the relationships between the variables in the dataset.
+
+```{r}
+datasummary_correlation(descripdata, method = "pearspear")
+```
+
+```{r}
+datasummary_correlation(descripdata, 
+                        method = "pearspear",
+                        output = "latex",
+                        escape = F) #|> 
+  #save_kable(glue("{data_path}/output/corrtable-r.tex"))
+```
+
+This will print the correlation matrix in LaTeX format, which you can easily copy and paste into your Overleaf document. Again, you can uncomment the `save_kable()` function to save the LaTeX table to a .tex file.
+
+## 6.4 Regression Table
+
+Now, we turn to creating a regression table. We'll use the `feols` function from the `fixest` package to estimate fixed effects models, both with and without controls, and with different fixed effects specifications. The modelsummary package will be used to combine the regression results.
+
+```{r}
+#| echo: FALSE
+#| message: FALSE
+models <- list(
+  "Base" = feols(roa_lead_1 ~ roa, regdata, fixef.rm = "both"),
+  "No FE" = feols(roa_lead_1 ~ roa*loss, regdata, fixef.rm = "both"),
+  "Year FE" = feols(roa_lead_1 ~ roa*loss | calyear, regdata, fixef.rm = "both"),
+  "Two-Way FE" = feols(roa_lead_1 ~ roa*loss | calyear + gvkey, regdata, fixef.rm = "both"),
+  "With Controls" = feols(roa_lead_1 ~ roa*loss + at + rd + mve | calyear + gvkey, regdata, fixef.rm = "both")
+)
+```
+
+### Customizing Coefficient Labels and Goodness of Fit Statistics
+
+Coefficient map The order of the coefficients will follow this map, also if you wish to leave out coefficients, simply don't list them in the map there may be ways to experiment with doing this with less work/code, but this method gives a lot of control over the output. Note how this allows for labeling interaction terms as well.
+
+```{r}
+cm <- c(
+  "roa_lead_1" = "$ROA_{t+1}$",
+  "roa" = "$ROA_{t}$",
+  "loss" = "$LOSS$",
+  "roa:loss" = "$ROA_{t} \\times LOSS$"
+)
+```
+
+Optional custom formula to format the regression N observations in the output
+
+```{r}
+nobs_fmt <- function(x) {
+  out <- formattable::comma(x, digits=0)
+  out <- paste0("\\multicolumn{1}{c}{",out,"}")
+}
+```
+
+Optional custom format for the mapping of what to display in the goodness of fit statistics below the regression output. See the documentation for modelsummary(gof_map) and the estimation commands you are using, there will be many different possible choices of what to output.
+
+```{r}
+gm <- list(
+  list("raw" = "nobs", "clean" = "N", "fmt" = nobs_fmt),
+  list("raw" = "r.squared", "clean" = "$R^2$", "fmt" = 3),
+  list("raw" = "r2.within", "clean" = "$R^2$ Within", "fmt" = 3)
+)
+```
+
+Then let's preview the output without adding extra rows.
+
+```{r}
+panel <- modelsummary(models, 
+                      #cluster standard errors by gvkey and calyear
+                      vcov = ~ gvkey + calyear,
+                      #t-stats in parenthesis under coefficients
+                      statistic = "statistic",
+                      #add significance stars
+                      stars = c('*' = .1, '**' = .05, '***' = .01) ,
+                      estimate="{estimate}{stars}",
+                      #apply the coefficient map for coef labels
+                      coef_map = cm,
+                      gof_map = gm,
+                      #output = "latex", 
+                      escape = F,
+                      booktabs = T,
+                      #add_rows = my_rows
+) 
+
+panel
+```
+
+### Adding Fixed-Effect Rows to the Regression Table
+
+In this LaTeX example, I will show how to manually add heading and FE rows.However, in the R code to output to Word, I have provided the code to use the built in ability of `fixest` to create the FE Rows. This defines the rows we wish to add.The terms should match what you used as the model/column names in the model list.
+
+```{r}
+my_rows <- tribble(~term,~"Base",~"No FE", ~"Year FE",~"Two-Way FE",~"With Controls",
+                  "Year FE","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Included}","\\multicolumn{1}{c}{Included}","\\multicolumn{1}{c}{Included}",
+                  "Firm FE","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Included}","\\multicolumn{1}{c}{Included}",
+                  "Controls","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Included}")
+#count the rows in the preview output to see where to insert these extra rows
+attr(my_rows,"position") <- c(7,8,9)
+```
+
+In the above code, we define the fixed effect rows using `tribble`, which is a convenient way to manually create small data frames in R. We specify the presence (Included) or absence (Excluded) of fixed effects for each regression model. The position attribute determines where these rows will be inserted into the regression table.
+
+Finally, we generate the regression table with the FE rows.
+
+```{r}
+panel <- modelsummary(models, 
+                      #cluster standard errors by gvkey and calyear
+                      vcov = ~ gvkey + calyear,
+                      #t-stats in parenthesis under coefficients
+                      statistic = "statistic",
+                      #add significance stars
+                      stars = c('\\sym{*}' = .1, '\\sym{**}' = .05, '\\sym{***}' = .01),
+                      estimate="{estimate}{stars}",
+                      #apply the coefficient map for coef labels
+                      coef_map = cm,
+                      gof_map = gm,
+                      #output = "latex", 
+                      escape = F,
+                      booktabs = T,
+                      add_rows = my_rows,
+                      #if you want to decimal align the columns, use the number 
+                      #of d equal to the number of models
+                      #if I comment out the below line, modelsummary would dp 
+                      # "lccccc" on its own as the default.
+                      align = "lddddd") 
+panel
+```
+
+## 6.5 Wrapping Up
+
+In this chapter, we explored how to use the `modelsummary` and `datasummary` packages to automate the creation of regression tables, summary statistics tables, and other common statistical outputs. We also covered customizing the tables to match specific formatting and adding fixed effects rows to regression models.
+
+By automating the process, we ensure that tables are reproducible and consistent across different analysis runs, which is crucial for maintaining research transparency and reproducibility.
+
+Now, you are equipped with the knowledge to efficiently create and customize regression tables in R for your own data analysis projects.
