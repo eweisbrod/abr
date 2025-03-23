@@ -16,7 +16,7 @@ format:
 
 In this chapter, we will explore how to use R, specifically the `modelsummary` package, to generate some of the most common and essential tables used in empirical research. The goal is to automate the workflow of table generation in a reproducible way, ensuring that tables are consistent and accurate, all while avoiding manual edits. To meet reproducibility standards, the tables will be exported in Latex format.
 
-## 6.1 Basic Preview Table
+## Basic Preview Table
 
 Let's start by loading the necessary packages and libraries.
 
@@ -140,7 +140,7 @@ latex_code <- kbl(table1,
 cat(latex_code)
 ```
 
-## 6.2 Summary Statistics Table
+## Summary Statistics Table
 
 In empirical research, it is common to present descriptive statistics for key variables. These typically include the mean, median, standard deviation, minimum, and maximum values. Such statistics can be highly informative and sometimes provide researchers with unexpected insights. In this section, we will demonstrate how to generate a clean and reproducible summary statistics table.
 
@@ -206,7 +206,7 @@ datasummary( All(descripdata) ~ (N = NN) + Mean * Arguments(fmt = my_fmt) +
 
 By commenting out the `output = 'latex'` line, we ensure the table is displayed in a readable format in the console. If you need the LaTeX code, simply uncomment it. Additionally, the last line can be uncommented to save the LaTeX table to a .tex file for use in your LaTeX document.
 
-## 6.3 Correlation Matrix Table
+## Correlation Matrix Table
 
 Next, we examine how to generate a correlation matrix using `datasummary`. The matrix will display the Pearson correlation above the diagonal and the Spearman correlation below the diagonal. This provides a comprehensive view of the relationships between the variables in the dataset.
 
@@ -224,7 +224,7 @@ datasummary_correlation(descripdata,
 
 This will print the correlation matrix in LaTeX format, which you can easily copy and paste into your Overleaf document. Again, you can uncomment the `save_kable()` function to save the LaTeX table to a .tex file.
 
-## 6.4 Regression Table
+## Regression Table
 
 Now, we turn to creating a regression table. We'll use the `feols` function from the `fixest` package to estimate fixed effects models, both with and without controls, and with different fixed effects specifications. The modelsummary package will be used to combine the regression results.
 
@@ -336,7 +336,7 @@ panel <- modelsummary(models,
 panel
 ```
 
-## 6.5 Wrapping Up
+## Wrapping Up
 
 In this chapter, we explored how to use the `modelsummary` and `datasummary` packages to automate the creation of regression tables, summary statistics tables, and other common statistical outputs. We also covered customizing the tables to match specific formatting and adding fixed effects rows to regression models.
 
