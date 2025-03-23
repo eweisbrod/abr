@@ -1,8 +1,6 @@
 # Project Setup
 
-This chapter will have links and explainers on how to get your quarto and other GitHub projects going...
-
-The top finance/accounting/aio journals are about to be flooded with highly reproducible KU research.
+This chapter focuses on helping you to understand the basics of starting a project in R using version control. It outlines the basics of Git and GitHub, and includes links to additional references that you may find beneficial. The chapter ends with a discussion about the value of using projects within R to improve your research reproducibility and brief suggestions on project workflow practices.
 
 ## Git vs. GitHub
 
