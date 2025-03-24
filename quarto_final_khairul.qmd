@@ -49,6 +49,7 @@ format:
         \usepackage{lipsum}
         \usepackage{booktabs}
         \usepackage{longtable}
+        \usepackage{pdflscape}  % Alternative for rotating tables
         \usepackage{array}
         \usepackage{float}
         \usepackage{tabularx}  % Add tabularx for dynamic column width
@@ -57,6 +58,14 @@ format:
         \usepackage{caption}   % For caption formatting
         \usepackage{siunitx}
         \sisetup{group-separator = {,},group-digits = integer}
+        \usepackage{booktabs}
+        \usepackage{graphicx}
+        \usepackage{float}
+        \usepackage{longtable}
+        \usepackage{siunitx}
+        \usepackage{lipsum}
+        \usepackage{dutchcal}
+        \usepackage{amsmath}
     include-before-body:
       text: |
         \newgeometry{top=3cm,bottom=3cm,left=3cm,right=3cm}  % Custom margins for the first page
@@ -81,7 +90,11 @@ library(haven)
 library(fixest)
 library(usethis)
 library(tictoc) #very optional, mostly as a teaching example
+library(tinytable)
+library(fixest)
+library(ggplot2)
 library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+
 ```
 
 ```{r}
@@ -172,9 +185,9 @@ We can use LaTeX references to refer/link readers to the tables as we discuss th
 
     Here are some examples of inline table references, including references to the relevant equation and hypothesis. @tbl-corr and @tbl-regression present the results from estimating Eq. (\ref{eq:losses}). The significantly negative coefficients on \$ LOSS \times ROA\_{t}\$ in Columns (4) and (5) provide some evidence consistent with H\ref{hyp:losses}. However, it seems to be important to control for firm characteristics when testing this hypothesis.
 
-# Appendix
+    We can also link a graph by [here](#fig-FF).
 
-## Table A1 {#table-a1}
+# Appendix
 
 ```         
 ```
@@ -188,7 +201,6 @@ We can use LaTeX references to refer/link readers to the tables as we discuss th
 #| echo: false
 #| results: asis
 #| warning: false
-library(tinytable)
 source("table-a1.R")
 ```
 
@@ -198,7 +210,6 @@ source("table-a1.R")
 #| echo: false
 #| results: asis
 #| warning: false
-library(tinytable)
 source("sample.R")
 ```
 
@@ -253,12 +264,6 @@ kable(table1,  align = c("l", "r", "r", "r")) %>%
 #| results: asis
 #| warning: FALSE
 
-# Load necessary libraries
-library(modelsummary)
-library(sjlabelled)
-library(kableExtra)
-library(tidyverse)
-
 source('summarystat_table.R')
 ```
 
@@ -311,102 +316,7 @@ combined_corr |>
 #| message: FALSE
 #| results: asis
 
-# Load necessary libraries
-library(fixest)
-library(modelsummary)
-library(tidyverse)
-library(formattable)
-
-# Define models
-models <- list(
-  "Base" = feols(roa_lead_1 ~ roa, regdata, fixef.rm = "both"),
-  "No FE" = feols(roa_lead_1 ~ roa * loss, regdata, fixef.rm = "both"),
-  "Year FE" = feols(roa_lead_1 ~ roa * loss | calyear, regdata, fixef.rm = "both"),
-  "Two-Way FE" = feols(roa_lead_1 ~ roa * loss | calyear + gvkey, regdata, fixef.rm = "both"),
-  "With Controls" = feols(roa_lead_1 ~ roa * loss + at + rd + mve | calyear + gvkey, regdata, fixef.rm = "both")
-)
-
-# Coefficient map
-cm <- c(
-  "roa_lead_1" = "$$ROA_{t+1}$$",
-  "roa" = "$ROA_{t}$",
-  "loss" = "$LOSS$",
-  "roa:loss" = "$ROA_{t} \\times LOSS$"
-)
-
-# Custom function to format the number of observations
-nobs_fmt <- function(x) {
-  out <- formattable::comma(x, digits = 0)
-  return(out)
-}
-
-# Custom function to check if controls are in the model
-glance_custom.fixest <- function(x, ...) {
-  controls <- c("at", "rd", "mve")
-  if (all(controls %in% names(coef(x)))) {
-    out <- data.frame(Controls = "X")
-  } else {
-    out <- data.frame(Controls = "")
-  }
-  return(out)
-}
-
-# Goodness-of-fit statistics mapping
-gm <- list(
-  list("raw" = "FE: calyear", "clean" = "Year FE", "fmt" = NULL),
-  list("raw" = "FE: gvkey", "clean" = "Firm FE", "fmt" = NULL),
-  list("raw" = "Controls", "clean" = "Controls", "fmt" = NULL),
-  list("raw" = "nobs", "clean" = "N", "fmt" = nobs_fmt),
-  list("raw" = "r.squared", "clean" = "$R^2$", "fmt" = 3),
-  list("raw" = "r2.within", "clean" = "$R^2$ Within", "fmt" = 3)
-)
-# panel <- modelsummary(models, 
-#                       #cluster standard errors by gvkey and calyear
-#                       vcov = ~ gvkey + calyear,
-#                       #t-stats in parenthesis under coefficients
-#                       statistic = "statistic",
-#                       #add significance stars
-#                       stars = c('*' = .1, '**' = .05, '***' = .01) ,
-#                       estimate="{estimate}{stars}",
-#                       #apply the coefficient map for coef labels
-#                       coef_map = cm,
-#                       gof_map = gm,
-#                       #output = "latex", 
-#                       escape = F,
-#                       booktabs = T,
-#                       #add_rows = my_rows
-# ) 
-# cat(as.character(panel))
-# 
-# my_rows <- tribble(~term,~"Base",~"No FE", ~"Year FE",~"Two-Way FE",~"With Controls",
-#                   "Year FE","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Included}","\\multicolumn{1}{c}{Included}","\\multicolumn{1}{c}{Included}",
-#                   "Firm FE","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Included}","\\multicolumn{1}{c}{Included}",
-#                   "Controls","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Excluded}","\\multicolumn{1}{c}{Included}")
-# #count the rows in the preview output to see where to insert these extra rows
-# attr(my_rows,"position") <- c(7,8,9)
-# 
-# panel <- modelsummary(models, 
-#                       #cluster standard errors by gvkey and calyear
-#                       vcov = ~ gvkey + calyear,
-#                       #t-stats in parenthesis under coefficients
-#                       statistic = "statistic",
-#                       #add significance stars
-#                       stars = c('\\sym{*}' = .1, '\\sym{**}' = .05, '\\sym{***}' = .01),
-#                       estimate="{estimate}{stars}",
-#                       #apply the coefficient map for coef labels
-#                       coef_map = cm,
-#                       gof_map = gm,
-#                       #output = "latex", 
-#                       escape = F,
-#                       booktabs = T,
-#                       add_rows = my_rows,
-#                       #if you want to decimal align the columns, use the number 
-#                       #of d equal to the number of models
-#                       #if I comment out the below line, modelsummary would dp 
-#                       # "lccccc" on its own as the default.
-#                       align = "lddddd") 
-# cat(as.character(panel))
-
+source('reg_table.R')
 ```
 
 ```{r}
@@ -417,6 +327,7 @@ gm <- list(
 #| results: asis
 #| warning: FALSE
 #| message: FALSE
+
 
 
 # Source the external R script to generate the figure
@@ -432,7 +343,7 @@ source("ff12_fig.R")
 #| results: asis
 #| warning: FALSE
 #| message: FALSE
-#| layout-ncol: 2
+
 
 # First figure
 fig1 <- regdata |> 
