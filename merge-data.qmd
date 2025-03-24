@@ -26,8 +26,9 @@ Sometimes we are interested in variables that are not specific to a particular c
 
 So far in our example project, we are exploring the persistence of firm's earnings. Our main hypothesis is that earnings are less persistent for loss firms than profitable firms. Perhaps, we also think this persistence could be moderated by the quality of the financial reporting. To test this, let's grab data that could be useful indicators of poor financial reporting quality from Audit Analytics. We will access this data via WRDS or you can download CSV datasets from Audit Analytics and import into R.
 
-```{r}
+```{r echo=F}
 #| label: get AA data
+#| 
 
 # Load Libraries [i.e., packages]
 library(dbplyr)
@@ -93,10 +94,11 @@ dups <- restate |> group_by(restatement_notification_key) |> summarise(obs = n()
 count(dups)
 
 ```
+
 We next will look at how the restatement data is organized to understand how we can link this into our financial statement data. Our financial statement data is organized as a panel data with annual financial statement variables for each firm for each period. However, our restatement data is organized by restatement, and companies (hopefully!) do not restate their financial statements each year. To visualize, lets look at Apple, Inc. in both datasets. Below, we see in our financial statement data Apple appears once per year starting in 1980 with the "datadate" variable representing the end date of each fiscal year's financial statements. In our restatement data, Apple has two restatements.
 
 ```{r}
-data |> filter(cstat_ticker=="AAPL") |> select(cstat_ticker,cik,datadate)
+data |> filter(cstat_ticker=="WMT") |> select(cstat_ticker,cik,datadate)
 
 restate |> filter(company_fkey=="0000320193") |> select(restatement_notification_key,file_date,res_begin_date,res_end_date)
 ```
