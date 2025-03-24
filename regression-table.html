@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -139,7 +173,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./merge-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -165,8 +199,30 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#basic-preview-table" id="toc-basic-preview-table" class="nav-link active" data-scroll-target="#basic-preview-table"><span class="header-section-number">6.1</span> Basic Preview Table</a>
+  <ul class="collapse">
+  <li><a href="#read-in-the-data-from-the-previous-step" id="toc-read-in-the-data-from-the-previous-step" class="nav-link" data-scroll-target="#read-in-the-data-from-the-previous-step"><span class="header-section-number">6.1.1</span> Read in the data from the previous step</a></li>
+  <li><a href="#observations-by-decade" id="toc-observations-by-decade" class="nav-link" data-scroll-target="#observations-by-decade"><span class="header-section-number">6.1.2</span> Observations by Decade</a></li>
+  </ul></li>
+  <li><a href="#summary-statistics-table" id="toc-summary-statistics-table" class="nav-link" data-scroll-target="#summary-statistics-table"><span class="header-section-number">6.2</span> Summary Statistics Table</a>
+  <ul class="collapse">
+  <li><a href="#preparing-the-date-for-descriptive-statistics" id="toc-preparing-the-date-for-descriptive-statistics" class="nav-link" data-scroll-target="#preparing-the-date-for-descriptive-statistics"><span class="header-section-number">6.2.1</span> Preparing the Date for Descriptive Statistics</a></li>
+  <li><a href="#run-the-datasummary-function" id="toc-run-the-datasummary-function" class="nav-link" data-scroll-target="#run-the-datasummary-function"><span class="header-section-number">6.2.2</span> Run the <code>datasummary</code> function</a></li>
+  </ul></li>
+  <li><a href="#correlation-matrix-table" id="toc-correlation-matrix-table" class="nav-link" data-scroll-target="#correlation-matrix-table"><span class="header-section-number">6.3</span> Correlation Matrix Table</a></li>
+  <li><a href="#regression-table" id="toc-regression-table" class="nav-link" data-scroll-target="#regression-table"><span class="header-section-number">6.4</span> Regression Table</a>
+  <ul class="collapse">
+  <li><a href="#customizing-coefficient-labels-and-goodness-of-fit-statistics" id="toc-customizing-coefficient-labels-and-goodness-of-fit-statistics" class="nav-link" data-scroll-target="#customizing-coefficient-labels-and-goodness-of-fit-statistics"><span class="header-section-number">6.4.1</span> Customizing Coefficient Labels and Goodness of Fit Statistics</a></li>
+  <li><a href="#adding-fixed-effect-rows-to-the-regression-table" id="toc-adding-fixed-effect-rows-to-the-regression-table" class="nav-link" data-scroll-target="#adding-fixed-effect-rows-to-the-regression-table"><span class="header-section-number">6.4.2</span> Adding Fixed-Effect Rows to the Regression Table</a></li>
+  </ul></li>
+  <li><a href="#wrapping-up" id="toc-wrapping-up" class="nav-link" data-scroll-target="#wrapping-up"><span class="header-section-number">6.5</span> Wrapping Up</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -200,21 +256,141 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 </div>
-<p>Test of embedding a regression in Quarto.</p>
+<p>In this chapter, we will explore how to use R, specifically the <code>modelsummary</code> package, to generate some of the most common and essential tables used in empirical research. The goal is to automate the workflow of table generation in a reproducible way, ensuring that tables are consistent and accurate, all while avoiding manual edits. To meet reproducibility standards, the tables will be exported in Latex format.</p>
+<section id="basic-preview-table" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="basic-preview-table"><span class="header-section-number">6.1</span> Basic Preview Table</h2>
+<p>Let’s start by loading the necessary packages and libraries.</p>
+<p>This section loads the necessary helper scripts into the environment. Make sure to adjust the <code>data_path</code> to your own working directory to ensure that the required scripts are correctly sourced.</p>
+<p>For clean and simple outputs, we set this option for <code>modelsummary</code> to ensure that numeric values are displayed without additional formatting, like scientific notation or rounding, making the results easier to read.</p>
 <div class="cell">
-<div id="tbl-4" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl quarto-uncaptioned" id="tbl-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;6.1
-</figcaption>
-<div aria-describedby="tbl-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">modelsummary_format_numeric_latex =</span> <span class="st">"plain"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="read-in-the-data-from-the-previous-step" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="read-in-the-data-from-the-previous-step"><span class="header-section-number">6.1.1</span> Read in the data from the previous step</h3>
+<p>We now load the data for our analysis. Given that there are fewer firms in 1969s, we will start the dataset from year 1970 onward.</p>
+<p>The <code>sjlabelled::var_labels</code> function is used to assign meaningful labels to the variables for better readability, especially when producing tables or graphs.</p>
+</section>
+<section id="observations-by-decade" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="observations-by-decade"><span class="header-section-number">6.1.2</span> Observations by Decade</h3>
+<p>The goal is to demonstrate how to export a basic manual table or data frame into a paper. Initially, I grouped the data by year, but it was too lengthy. Instead, I will manually group the data by decade for better clarity.</p>
+<p>Here, we create a new row that summarizes the total number of firms, loss firms, and the percentage of firms with losses across the entire dataset. This total row is then appended to the previously computed table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#add a total row</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>totalrow <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="st">`</span><span class="at">Total Firms</span><span class="st">`</span> <span class="ot">=</span> formattable<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">n</span>(), <span class="at">digits=</span><span class="dv">0</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">Loss Firms</span><span class="st">`</span> <span class="ot">=</span> formattable<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">sum</span>(loss),<span class="at">digits=</span><span class="dv">0</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">Pct. Losses</span><span class="st">`</span> <span class="ot">=</span> formattable<span class="sc">::</span><span class="fu">percent</span>(<span class="fu">sum</span>(loss)<span class="sc">/</span><span class="fu">n</span>(), <span class="at">digits=</span><span class="dv">2</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">|&gt;</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="st">"Total"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#bind together the existing and total rows</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>table1 <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(table1, totalrow) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then we can take a quick look at the updated table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>table1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 4
+  Year        `Total Firms` `Loss Firms` `Pct. Losses`
+  &lt;chr&gt;       &lt;formttbl&gt;    &lt;formttbl&gt;   &lt;formttbl&gt;   
+1 1970 - 1979 25,101        1,978        7.88%        
+2 1980 - 1989 29,125        5,315        18.25%       
+3 1990 - 1999 38,024        9,579        25.19%       
+4 2000 - 2009 37,100        12,822       34.56%       
+5 2010 - 2019 28,434        9,671        34.01%       
+6 2020 - 2022 5,514         2,516        45.63%       
+7 Total       163,298       41,881       25.65%       </code></pre>
+</div>
+</div>
+<p>You can use the <code>KableExtra</code> package and directly use it in your Latex document (e.g., Overleaf). Here’s how to export the table into a Latex-friendly format:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>latex_code <span class="ot">&lt;-</span> <span class="fu">kbl</span>(table1,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">format =</span> <span class="st">"latex"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">booktabs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">linesep =</span> <span class="st">""</span>)  <span class="co"># Generate LaTeX table</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(latex_code)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+\begin{tabular}[t]{lrrr}
+\toprule
+Year &amp; Total Firms &amp; Loss Firms &amp; Pct. Losses\\
+\midrule
+1970 - 1979 &amp; 25,101 &amp; 1,978 &amp; 7.88\%\\
+1980 - 1989 &amp; 29,125 &amp; 5,315 &amp; 18.25\%\\
+1990 - 1999 &amp; 38,024 &amp; 9,579 &amp; 25.19\%\\
+2000 - 2009 &amp; 37,100 &amp; 12,822 &amp; 34.56\%\\
+2010 - 2019 &amp; 28,434 &amp; 9,671 &amp; 34.01\%\\
+2020 - 2022 &amp; 5,514 &amp; 2,516 &amp; 45.63\%\\
+Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
+\bottomrule
+\end{tabular}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="summary-statistics-table" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="summary-statistics-table"><span class="header-section-number">6.2</span> Summary Statistics Table</h2>
+<p>In empirical research, it is common to present descriptive statistics for key variables. These typically include the mean, median, standard deviation, minimum, and maximum values. Such statistics can be highly informative and sometimes provide researchers with unexpected insights. In this section, we will demonstrate how to generate a clean and reproducible summary statistics table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Create formatting functions --------------------------------------------------</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#set number formats for descriptive table</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>my_fmt <span class="ot">&lt;-</span> <span class="cf">function</span>(x) formattable<span class="sc">::</span><span class="fu">comma</span>(x, <span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#N function to handle special format for N with no decimals </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>NN <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span>  <span class="cf">if</span> (<span class="fu">is.logical</span>(x) <span class="sc">&amp;&amp;</span> <span class="fu">all</span>(<span class="fu">is.na</span>(x))) {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(x)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># number of non-missing observations</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> formattable<span class="sc">::</span><span class="fu">comma</span>(out, <span class="at">digits=</span><span class="dv">0</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here, we define functions for formatting the numeric values in the summary table. The <code>my_fmt</code> function is used to format numbers with three decimal places, and <code>NN</code> is a helper function for counting the number of non-missing observations (i.e., valid data points).</p>
+<section id="preparing-the-date-for-descriptive-statistics" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="preparing-the-date-for-descriptive-statistics"><span class="header-section-number">6.2.1</span> Preparing the Date for Descriptive Statistics</h3>
+<p>Next, we select the variables that will be included in the summary statistics table and apply the variable labels to make the table more readable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#If you make a subset of the data </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#you can handle the variable labels with sjlabelled </span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>descripdata <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  roa_lead_1,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  roa,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  loss,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  rd,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  at,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  mve) <span class="sc">|&gt;</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">label_to_colnames</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="run-the-datasummary-function" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="run-the-datasummary-function"><span class="header-section-number">6.2.2</span> Run the <code>datasummary</code> function</h3>
+<p>Now, we are ready to run the <code>datasummary</code> to generate a summary statistics table for the selected variables. This function formats the variables and outputs them in a clear and structured way.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datasummary</span>( <span class="fu">All</span>(descripdata) <span class="sc">~</span> (<span class="at">N =</span> NN) <span class="sc">+</span> Mean <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt) <span class="sc">+</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>               SD <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt) <span class="sc">+</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>               Min <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt) <span class="sc">+</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               P25 <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt) <span class="sc">+</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>               Median <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt) <span class="sc">+</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>               P75 <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt) <span class="sc">+</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>               Max <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt), </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>             <span class="co"># use escape = F to pass the latex formatting along  </span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">escape =</span> F,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>             <span class="co">#output = 'latex',</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> descripdata) <span class="co">#|&gt; </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <!-- preamble start -->
 
     <script>
 
-      function styleCell_w82qdc6244njtj5qdt8m(i, j, css_id) {
-          var table = document.getElementById("tinytable_w82qdc6244njtj5qdt8m");
+      function styleCell_vqhy6lz1ha4iehe8zybp(i, j, css_id) {
+          var table = document.getElementById("tinytable_vqhy6lz1ha4iehe8zybp");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -224,7 +400,7 @@ Table&nbsp;6.1
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_w82qdc6244njtj5qdt8m');
+        var table = document.getElementById('tinytable_vqhy6lz1ha4iehe8zybp');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -232,8 +408,8 @@ Table&nbsp;6.1
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_w82qdc6244njtj5qdt8m(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_w82qdc6244njtj5qdt8m");
+      function spanCell_vqhy6lz1ha4iehe8zybp(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_vqhy6lz1ha4iehe8zybp");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -263,20 +439,18 @@ Table&nbsp;6.1
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 }, { i: 12, j: 5 },  ], css_id: 'tinytable_css_z2ezsnpyet376angieyt',}, 
-          { positions: [ { i: 12, j: 0 },  ], css_id: 'tinytable_css_x6w3s3nop1cgo2it24kt',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_wsj3jr7br8tdhur5kgya',}, 
-          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 4 }, { i: 6, j: 5 }, { i: 6, j: 2 },  ], css_id: 'tinytable_css_u8zkp988v8kqs9rvbvse',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_u0yob3g1gj2fpugk65s6',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 10, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 }, { i: 9, j: 0 }, { i: 11, j: 0 },  ], css_id: 'tinytable_css_tbkcf7d5g43ze5iqj8jq',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_9q09vi3r5gm6emnsqzbd',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 10, j: 1 }, { i: 7, j: 1 }, { i: 8, j: 1 }, { i: 9, j: 1 }, { i: 1, j: 2 }, { i: 11, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 2, j: 2 }, { i: 7, j: 2 }, { i: 8, j: 2 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 11, j: 2 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 1, j: 3 }, { i: 2, j: 3 }, { i: 7, j: 3 }, { i: 8, j: 3 }, { i: 5, j: 3 }, { i: 10, j: 3 }, { i: 11, j: 3 }, { i: 3, j: 4 }, { i: 9, j: 3 }, { i: 1, j: 4 }, { i: 2, j: 4 }, { i: 7, j: 4 }, { i: 4, j: 4 }, { i: 5, j: 4 }, { i: 10, j: 4 }, { i: 11, j: 4 }, { i: 8, j: 4 }, { i: 9, j: 4 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 10, j: 5 }, { i: 7, j: 5 }, { i: 8, j: 5 }, { i: 9, j: 5 }, { i: 11, j: 5 },  ], css_id: 'tinytable_css_7afhqynfbjgxhdg4lk7h',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_ksmxea1u49oxk7nkbqi7',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 7 }, { i: 0, j: 4 }, { i: 0, j: 6 }, { i: 0, j: 8 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_k8oc0mgwoz4yw4yhma69',}, 
+          { positions: [ { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 5, j: 3 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 2, j: 3 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 3, j: 7 }, { i: 4, j: 7 }, { i: 5, j: 7 }, { i: 1, j: 4 }, { i: 2, j: 4 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 3, j: 8 }, { i: 4, j: 8 }, { i: 5, j: 8 }, { i: 1, j: 5 }, { i: 1, j: 7 }, { i: 2, j: 7 }, { i: 1, j: 6 }, { i: 1, j: 8 }, { i: 2, j: 8 },  ], css_id: 'tinytable_css_imojwfcssiwrgivj4z4g',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_bloa0bdm1ad38k5cum2n',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_0q4wyfoc82x2oywc4mh1',}, 
+          { positions: [ { i: 6, j: 7 }, { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 }, { i: 6, j: 8 },  ], css_id: 'tinytable_css_0loh8pv307vpcwrs8t0u',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_w82qdc6244njtj5qdt8m(cell.i, cell.j, group.css_id);
+                  styleCell_vqhy6lz1ha4iehe8zybp(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -284,17 +458,570 @@ Table&nbsp;6.1
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_z2ezsnpyet376angieyt, .table th.tinytable_css_z2ezsnpyet376angieyt { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_x6w3s3nop1cgo2it24kt, .table th.tinytable_css_x6w3s3nop1cgo2it24kt { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_wsj3jr7br8tdhur5kgya, .table th.tinytable_css_wsj3jr7br8tdhur5kgya { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_u8zkp988v8kqs9rvbvse, .table th.tinytable_css_u8zkp988v8kqs9rvbvse { text-align: center; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_u0yob3g1gj2fpugk65s6, .table th.tinytable_css_u0yob3g1gj2fpugk65s6 { text-align: left; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_tbkcf7d5g43ze5iqj8jq, .table th.tinytable_css_tbkcf7d5g43ze5iqj8jq { text-align: left; }
-      .table td.tinytable_css_9q09vi3r5gm6emnsqzbd, .table th.tinytable_css_9q09vi3r5gm6emnsqzbd { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_7afhqynfbjgxhdg4lk7h, .table th.tinytable_css_7afhqynfbjgxhdg4lk7h { text-align: center; }
+      .table td.tinytable_css_ksmxea1u49oxk7nkbqi7, .table th.tinytable_css_ksmxea1u49oxk7nkbqi7 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_k8oc0mgwoz4yw4yhma69, .table th.tinytable_css_k8oc0mgwoz4yw4yhma69 { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_imojwfcssiwrgivj4z4g, .table th.tinytable_css_imojwfcssiwrgivj4z4g { text-align: right; }
+      .table td.tinytable_css_bloa0bdm1ad38k5cum2n, .table th.tinytable_css_bloa0bdm1ad38k5cum2n { text-align: left; }
+      .table td.tinytable_css_0q4wyfoc82x2oywc4mh1, .table th.tinytable_css_0q4wyfoc82x2oywc4mh1 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_0loh8pv307vpcwrs8t0u, .table th.tinytable_css_0loh8pv307vpcwrs8t0u { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_w82qdc6244njtj5qdt8m" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_vqhy6lz1ha4iehe8zybp" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col"> </th>
+                <th scope="col">N</th>
+                <th scope="col">Mean</th>
+                <th scope="col">SD</th>
+                <th scope="col">Min</th>
+                <th scope="col">P25</th>
+                <th scope="col">Median</th>
+                <th scope="col">P75</th>
+                <th scope="col">Max</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>$ROA_{t+1}$</td>
+                  <td>163,298</td>
+                  <td>-0.002</td>
+                  <td>0.173</td>
+                  <td>-0.898</td>
+                  <td>-0.009</td>
+                  <td>0.040</td>
+                  <td>0.078</td>
+                  <td>0.237</td>
+                </tr>
+                <tr>
+                  <td>$ROA_t$</td>
+                  <td>163,298</td>
+                  <td>0.006</td>
+                  <td>0.159</td>
+                  <td>-0.803</td>
+                  <td>-0.003</td>
+                  <td>0.042</td>
+                  <td>0.079</td>
+                  <td>0.243</td>
+                </tr>
+                <tr>
+                  <td>$LOSS$</td>
+                  <td>163,298</td>
+                  <td>0.256</td>
+                  <td>0.437</td>
+                  <td>0.000</td>
+                  <td>0.000</td>
+                  <td>0.000</td>
+                  <td>1.000</td>
+                  <td>1.000</td>
+                </tr>
+                <tr>
+                  <td>$R\&amp;D$</td>
+                  <td>163,298</td>
+                  <td>0.040</td>
+                  <td>0.086</td>
+                  <td>0.000</td>
+                  <td>0.000</td>
+                  <td>0.000</td>
+                  <td>0.038</td>
+                  <td>0.511</td>
+                </tr>
+                <tr>
+                  <td>$TA$</td>
+                  <td>163,298</td>
+                  <td>1,449.837</td>
+                  <td>4,555.996</td>
+                  <td>11.021</td>
+                  <td>41.910</td>
+                  <td>142.534</td>
+                  <td>679.370</td>
+                  <td>33,637.256</td>
+                </tr>
+                <tr>
+                  <td>$SIZE$</td>
+                  <td>163,298</td>
+                  <td>1,568.688</td>
+                  <td>5,317.423</td>
+                  <td>2.127</td>
+                  <td>29.790</td>
+                  <td>125.510</td>
+                  <td>651.281</td>
+                  <td>40,596.033</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#save_kable(glue("{data_path}/output/descrip-r.tex"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>By commenting out the <code>output = 'latex'</code> line, we ensure the table is displayed in a readable format in the console. If you need the LaTeX code, simply uncomment it. Additionally, the last line can be uncommented to save the LaTeX table to a .tex file for use in your LaTeX document.</p>
+</section>
+</section>
+<section id="correlation-matrix-table" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="correlation-matrix-table"><span class="header-section-number">6.3</span> Correlation Matrix Table</h2>
+<p>Next, we examine how to generate a correlation matrix using <code>datasummary</code>. The matrix will display the Pearson correlation above the diagonal and the Spearman correlation below the diagonal. This provides a comprehensive view of the relationships between the variables in the dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datasummary_correlation</span>(descripdata, <span class="at">method =</span> <span class="st">"pearspear"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_lwuqppnzpyul0t728oj2(i, j, css_id) {
+          var table = document.getElementById("tinytable_lwuqppnzpyul0t728oj2");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_lwuqppnzpyul0t728oj2');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_lwuqppnzpyul0t728oj2(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_lwuqppnzpyul0t728oj2");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 5, j: 3 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 2, j: 3 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 1, j: 6 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 1, j: 4 },  ], css_id: 'tinytable_css_vokao4nwkxayqsata6x9',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 4 }, { i: 0, j: 6 },  ], css_id: 'tinytable_css_qtxoc08nnc5wrcjabufj',}, 
+          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 },  ], css_id: 'tinytable_css_gj9e6cyrffw0d5wallvq',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_gc3i0oqghqu9iyep2dr9',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_7l559w3tu957sus7ddve',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_40xstg5fqg410wk319gg',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_lwuqppnzpyul0t728oj2(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_vokao4nwkxayqsata6x9, .table th.tinytable_css_vokao4nwkxayqsata6x9 { text-align: right; }
+      .table td.tinytable_css_qtxoc08nnc5wrcjabufj, .table th.tinytable_css_qtxoc08nnc5wrcjabufj { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_gj9e6cyrffw0d5wallvq, .table th.tinytable_css_gj9e6cyrffw0d5wallvq { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_gc3i0oqghqu9iyep2dr9, .table th.tinytable_css_gc3i0oqghqu9iyep2dr9 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_7l559w3tu957sus7ddve, .table th.tinytable_css_7l559w3tu957sus7ddve { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_40xstg5fqg410wk319gg, .table th.tinytable_css_40xstg5fqg410wk319gg { text-align: left; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_lwuqppnzpyul0t728oj2" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col"> </th>
+                <th scope="col">$ROA_{t+1}$</th>
+                <th scope="col">$ROA_t$</th>
+                <th scope="col">$LOSS$</th>
+                <th scope="col">$R\&amp;D$</th>
+                <th scope="col">$TA$</th>
+                <th scope="col">$SIZE$</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>$ROA_{t+1}$</td>
+                  <td>1</td>
+                  <td>.77</td>
+                  <td>-.57</td>
+                  <td>-.51</td>
+                  <td>.10</td>
+                  <td>.12</td>
+                </tr>
+                <tr>
+                  <td>$ROA_t$</td>
+                  <td>.77</td>
+                  <td>1</td>
+                  <td>-.69</td>
+                  <td>-.57</td>
+                  <td>.09</td>
+                  <td>.12</td>
+                </tr>
+                <tr>
+                  <td>$LOSS$</td>
+                  <td>-.59</td>
+                  <td>-.76</td>
+                  <td>1</td>
+                  <td>.35</td>
+                  <td>-.11</td>
+                  <td>-.11</td>
+                </tr>
+                <tr>
+                  <td>$R\&amp;D$</td>
+                  <td>-.10</td>
+                  <td>-.11</td>
+                  <td>.20</td>
+                  <td>1</td>
+                  <td>-.07</td>
+                  <td>-.02</td>
+                </tr>
+                <tr>
+                  <td>$TA$</td>
+                  <td>.16</td>
+                  <td>.15</td>
+                  <td>-.20</td>
+                  <td>-.07</td>
+                  <td>1</td>
+                  <td>.85</td>
+                </tr>
+                <tr>
+                  <td>$SIZE$</td>
+                  <td>.25</td>
+                  <td>.27</td>
+                  <td>-.20</td>
+                  <td>.12</td>
+                  <td>.85</td>
+                  <td>1</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datasummary_correlation</span>(descripdata, </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">"pearspear"</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">output =</span> <span class="st">"latex"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">escape =</span> F) <span class="co">#|&gt; </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_ab9kcbmg53at73d2g4o8(i, j, css_id) {
+          var table = document.getElementById("tinytable_ab9kcbmg53at73d2g4o8");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_ab9kcbmg53at73d2g4o8');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_ab9kcbmg53at73d2g4o8(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_ab9kcbmg53at73d2g4o8");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_jspkbbyo6e270m5bflpa',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_hc915csn8n4vie5kl5cv',}, 
+          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 },  ], css_id: 'tinytable_css_cfq739ke4zqcjy492vb5',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 4 }, { i: 0, j: 6 },  ], css_id: 'tinytable_css_acgu0yrbrxbullyeasr3',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_8u8slwhugag0gahld350',}, 
+          { positions: [ { i: 5, j: 3 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 2, j: 3 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 1, j: 6 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 1, j: 4 },  ], css_id: 'tinytable_css_0pffy40xbx9l1bqbmd82',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_ab9kcbmg53at73d2g4o8(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_jspkbbyo6e270m5bflpa, .table th.tinytable_css_jspkbbyo6e270m5bflpa { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_hc915csn8n4vie5kl5cv, .table th.tinytable_css_hc915csn8n4vie5kl5cv { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_cfq739ke4zqcjy492vb5, .table th.tinytable_css_cfq739ke4zqcjy492vb5 { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_acgu0yrbrxbullyeasr3, .table th.tinytable_css_acgu0yrbrxbullyeasr3 { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_8u8slwhugag0gahld350, .table th.tinytable_css_8u8slwhugag0gahld350 { text-align: left; }
+      .table td.tinytable_css_0pffy40xbx9l1bqbmd82, .table th.tinytable_css_0pffy40xbx9l1bqbmd82 { text-align: right; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_ab9kcbmg53at73d2g4o8" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col"> </th>
+                <th scope="col">$ROA_{t+1}$</th>
+                <th scope="col">$ROA_t$</th>
+                <th scope="col">$LOSS$</th>
+                <th scope="col">$R\&amp;D$</th>
+                <th scope="col">$TA$</th>
+                <th scope="col">$SIZE$</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>$ROA_{t+1}$</td>
+                  <td>1</td>
+                  <td>.77</td>
+                  <td>-.57</td>
+                  <td>-.51</td>
+                  <td>.10</td>
+                  <td>.12</td>
+                </tr>
+                <tr>
+                  <td>$ROA_t$</td>
+                  <td>.77</td>
+                  <td>1</td>
+                  <td>-.69</td>
+                  <td>-.57</td>
+                  <td>.09</td>
+                  <td>.12</td>
+                </tr>
+                <tr>
+                  <td>$LOSS$</td>
+                  <td>-.59</td>
+                  <td>-.76</td>
+                  <td>1</td>
+                  <td>.35</td>
+                  <td>-.11</td>
+                  <td>-.11</td>
+                </tr>
+                <tr>
+                  <td>$R\&amp;D$</td>
+                  <td>-.10</td>
+                  <td>-.11</td>
+                  <td>.20</td>
+                  <td>1</td>
+                  <td>-.07</td>
+                  <td>-.02</td>
+                </tr>
+                <tr>
+                  <td>$TA$</td>
+                  <td>.16</td>
+                  <td>.15</td>
+                  <td>-.20</td>
+                  <td>-.07</td>
+                  <td>1</td>
+                  <td>.85</td>
+                </tr>
+                <tr>
+                  <td>$SIZE$</td>
+                  <td>.25</td>
+                  <td>.27</td>
+                  <td>-.20</td>
+                  <td>.12</td>
+                  <td>.85</td>
+                  <td>1</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#save_kable(glue("{data_path}/output/corrtable-r.tex"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This will print the correlation matrix in LaTeX format, which you can easily copy and paste into your Overleaf document. Again, you can uncomment the <code>save_kable()</code> function to save the LaTeX table to a .tex file.</p>
+</section>
+<section id="regression-table" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="regression-table"><span class="header-section-number">6.4</span> Regression Table</h2>
+<p>Now, we turn to creating a regression table. We’ll use the <code>feols</code> function from the <code>fixest</code> package to estimate fixed effects models, both with and without controls, and with different fixed effects specifications. The modelsummary package will be used to combine the regression results.</p>
+<section id="customizing-coefficient-labels-and-goodness-of-fit-statistics" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="customizing-coefficient-labels-and-goodness-of-fit-statistics"><span class="header-section-number">6.4.1</span> Customizing Coefficient Labels and Goodness of Fit Statistics</h3>
+<p>Coefficient map The order of the coefficients will follow this map, also if you wish to leave out coefficients, simply don’t list them in the map there may be ways to experiment with doing this with less work/code, but this method gives a lot of control over the output. Note how this allows for labeling interaction terms as well.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roa_lead_1"</span> <span class="ot">=</span> <span class="st">"$ROA_{t+1}$"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roa"</span> <span class="ot">=</span> <span class="st">"$ROA_{t}$"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"loss"</span> <span class="ot">=</span> <span class="st">"$LOSS$"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"roa:loss"</span> <span class="ot">=</span> <span class="st">"$ROA_{t} </span><span class="sc">\\</span><span class="st">times LOSS$"</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Optional custom formula to format the regression N observations in the output</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nobs_fmt <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> formattable<span class="sc">::</span><span class="fu">comma</span>(x, <span class="at">digits=</span><span class="dv">0</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{"</span>,out,<span class="st">"}"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Optional custom format for the mapping of what to display in the goodness of fit statistics below the regression output. See the documentation for modelsummary(gof_map) and the estimation commands you are using, there will be many different possible choices of what to output.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gm <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="st">"raw"</span> <span class="ot">=</span> <span class="st">"nobs"</span>, <span class="st">"clean"</span> <span class="ot">=</span> <span class="st">"N"</span>, <span class="st">"fmt"</span> <span class="ot">=</span> nobs_fmt),</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="st">"raw"</span> <span class="ot">=</span> <span class="st">"r.squared"</span>, <span class="st">"clean"</span> <span class="ot">=</span> <span class="st">"$R^2$"</span>, <span class="st">"fmt"</span> <span class="ot">=</span> <span class="dv">3</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="st">"raw"</span> <span class="ot">=</span> <span class="st">"r2.within"</span>, <span class="st">"clean"</span> <span class="ot">=</span> <span class="st">"$R^2$ Within"</span>, <span class="st">"fmt"</span> <span class="ot">=</span> <span class="dv">3</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then let’s preview the output without adding extra rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>panel <span class="ot">&lt;-</span> <span class="fu">modelsummary</span>(models, </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#cluster standard errors by gvkey and calyear</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">vcov =</span> <span class="sc">~</span> gvkey <span class="sc">+</span> calyear,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#t-stats in parenthesis under coefficients</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">statistic =</span> <span class="st">"statistic"</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#add significance stars</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'*'</span> <span class="ot">=</span> .<span class="dv">1</span>, <span class="st">'**'</span> <span class="ot">=</span> .<span class="dv">05</span>, <span class="st">'***'</span> <span class="ot">=</span> .<span class="dv">01</span>) ,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">estimate=</span><span class="st">"{estimate}{stars}"</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#apply the coefficient map for coef labels</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coef_map =</span> cm,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">gof_map =</span> gm,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#output = "latex", </span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">escape =</span> F,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">booktabs =</span> T,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#add_rows = my_rows</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>panel</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_u3iztv0qvq4wsq5qigq6(i, j, css_id) {
+          var table = document.getElementById("tinytable_u3iztv0qvq4wsq5qigq6");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_u3iztv0qvq4wsq5qigq6');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_u3iztv0qvq4wsq5qigq6(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_u3iztv0qvq4wsq5qigq6");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 },  ], css_id: 'tinytable_css_utczyyjhc7xvtkv844yc',}, 
+          { positions: [ { i: 5, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 8, j: 1 }, { i: 2, j: 3 }, { i: 2, j: 4 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 1, j: 1 }, { i: 5, j: 2 }, { i: 2, j: 5 }, { i: 4, j: 1 }, { i: 8, j: 2 }, { i: 5, j: 5 }, { i: 7, j: 1 }, { i: 1, j: 3 }, { i: 5, j: 4 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 5, j: 3 }, { i: 7, j: 2 }, { i: 4, j: 2 }, { i: 8, j: 3 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 1, j: 4 }, { i: 7, j: 3 }, { i: 7, j: 4 }, { i: 8, j: 4 }, { i: 8, j: 5 }, { i: 4, j: 5 }, { i: 1, j: 5 }, { i: 3, j: 5 }, { i: 7, j: 5 },  ], css_id: 'tinytable_css_s8tvd49wx2prrn9r95qd',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 },  ], css_id: 'tinytable_css_paxx2d82in4ii8oa7bry',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_e8ra4rkxo3g7kwet1czr',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_7ua0gd829zvn65ut5rsr',}, 
+          { positions: [ { i: 9, j: 0 },  ], css_id: 'tinytable_css_57g5nylexoqfb5wp4m67',}, 
+          { positions: [ { i: 6, j: 3 }, { i: 6, j: 1 }, { i: 6, j: 2 }, { i: 6, j: 5 }, { i: 6, j: 4 },  ], css_id: 'tinytable_css_4mdva8bj87m0chutfrw0',}, 
+          { positions: [ { i: 9, j: 2 }, { i: 9, j: 3 }, { i: 9, j: 4 }, { i: 9, j: 1 }, { i: 9, j: 5 },  ], css_id: 'tinytable_css_0cbda49z8qg3z2mdm1sz',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_u3iztv0qvq4wsq5qigq6(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_utczyyjhc7xvtkv844yc, .table th.tinytable_css_utczyyjhc7xvtkv844yc { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_s8tvd49wx2prrn9r95qd, .table th.tinytable_css_s8tvd49wx2prrn9r95qd { text-align: center; }
+      .table td.tinytable_css_paxx2d82in4ii8oa7bry, .table th.tinytable_css_paxx2d82in4ii8oa7bry { text-align: left; }
+      .table td.tinytable_css_e8ra4rkxo3g7kwet1czr, .table th.tinytable_css_e8ra4rkxo3g7kwet1czr { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_7ua0gd829zvn65ut5rsr, .table th.tinytable_css_7ua0gd829zvn65ut5rsr { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_57g5nylexoqfb5wp4m67, .table th.tinytable_css_57g5nylexoqfb5wp4m67 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_4mdva8bj87m0chutfrw0, .table th.tinytable_css_4mdva8bj87m0chutfrw0 { text-align: center; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_0cbda49z8qg3z2mdm1sz, .table th.tinytable_css_0cbda49z8qg3z2mdm1sz { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_u3iztv0qvq4wsq5qigq6" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -357,36 +1084,12 @@ Table&nbsp;6.1
                   <td>(-12.620)</td>
                 </tr>
                 <tr>
-                  <td>Year FE</td>
-                  <td></td>
-                  <td></td>
-                  <td>X</td>
-                  <td>X</td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <td>Firm FE</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>X</td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <td>Controls</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>X</td>
-                </tr>
-                <tr>
                   <td>N</td>
-                  <td>163,298</td>
-                  <td>163,298</td>
-                  <td>163,298</td>
-                  <td>161,635</td>
-                  <td>161,635</td>
+                  <td>\multicolumn{1}{c}{163,298}</td>
+                  <td>\multicolumn{1}{c}{163,298}</td>
+                  <td>\multicolumn{1}{c}{163,298}</td>
+                  <td>\multicolumn{1}{c}{161,635}</td>
+                  <td>\multicolumn{1}{c}{161,635}</td>
                 </tr>
                 <tr>
                   <td>$R^2$</td>
@@ -410,11 +1113,254 @@ Table&nbsp;6.1
 <!-- hack to avoid NA insertion in last line -->
 </div>
 </div>
-</figure>
+</section>
+<section id="adding-fixed-effect-rows-to-the-regression-table" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="adding-fixed-effect-rows-to-the-regression-table"><span class="header-section-number">6.4.2</span> Adding Fixed-Effect Rows to the Regression Table</h3>
+<p>In this LaTeX example, I will show how to manually add heading and FE rows.However, in the R code to output to Word, I have provided the code to use the built in ability of <code>fixest</code> to create the FE Rows. This defines the rows we wish to add.The terms should match what you used as the model/column names in the model list.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>my_rows <span class="ot">&lt;-</span> <span class="fu">tribble</span>(<span class="sc">~</span>term,<span class="sc">~</span><span class="st">"Base"</span>,<span class="sc">~</span><span class="st">"No FE"</span>, <span class="sc">~</span><span class="st">"Year FE"</span>,<span class="sc">~</span><span class="st">"Two-Way FE"</span>,<span class="sc">~</span><span class="st">"With Controls"</span>,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Year FE"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Included}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Included}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Included}"</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Firm FE"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Included}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Included}"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Controls"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Excluded}"</span>,<span class="st">"</span><span class="sc">\\</span><span class="st">multicolumn{1}{c}{Included}"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">#count the rows in the preview output to see where to insert these extra rows</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(my_rows,<span class="st">"position"</span>) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the above code, we define the fixed effect rows using <code>tribble</code>, which is a convenient way to manually create small data frames in R. We specify the presence (Included) or absence (Excluded) of fixed effects for each regression model. The position attribute determines where these rows will be inserted into the regression table.</p>
+<p>Finally, we generate the regression table with the FE rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>panel <span class="ot">&lt;-</span> <span class="fu">modelsummary</span>(models, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#cluster standard errors by gvkey and calyear</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">vcov =</span> <span class="sc">~</span> gvkey <span class="sc">+</span> calyear,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#t-stats in parenthesis under coefficients</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">statistic =</span> <span class="st">"statistic"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#add significance stars</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">stars =</span> <span class="fu">c</span>(<span class="st">'</span><span class="sc">\\</span><span class="st">sym{*}'</span> <span class="ot">=</span> .<span class="dv">1</span>, <span class="st">'</span><span class="sc">\\</span><span class="st">sym{**}'</span> <span class="ot">=</span> .<span class="dv">05</span>, <span class="st">'</span><span class="sc">\\</span><span class="st">sym{***}'</span> <span class="ot">=</span> .<span class="dv">01</span>),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">estimate=</span><span class="st">"{estimate}{stars}"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#apply the coefficient map for coef labels</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coef_map =</span> cm,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">gof_map =</span> gm,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#output = "latex", </span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">escape =</span> F,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">booktabs =</span> T,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                      <span class="at">add_rows =</span> my_rows,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#if you want to decimal align the columns, use the number </span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#of d equal to the number of models</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                      <span class="co">#if I comment out the below line, modelsummary would dp </span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>                      <span class="co"># "lccccc" on its own as the default.</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                      <span class="at">align =</span> <span class="st">"lddddd"</span>) </span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>panel</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_mngmsh5fsfc0lx24p6hc(i, j, css_id) {
+          var table = document.getElementById("tinytable_mngmsh5fsfc0lx24p6hc");
+          var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_mngmsh5fsfc0lx24p6hc');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_mngmsh5fsfc0lx24p6hc(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_mngmsh5fsfc0lx24p6hc");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 }, { i: 12, j: 5 },  ], css_id: 'tinytable_css_y25x40vzgmpsfx7xjvkq',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 3, j: 2 }, { i: 9, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 7, j: 2 }, { i: 4, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 11, j: 2 }, { i: 3, j: 3 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 2, j: 3 }, { i: 7, j: 3 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 6, j: 3 }, { i: 11, j: 3 }, { i: 4, j: 3 }, { i: 1, j: 3 }, { i: 10, j: 3 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 5, j: 3 }, { i: 1, j: 4 }, { i: 6, j: 4 }, { i: 7, j: 4 }, { i: 9, j: 3 }, { i: 5, j: 4 }, { i: 10, j: 4 }, { i: 11, j: 4 }, { i: 4, j: 4 }, { i: 9, j: 4 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 6, j: 5 }, { i: 7, j: 5 }, { i: 9, j: 5 }, { i: 10, j: 5 }, { i: 11, j: 5 },  ], css_id: 'tinytable_css_pylhmmsovhkdscq7aaq5',}, 
+          { positions: [ { i: 12, j: 0 },  ], css_id: 'tinytable_css_pm3rzcxpp3bkzk4sydxl',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_pdsbpq1mis03mogge5cp',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 },  ], css_id: 'tinytable_css_p000vr32uwx99idcio8s',}, 
+          { positions: [ { i: 8, j: 0 },  ], css_id: 'tinytable_css_gkiosssjakmtmsrfz39t',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_8o6y7zvwn66ecmg0p599',}, 
+          { positions: [ { i: 8, j: 1 }, { i: 8, j: 5 }, { i: 8, j: 2 }, { i: 8, j: 3 }, { i: 8, j: 4 },  ], css_id: 'tinytable_css_7xj4mhlqy8ieaj7owquh',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_mngmsh5fsfc0lx24p6hc(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_y25x40vzgmpsfx7xjvkq, .table th.tinytable_css_y25x40vzgmpsfx7xjvkq { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_pylhmmsovhkdscq7aaq5, .table th.tinytable_css_pylhmmsovhkdscq7aaq5 { text-align: center; }
+      .table td.tinytable_css_pm3rzcxpp3bkzk4sydxl, .table th.tinytable_css_pm3rzcxpp3bkzk4sydxl { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_pdsbpq1mis03mogge5cp, .table th.tinytable_css_pdsbpq1mis03mogge5cp { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_p000vr32uwx99idcio8s, .table th.tinytable_css_p000vr32uwx99idcio8s { text-align: left; }
+      .table td.tinytable_css_gkiosssjakmtmsrfz39t, .table th.tinytable_css_gkiosssjakmtmsrfz39t { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_8o6y7zvwn66ecmg0p599, .table th.tinytable_css_8o6y7zvwn66ecmg0p599 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_7xj4mhlqy8ieaj7owquh, .table th.tinytable_css_7xj4mhlqy8ieaj7owquh { text-align: center; border-bottom: solid black 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_mngmsh5fsfc0lx24p6hc" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col"> </th>
+                <th scope="col">Base</th>
+                <th scope="col">No FE</th>
+                <th scope="col">Year FE</th>
+                <th scope="col">Two-Way FE</th>
+                <th scope="col">With Controls</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>$ROA_{t}$</td>
+                  <td>0.839\sym{***}</td>
+                  <td>0.756\sym{***}</td>
+                  <td>0.769\sym{***}</td>
+                  <td>0.639\sym{***}</td>
+                  <td>0.624\sym{***}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>(62.731)</td>
+                  <td>(48.158)</td>
+                  <td>(48.625)</td>
+                  <td>(38.635)</td>
+                  <td>(35.599)</td>
+                </tr>
+                <tr>
+                  <td>$LOSS$</td>
+                  <td></td>
+                  <td>-0.030\sym{***}</td>
+                  <td>-0.028\sym{***}</td>
+                  <td>-0.015\sym{***}</td>
+                  <td>-0.017\sym{***}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>(-7.949)</td>
+                  <td>(-7.755)</td>
+                  <td>(-7.560)</td>
+                  <td>(-8.117)</td>
+                </tr>
+                <tr>
+                  <td>$ROA_{t} \times LOSS$</td>
+                  <td></td>
+                  <td>0.032</td>
+                  <td>0.012</td>
+                  <td>-0.285\sym{***}</td>
+                  <td>-0.294\sym{***}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>(1.470)</td>
+                  <td>(0.535)</td>
+                  <td>(-13.307)</td>
+                  <td>(-12.620)</td>
+                </tr>
+                <tr>
+                  <td>Year FE</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Included}</td>
+                  <td>\multicolumn{1}{c}{Included}</td>
+                  <td>\multicolumn{1}{c}{Included}</td>
+                </tr>
+                <tr>
+                  <td>Firm FE</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Included}</td>
+                  <td>\multicolumn{1}{c}{Included}</td>
+                </tr>
+                <tr>
+                  <td>Controls</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Excluded}</td>
+                  <td>\multicolumn{1}{c}{Included}</td>
+                </tr>
+                <tr>
+                  <td>N</td>
+                  <td>\multicolumn{1}{c}{163,298}</td>
+                  <td>\multicolumn{1}{c}{163,298}</td>
+                  <td>\multicolumn{1}{c}{163,298}</td>
+                  <td>\multicolumn{1}{c}{161,635}</td>
+                  <td>\multicolumn{1}{c}{161,635}</td>
+                </tr>
+                <tr>
+                  <td>$R^2$</td>
+                  <td>0.594</td>
+                  <td>0.597</td>
+                  <td>0.603</td>
+                  <td>0.707</td>
+                  <td>0.707</td>
+                </tr>
+                <tr>
+                  <td>$R^2$ Within</td>
+                  <td></td>
+                  <td></td>
+                  <td>0.580</td>
+                  <td>0.184</td>
+                  <td>0.186</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
 </div>
 </div>
+</section>
+</section>
+<section id="wrapping-up" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="wrapping-up"><span class="header-section-number">6.5</span> Wrapping Up</h2>
+<p>In this chapter, we explored how to use the <code>modelsummary</code> and <code>datasummary</code> packages to automate the creation of regression tables, summary statistics tables, and other common statistical outputs. We also covered customizing the tables to match specific formatting and adding fixed effects rows to regression models.</p>
+<p>By automating the process, we ensure that tables are reproducible and consistent across different analysis runs, which is crucial for maintaining research transparency and reproducibility.</p>
+<p>Now, you are equipped with the knowledge to efficiently create and customize regression tables in R for your own data analysis projects.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -839,8 +1785,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./merge-data.html" class="pagination-link" aria-label="Merging Data (In Progress)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span>
+      <a href="./merge-data.html" class="pagination-link" aria-label="Merging Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; Merging Data (In Progress) – Applied Business Research</title>
+<title>5&nbsp; Merging Data – Applied Business Research</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -81,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./merge-data.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./merge-data.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -139,7 +173,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./merge-data.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -171,6 +205,9 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#common-sources-of-firm-level-data" id="toc-common-sources-of-firm-level-data" class="nav-link active" data-scroll-target="#common-sources-of-firm-level-data"><span class="header-section-number">5.1</span> Common Sources of Firm-Level Data</a></li>
+  <li><a href="#common-sources-of-time-series-data" id="toc-common-sources-of-time-series-data" class="nav-link" data-scroll-target="#common-sources-of-time-series-data"><span class="header-section-number">5.2</span> Common Sources of Time-Series Data</a></li>
+  <li><a href="#example-merge-in-internal-control-data-from-audit-analytics" id="toc-example-merge-in-internal-control-data-from-audit-analytics" class="nav-link" data-scroll-target="#example-merge-in-internal-control-data-from-audit-analytics"><span class="header-section-number">5.3</span> Example: Merge in Internal Control Data from Audit Analytics</a></li>
+  <li><a href="#example-merge-in-michigan-consumer-sentiment-data-from-fred" id="toc-example-merge-in-michigan-consumer-sentiment-data-from-fred" class="nav-link" data-scroll-target="#example-merge-in-michigan-consumer-sentiment-data-from-fred"><span class="header-section-number">5.4</span> Example: Merge in Michigan Consumer Sentiment Data from FRED</a></li>
   </ul>
 </nav>
     </div>
@@ -179,7 +216,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data</span></h1>
 </div>
 
 
@@ -196,10 +233,10 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This chapter will go over how to merge in data from various sources. This will include examples of how to merge in firm-level data from various sources, and time-series data from FRED/Fama-French Factors/CRSP Index Files.</p>
+<p>In this chapter we will learn how to merge in data from various sources. In archival business research, we are interested in companies over time; therefore, we use panel data where the unit of observation is defined by one firm at one point in time in many of our analyses. We will cover different sources of firm-level, panel data and time-series data and how they can be linked together. In this chapter, we will also cover best practices using the example project from prior chapters.</p>
 <section id="common-sources-of-firm-level-data" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="common-sources-of-firm-level-data"><span class="header-section-number">5.1</span> Common Sources of Firm-Level Data</h2>
-<p>Below is a table of common sources and firm identifiers that allow researchers to link data from different data sources:</p>
+<p>Below is a table of common sources of firm-level and firm identifiers that allow researchers to link data from different data sources:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 20%">
@@ -211,7 +248,7 @@ ul.task-list li input[type="checkbox"] {
 <thead>
 <tr class="header">
 <th>Data Source</th>
-<th style="text-align: center;">Identifiers</th>
+<th style="text-align: center;">Primary Identifiers</th>
 <th style="text-align: center;">Other Firm Identifiers</th>
 <th style="text-align: center;">Can Be Linked To</th>
 <th style="text-align: left;">Notes</th>
@@ -221,62 +258,418 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><strong>Compustat</strong></td>
 <td style="text-align: center;">GVKEY</td>
-<td style="text-align: center;">Ticker, CIK</td>
-<td style="text-align: center;">CRSP, Audit Analytics</td>
-<td style="text-align: left;"></td>
+<td style="text-align: center;">Tic, CIK, CUSIP</td>
+<td style="text-align: center;">CRSP, Audit Analytics, I/B/E/S, TAQ, RavenPack, XBRL, TRACE, Mergent</td>
+<td style="text-align: left;">To link to CRSP data, researchers should use the CRSP-Compustat link file for the GVKEY-PERMNO mapping.</td>
 </tr>
 <tr class="even">
 <td><strong>CRSP</strong></td>
 <td style="text-align: center;">PERMNO</td>
 <td style="text-align: center;">Ticker, CUSIP</td>
-<td style="text-align: center;">Compustat, IBES</td>
+<td style="text-align: center;">Compustat, IBES, TAQ</td>
 <td style="text-align: left;">To link to Compustat data, researchers should use the CRSP-Compustat link file for PERMNO-GVKEY mapping.</td>
 </tr>
 <tr class="odd">
 <td><strong>I/B/E/S</strong></td>
 <td style="text-align: center;">TICKER</td>
 <td style="text-align: center;">OFTIC, CUSIP</td>
-<td style="text-align: center;">CRSP</td>
+<td style="text-align: center;">CRSP, TAQ</td>
 <td style="text-align: left;">The “TICKER” variable is the I/B/E/S firm identifier <strong>not</strong> the trading symbol. The trading symbol is the “OFTIC” variable.</td>
 </tr>
 <tr class="even">
 <td><strong>TAQ</strong></td>
 <td style="text-align: center;">SYMBOL</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: left;"></td>
+<td style="text-align: center;">CUSIP</td>
+<td style="text-align: center;">Compustat, CRSP, I/B/E/S</td>
+<td style="text-align: left;">Researchers should use the TAQ “master” dataset to create SYMBOL-CUSIP mapping.</td>
 </tr>
 <tr class="odd">
 <td><strong>TRACE</strong></td>
 <td style="text-align: center;">CUSIP</td>
 <td style="text-align: center;"></td>
-<td style="text-align: center;">CRSP</td>
+<td style="text-align: center;">Compustat, CRSP, I/B/E/S</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr class="even">
-<td><strong>Audit Analytics</strong></td>
-<td style="text-align: center;">CIK</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">Compustat</td>
+<td><strong>Mergent FISD</strong></td>
+<td style="text-align: center;">ISSUER_ID</td>
+<td style="text-align: center;">CUSIP</td>
+<td style="text-align: center;">Compustat, CRSP, I/B/E/S</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
+<td><strong>Audit Analytics</strong></td>
+<td style="text-align: center;">COMPANY_FKEY</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Compustat, XBRL</td>
+<td style="text-align: left;">COMPANY_FKEY is Audit Analytic’s name for CIK.</td>
+</tr>
+<tr class="even">
 <td><strong>XBRL</strong></td>
 <td style="text-align: center;">CIK</td>
 <td style="text-align: center;"></td>
-<td style="text-align: center;">Compustat</td>
+<td style="text-align: center;">Compustat, Audit Analytics</td>
 <td style="text-align: left;"></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>RavenPack</strong></td>
 <td style="text-align: center;">RP_ENTITY_ID</td>
-<td style="text-align: center;">CUSIP</td>
-<td style="text-align: center;">CRSP, IBES</td>
-<td style="text-align: left;"></td>
+<td style="text-align: center;">CUSIP, Ticker</td>
+<td style="text-align: center;">Compustat, CRSP, I/B/E/S, TAQ</td>
+<td style="text-align: left;">Researchers should use the “entity mapping file” provided by RavenPack to get CUSIP-RP_ENTITY_ID mapping.</td>
 </tr>
 </tbody>
 </table>
-<p>Blocking out for next attempt</p>
+<p>There are other great resources for linking databases. These cover how to best merge data sources such as CRSP and Compustat.</p>
+<p><a href="https://iangow.github.io/far_book/web-data.html" class="uri">https://iangow.github.io/far_book/web-data.html</a></p>
+<p><a href="https://iangow.github.io/far_book/identifiers.html" class="uri">https://iangow.github.io/far_book/identifiers.html</a></p>
+<p><a href="https://www.tidy-finance.org/r/wrds-crsp-and-compustat.html" class="uri">https://www.tidy-finance.org/r/wrds-crsp-and-compustat.html</a></p>
+</section>
+<section id="common-sources-of-time-series-data" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="common-sources-of-time-series-data"><span class="header-section-number">5.2</span> Common Sources of Time-Series Data</h2>
+<p>Sometimes we are interested in variables that are not specific to a particular company, such as asset pricing factors or macroeconomic data. Merging in time-series data from different sources is often easier than firm-level data above because the linking variable between data sources is a point in time variable (e.g., date of the observation). Below are common sources and how to access the data.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Data Source</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>FRED</strong></td>
+<td style="text-align: left;">The Federal Reserve Economic Data (FRED) has time series data of many macroeconomic variables such as GDP, inflation, unemployment, interest rates, sentiment data.</td>
+<td style="text-align: left;">You can visit the FRED website and search for the data series you are interested in here: <a href="https://fred.stlouisfed.org/" class="uri">https://fred.stlouisfed.org/</a></td>
+</tr>
+<tr class="even">
+<td><strong>Ken French’s Website</strong></td>
+<td style="text-align: left;">Ken French’s website provides researcher with datasets on asset pricing factors as well as various portfolio returns.</td>
+<td style="text-align: left;">You can find Ken French’s available datasets here: <a href="https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html" class="uri">https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html</a></td>
+</tr>
+<tr class="odd">
+<td><strong>Jeffrey Wurgler’s Website</strong></td>
+<td style="text-align: left;">Jeffrey Wurgler’s website provides researcher with datasets on investor sentiment indices.</td>
+<td style="text-align: left;">You can find Jeffrey Wurgler’s available datasets here: <a href="https://pages.stern.nyu.edu/~jwurgler/" class="uri">https://pages.stern.nyu.edu/~jwurgler/</a></td>
+</tr>
+</tbody>
+</table>
+<p>You can also find more information about collecting FRED data in R using the “fredr” package: <a href="https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html" class="uri">https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html</a></p>
+</section>
+<section id="example-merge-in-internal-control-data-from-audit-analytics" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="example-merge-in-internal-control-data-from-audit-analytics"><span class="header-section-number">5.3</span> Example: Merge in Internal Control Data from Audit Analytics</h2>
+<p>So far in our example project, we are exploring the persistence of firm’s earnings. Our main hypothesis is that earnings are less persistent for loss firms than profitable firms. Perhaps, we also think this persistence could be moderated by the quality of the internal controls. For instance, internal controls are processes intended to provide assurance about the three major objectives: operations, reporting and compliance. Insufficient controls could lead to ineffective and inefficient operations and ultimately lower profitability. To test this, let’s grab data that could be useful indicators of poor financial reporting quality from Audit Analytics. We will access this data via WRDS or you can download CSV datasets from Audit Analytics and import into R.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'arrow'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:utils':
+
+    timestamp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::duration() masks arrow::duration()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::ident()        masks dbplyr::ident()
+✖ dplyr::lag()          masks stats::lag()
+✖ dplyr::sql()          masks dbplyr::sql()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+Loading required package: pacman
+
+set R formatting options
+
+imported parquet functions
+
+imported industry functions
+
+imported transformation functions</code></pre>
+</div>
+</div>
+<p>Now that we have downloaded the data let’s inspect the new internal control data to get a sense of the firm identifiers that we can use to link internal control data to our financial statement data. Without viewing the internal control data, we can see it has 240 variables (columns). Typically, the primary key(s) of the table will be the first few columns, so let’s peek at the dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ic_data <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 240
+  is_nth_restate ic_op_fkey ic_op_type auditor_fkey auditor_agrees
+           &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt;
+1              0      19322 a                     6              1
+2              0      19323 m                     6              0
+3              0      29580 a                     6              2
+4              0      29581 m                     6              0
+5              0      28884 a                  1687              2
+6              0      45178 a                     6              2
+# ℹ 235 more variables: combined_ic_op &lt;dbl&gt;, ic_is_effective &lt;chr&gt;,
+#   fye_ic_op &lt;date&gt;, sig_date_ic_op &lt;date&gt;, aud_city &lt;chr&gt;, aud_state &lt;chr&gt;,
+#   aud_state_name &lt;chr&gt;, aud_state_reg &lt;chr&gt;, count_weak &lt;dbl&gt;,
+#   op_aud_name &lt;chr&gt;, op_aud_pcoab &lt;dbl&gt;, audit_fees &lt;dbl&gt;,
+#   non_audit_fees &lt;dbl&gt;, benefits_fees &lt;dbl&gt;, it_fees &lt;dbl&gt;, tax_fees &lt;dbl&gt;,
+#   audit_related_fees &lt;dbl&gt;, other_fees &lt;dbl&gt;, total_fees &lt;dbl&gt;,
+#   currency_code_fkey &lt;chr&gt;, restatement &lt;dbl&gt;, noteff_acc_rule &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>After running the above, we see the second column is called “ic_op_fkey” which is the primary key for this table. In other words, each internal control opinion will have a unique value for this field and should correspond to one row/observations in the data. Let’s verify by ensuring there are no duplicate internal control opinion keys. There are a several ways to do this. Examine the code below to confirm there are no duplicate restatement keys.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#(1) We can select the column(s) we think make up the primary key for this table and use the command unique() followed by a count() command to see how many rows this returns. We can compare to the original dataframe to see if they are the same. </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ic_data <span class="sc">|&gt;</span> <span class="fu">select</span>(ic_op_fkey) <span class="sc">|&gt;</span> <span class="fu">unique</span>() <span class="sc">|&gt;</span> <span class="fu">count</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+       n
+   &lt;int&gt;
+1 228376</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#The above returns 228,376 which matches the number of observations in our original data set.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#(2) We can group by the primary key(s) and count the number of observations by that grouping to see if there are any with more than one observation. It is good practice to set output of this into a separate dataframe which we are going to call "dups." If there are no duplicate observations this data set should be empty indicating the internal control opinion key is the primary key. </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>dups <span class="ot">&lt;-</span> ic_data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(ic_op_fkey) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">obs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">filter</span>(obs<span class="sc">&gt;</span><span class="dv">1</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(dups)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+      n
+  &lt;int&gt;
+1     0</code></pre>
+</div>
+</div>
+<p>We next will look at how the internal control data is organized to understand how we can link this into our financial statement data. Our financial statement data is organized as a panel data with annual financial statement variables for each firm for each period beginning as early as 1968. However, our internal control data begins in the early 2000’s. Often times the internal control data could have two observations per year because one opinion comes from management and the other comes the external auditor. To visualize, let’s look at Lockheed Martin Corporation in both datasets. Below, we see in our financial statement data Lockheed Martin appears once per year starting in 1968 with the “datadate” variable representing the end date of each fiscal year’s financial statements. In our internal control data, Lockheed Martin began reporting on internal controls post-SOX which was effective starting in 2004 for this firm. Scanning the internal control data, we see two things: (1) there are two observations for each fiscal year with the type “m” and “a” corresponding to the “management” and “auditor” opinion, respectively, and (2) Lockheed Martin did not have effective internal controls for the fiscal year-ended 12-31-2016.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Looking at Lockheed Martin in our financial statement data</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fs_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(cstat_ticker<span class="sc">==</span><span class="st">"LMT"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(cstat_ticker,conm,cik,datadate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 57 × 4
+   cstat_ticker conm                 cik        datadate  
+   &lt;chr&gt;        &lt;chr&gt;                &lt;chr&gt;      &lt;date&gt;    
+ 1 LMT          LOCKHEED MARTIN CORP 0000936468 1968-12-31
+ 2 LMT          LOCKHEED MARTIN CORP 0000936468 1969-12-31
+ 3 LMT          LOCKHEED MARTIN CORP 0000936468 1970-12-31
+ 4 LMT          LOCKHEED MARTIN CORP 0000936468 1971-12-31
+ 5 LMT          LOCKHEED MARTIN CORP 0000936468 1972-12-31
+ 6 LMT          LOCKHEED MARTIN CORP 0000936468 1973-12-31
+ 7 LMT          LOCKHEED MARTIN CORP 0000936468 1974-12-31
+ 8 LMT          LOCKHEED MARTIN CORP 0000936468 1975-12-31
+ 9 LMT          LOCKHEED MARTIN CORP 0000936468 1976-12-31
+10 LMT          LOCKHEED MARTIN CORP 0000936468 1977-12-31
+# ℹ 47 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Looking at Lockheed Martin internal control opinions. Notice the two observations per year and the ineffective control opinion in 2016.</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>ic_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(company_fkey<span class="sc">==</span><span class="st">"0000936468"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(ic_op_fkey,ic_op_type,form_fkey,file_date,fye_ic_op,fy_ic_op,ic_is_effective) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(fy_ic_op<span class="sc">&gt;</span><span class="dv">2013</span>) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(file_date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 7
+   ic_op_fkey ic_op_type form_fkey file_date  fye_ic_op  fy_ic_op
+        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;date&gt;     &lt;date&gt;        &lt;dbl&gt;
+ 1     120544 a          10-K      2015-02-09 2014-12-31     2014
+ 2     120545 m          10-K      2015-02-09 2014-12-31     2014
+ 3     134259 a          10-K      2016-02-24 2015-12-31     2015
+ 4     134260 m          10-K      2016-02-24 2015-12-31     2015
+ 5     144163 a          10-K      2017-02-09 2016-12-31     2016
+ 6     144164 m          10-K      2017-02-09 2016-12-31     2016
+ 7     155293 a          10-K      2018-02-06 2017-12-31     2017
+ 8     155294 m          10-K      2018-02-06 2017-12-31     2017
+ 9     156088 a          10-K/A    2018-02-16 2017-12-31     2017
+10     166277 a          10-K      2019-02-08 2018-12-31     2018
+# ℹ 13 more rows
+# ℹ 1 more variable: ic_is_effective &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>For our question, we haven’t made any predictions about whether it matters which party deems internal controls ineffective, so let’s collapse the data down to get one observation for each firm-fiscal year to match our financial statement data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Summarizing data to be at the firm ("company_fkey") and fiscal year level ("fy_ic_op"). Also keeping "fye_ic_op" which will be date of fiscal year end that we will use to match to financial statement data and creating an indicator variable whether there was control issue discovered for that year for any opinion.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ic_data2 <span class="ot">&lt;-</span> ic_data <span class="sc">|&gt;</span> <span class="fu">group_by</span>(company_fkey,fye_ic_op,fy_ic_op) <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ic_issue =</span> <span class="fu">if_else</span>(<span class="fu">any</span>(ic_is_effective <span class="sc">==</span> <span class="st">"N"</span>), <span class="dv">1</span>, <span class="dv">0</span>),<span class="at">.groups =</span> <span class="st">"keep"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#We are expecting this to be one observation for each firm each year - let's check</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>dups <span class="ot">&lt;-</span> ic_data2 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(company_fkey,fye_ic_op,fy_ic_op) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">obs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">filter</span>(obs <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="co">#this data frame is empty so seems to have worked</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'company_fkey', 'fye_ic_op'. You can
+override using the `.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#First, let's examine our Lockheed Martin example - yep 2016 is flagged</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ic_data2 <span class="sc">|&gt;</span> <span class="fu">filter</span>(company_fkey<span class="sc">==</span><span class="st">"0000936468"</span>) <span class="sc">|&gt;</span> <span class="fu">filter</span>(fy_ic_op<span class="sc">&gt;</span><span class="dv">2010</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 4
+   company_fkey fye_ic_op  fy_ic_op ic_issue
+   &lt;chr&gt;        &lt;date&gt;        &lt;dbl&gt;    &lt;dbl&gt;
+ 1 0000936468   2011-12-31     2011        0
+ 2 0000936468   2012-12-31     2012        0
+ 3 0000936468   2013-12-31     2013        0
+ 4 0000936468   2014-12-31     2014        0
+ 5 0000936468   2015-12-31     2015        0
+ 6 0000936468   2016-12-31     2016        1
+ 7 0000936468   2017-12-31     2017        0
+ 8 0000936468   2018-12-31     2018        0
+ 9 0000936468   2019-12-31     2019        0
+10 0000936468   2020-12-31     2020        0
+11 0000936468   2021-12-31     2021        0
+12 0000936468   2022-12-31     2022        0
+13 0000936468   2023-12-31     2023        0
+14 0000936468   2024-12-31     2024        0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Second, visually inspect the data by opening ic_data2 to confirm things look good. Confirmed another one below.</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#test &lt;- ic_data |&gt; filter(company_fkey=="0001640251")</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#test2 &lt;- ic_data2 |&gt; filter(company_fkey=="0001640251")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we have prepared our internal control data, we can link it to our financial statement data. Using the linking table above, we see we can link Compustat financial statement data to Audit Analytic data on CIKs which stands for Central Index Key and is assigned by the SEC. In our financial statement data this variable is “cik” and in our internal control data this is “company_fkey.” We will also match on fiscal year end date of the financial statements. In Compustat this variable is “datadate” and in our internal control data this is “fye_ic_op.”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Let's left join the internal control data to our financial statement data because the financial statement data goes back all the way to 1968 and our control data starts in the early 2000s. We don't need to throw out the prior years.</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>fs_data2 <span class="ot">&lt;-</span> fs_data <span class="sc">|&gt;</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(ic_data2,<span class="at">by=</span><span class="fu">c</span>(<span class="st">"cik"</span><span class="ot">=</span><span class="st">"company_fkey"</span>,<span class="st">"fyear"</span> <span class="ot">=</span> <span class="st">"fy_ic_op"</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Now let's look at only those periods I think should have matched a control opinion and see how many unmatched ones there were. Because I did a left join, the financial statement will have an "N/A" value if unmatched for our ic_issue variable. In the below, it looks like 20% per year were unmatched which is not small. We have a judgement call of whether to investigate more or leave the observations as N/A which will drop from our sample.</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>fs_data2 <span class="sc">|&gt;</span> <span class="fu">filter</span>(fyear<span class="sc">&gt;</span><span class="dv">2006</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">missing =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(ic_issue),<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(fyear) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">missing =</span> <span class="fu">sum</span>(missing)<span class="sc">/</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 18 × 2
+   fyear missing
+   &lt;dbl&gt;   &lt;dbl&gt;
+ 1  2007  0.300 
+ 2  2008  0.181 
+ 3  2009  0.192 
+ 4  2010  0.203 
+ 5  2011  0.212 
+ 6  2012  0.217 
+ 7  2013  0.221 
+ 8  2014  0.204 
+ 9  2015  0.196 
+10  2016  0.194 
+11  2017  0.193 
+12  2018  0.203 
+13  2019  0.229 
+14  2020  0.219 
+15  2021  0.162 
+16  2022  0.0946
+17  2023  0.0723
+18  2024  0.386 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check duplicates. It is always a good idea to check duplicates after merging.</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dups <span class="ot">&lt;-</span>  fs_data2 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(gvkey,datadate) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">obs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">filter</span>(obs<span class="sc">&gt;</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'gvkey'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#We had 164 pairs of dups, so let's examine a couple and see if we can figure out why</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> fs_data2 <span class="sc">|&gt;</span> <span class="fu">filter</span>(gvkey<span class="sc">==</span><span class="st">"001722"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> fs_data2 <span class="sc">|&gt;</span> <span class="fu">filter</span>(gvkey<span class="sc">==</span><span class="st">"063026"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Looks like some have two opinions with the two different fiscal year end dates but same fiscal year. There are only 164 pairs, so we could drop them all together. However, let's see if for these cases it helps to keep the one with fiscal year end date matching the datadate. </span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>fs_data2 <span class="ot">&lt;-</span> fs_data <span class="sc">|&gt;</span> </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(ic_data2,<span class="at">by=</span><span class="fu">c</span>(<span class="st">"cik"</span><span class="ot">=</span><span class="st">"company_fkey"</span>,<span class="st">"fyear"</span> <span class="ot">=</span> <span class="st">"fy_ic_op"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Going to filter out those with wrong fiscal year end</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gvkey,datadate) <span class="sc">|&gt;</span> </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#First keep those that matched fine with no dups, then keep those with matching fiscal year    ends, and assign "drop" to the others</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>( <span class="at">keep_drop =</span> <span class="fu">case_when</span>(<span class="fu">n</span>() <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"keep"</span>,datadate <span class="sc">==</span> fye_ic_op <span class="sc">~</span> <span class="st">"keep"</span>,<span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"drop"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(keep_drop<span class="sc">==</span><span class="st">"keep"</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Now recheck duplicates. This time there are none.</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>dups <span class="ot">&lt;-</span>  fs_data2 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(gvkey,datadate) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">obs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">filter</span>(obs<span class="sc">&gt;</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'gvkey'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+</div>
+</section>
+<section id="example-merge-in-michigan-consumer-sentiment-data-from-fred" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="example-merge-in-michigan-consumer-sentiment-data-from-fred"><span class="header-section-number">5.4</span> Example: Merge in Michigan Consumer Sentiment Data from FRED</h2>
+<p>We could also link in macroeconomic data we think could moderate the persistence of firm profitability. Perhaps we think the aggregate consumer sentiment moderate how persistent earnings are for all firms across different time periods. We can practice merging in time-series data by accessing the consumer sentiment data from the University of Michigan Surveys of Consumers via FRED.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load the fredr package</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fredr)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Unblock the below and run to set your password</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#keyring::key_set("fred_api_key")</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#set my API key which is saved in keyring</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fredr_set_key</span>(keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"fred_api_key"</span>))</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#collect the data from the series UMCSENT</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co"># https://fred.stlouisfed.org/series/UMCSENT</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>fred_data<span class="ot">&lt;-</span><span class="fu">fredr</span>(<span class="at">series_id =</span> <span class="st">"UMCSENT"</span>,</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">frequency =</span> <span class="st">"m"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I am going to add month and year variables because I think this is </span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#easier for linking</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date),</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Some companies don’t have a fiscal year end that matches a calendar year end (e.g.&nbsp;Apple Inc.). However, we want to create the average value of the consumer sentiment index over the same calendar time between a company’s fiscal year end.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Let's first create two variable that capture the prior fiscal year end </span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fs_data3 <span class="ot">&lt;-</span> fs_data2 <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#We could do just 12 months before the datadate variable</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">datadate_m12 =</span> datadate <span class="sc">%m-%</span> <span class="fu">months</span>(<span class="dv">12</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Or we could find the actual prior datadate</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#This will have missing observations for the first observation since there is no prior obs</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Additionally if a firm changes their fiscal year end it will create different number of       months in which we measure sentiment</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gvkey, datadate) <span class="sc">|&gt;</span> </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gvkey) <span class="sc">|&gt;</span> </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lag_datadate =</span> <span class="fu">lag</span>(datadate)) <span class="sc">|&gt;</span> </span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Below displays the number of times we match using both methods, N/As due to first obs, and number of observations where there was a change in fiscal year end</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>fs_data3 <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">match =</span> <span class="fu">if_else</span>(datadate_m12<span class="sc">==</span>lag_datadate,<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(match) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">obs =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  match    obs
+  &lt;dbl&gt;  &lt;int&gt;
+1     0   4680
+2     1 274482
+3    NA  23692</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Let's use the minus 12 month approach and create a dataset that merges in sentiment between those two dates</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fs_monthly <span class="ot">&lt;-</span> fs_data3 <span class="sc">|&gt;</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#use just the firm and datadates for this</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(gvkey, datadate, datadate_m12) <span class="sc">|&gt;</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Now identify the months between my two datadates</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month_range =</span> <span class="fu">map2</span>(datadate_m12, datadate, <span class="sc">~</span> <span class="fu">seq.Date</span>(<span class="fu">floor_date</span>(.x, <span class="st">"month"</span>),   <span class="fu">floor_date</span>(.y, <span class="st">"month"</span>), <span class="at">by =</span> <span class="st">"month"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Make into rows</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="fu">c</span>(month_range))</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Now merge in sentiment data</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>sent <span class="ot">&lt;-</span> fs_monthly <span class="sc">|&gt;</span> </span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(fred_data,<span class="at">by=</span><span class="fu">c</span>(<span class="st">"month_range"</span><span class="ot">=</span><span class="st">"date"</span>))</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#Now we will group by gvkey and datadate to calculate the average consumer sentiment during the fiscal year</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>sent2 <span class="ot">&lt;-</span> sent <span class="sc">|&gt;</span> </span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gvkey,datadate) <span class="sc">|&gt;</span> </span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_cons_sent =</span> <span class="fu">mean</span>(value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'gvkey'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Let's merge that into our example data</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>fs_data4 <span class="ot">&lt;-</span> fs_data3 <span class="sc">|&gt;</span> </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(sent2,<span class="at">by=</span><span class="fu">c</span>(<span class="st">"gvkey"</span>,<span class="st">"datadate"</span>))</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Number of missing monthly sentiment values over years - good after 1979</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>fs_data4 <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">missing_sent =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(avg_cons_sent),<span class="dv">1</span>,<span class="dv">0</span>)) <span class="sc">|&gt;</span> <span class="fu">group_by</span>(<span class="fu">year</span>(datadate)) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">missing =</span> <span class="fu">sum</span>(missing_sent) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 58 × 2
+   `year(datadate)` missing
+              &lt;dbl&gt;   &lt;dbl&gt;
+ 1             1968    2593
+ 2             1969    3280
+ 3             1970    3331
+ 4             1971    3385
+ 5             1972    3492
+ 6             1973    3684
+ 7             1974    5108
+ 8             1975    5279
+ 9             1976    5268
+10             1977    5233
+# ℹ 48 more rows</code></pre>
+</div>
+</div>
 
 
 </section>

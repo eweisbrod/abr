@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./merge-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data (In Progress)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -204,21 +204,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#install-necessary-packages" id="toc-install-necessary-packages" class="nav-link active" data-scroll-target="#install-necessary-packages"><span class="header-section-number">4</span> Install Necessary Packages</a>
+  <li><a href="#install-necessary-packages" id="toc-install-necessary-packages" class="nav-link active" data-scroll-target="#install-necessary-packages"><span class="header-section-number">3.1</span> Install Necessary Packages</a>
   <ul class="collapse">
-  <li><a href="#log-into-wrds-to-check" id="toc-log-into-wrds-to-check" class="nav-link" data-scroll-target="#log-into-wrds-to-check"><span class="header-section-number">4.1</span> Log into wrds to check</a></li>
+  <li><a href="#log-into-wrds-to-check" id="toc-log-into-wrds-to-check" class="nav-link" data-scroll-target="#log-into-wrds-to-check"><span class="header-section-number">3.1.1</span> Log into wrds to check</a></li>
   </ul></li>
-  <li><a href="#define-global-parameters" id="toc-define-global-parameters" class="nav-link" data-scroll-target="#define-global-parameters"><span class="header-section-number">5</span> Define Global Parameters</a>
+  <li><a href="#define-global-parameters" id="toc-define-global-parameters" class="nav-link" data-scroll-target="#define-global-parameters"><span class="header-section-number">3.2</span> Define Global Parameters</a>
   <ul class="collapse">
-  <li><a href="#setup-the-data-folder-path" id="toc-setup-the-data-folder-path" class="nav-link" data-scroll-target="#setup-the-data-folder-path"><span class="header-section-number">5.1</span> Setup the Data Folder Path</a></li>
-  <li><a href="#setup-any-project-specific-parameters" id="toc-setup-any-project-specific-parameters" class="nav-link" data-scroll-target="#setup-any-project-specific-parameters"><span class="header-section-number">5.2</span> Setup any project-specific parameters</a></li>
+  <li><a href="#setup-the-data-folder-path" id="toc-setup-the-data-folder-path" class="nav-link" data-scroll-target="#setup-the-data-folder-path"><span class="header-section-number">3.2.1</span> Setup the Data Folder Path</a></li>
+  <li><a href="#setup-any-project-specific-parameters" id="toc-setup-any-project-specific-parameters" class="nav-link" data-scroll-target="#setup-any-project-specific-parameters"><span class="header-section-number">3.2.2</span> Setup any project-specific parameters</a></li>
   </ul></li>
-  <li><a href="#utilities" id="toc-utilities" class="nav-link" data-scroll-target="#utilities"><span class="header-section-number">6</span> Utilities</a>
+  <li><a href="#utilities" id="toc-utilities" class="nav-link" data-scroll-target="#utilities"><span class="header-section-number">3.3</span> Utilities</a>
   <ul class="collapse">
-  <li><a href="#r-options" id="toc-r-options" class="nav-link" data-scroll-target="#r-options"><span class="header-section-number">6.1</span> R Options</a></li>
-  <li><a href="#parquet-functions" id="toc-parquet-functions" class="nav-link" data-scroll-target="#parquet-functions"><span class="header-section-number">6.2</span> Parquet functions</a></li>
-  <li><a href="#industry-functions" id="toc-industry-functions" class="nav-link" data-scroll-target="#industry-functions"><span class="header-section-number">6.3</span> Industry functions</a></li>
-  <li><a href="#variable-transformation-functions" id="toc-variable-transformation-functions" class="nav-link" data-scroll-target="#variable-transformation-functions"><span class="header-section-number">6.4</span> Variable transformation functions</a></li>
+  <li><a href="#r-options" id="toc-r-options" class="nav-link" data-scroll-target="#r-options"><span class="header-section-number">3.3.1</span> R Options</a></li>
+  <li><a href="#parquet-functions" id="toc-parquet-functions" class="nav-link" data-scroll-target="#parquet-functions"><span class="header-section-number">3.3.2</span> Parquet functions</a></li>
+  <li><a href="#industry-functions" id="toc-industry-functions" class="nav-link" data-scroll-target="#industry-functions"><span class="header-section-number">3.3.3</span> Industry functions</a></li>
+  <li><a href="#variable-transformation-functions" id="toc-variable-transformation-functions" class="nav-link" data-scroll-target="#variable-transformation-functions"><span class="header-section-number">3.3.4</span> Variable transformation functions</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -246,8 +246,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>In this chapter we will use some tricks to setup our project environment in such a way that can be easily shared. We will start with installing some packages, then work on setting a data path, and finally create some functions that can be used repeatedly in the project.</p>
-<section id="install-necessary-packages" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Install Necessary Packages</h1>
+<section id="install-necessary-packages" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="install-necessary-packages"><span class="header-section-number">3.1</span> Install Necessary Packages</h2>
 <p>This script uses an R package called ‘pacman’ to check if the other packages used in this example are installed on your machine. If not, it installs them.</p>
 <p>This line checks for the ‘pacman’ package, and installs it if needed.</p>
 <div class="cell">
@@ -281,8 +281,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                forcats</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>               )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="log-into-wrds-to-check" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="log-into-wrds-to-check"><span class="header-section-number">4.1</span> Log into wrds to check</h2>
+<section id="log-into-wrds-to-check" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="log-into-wrds-to-check"><span class="header-section-number">3.1.1</span> Log into wrds to check</h3>
 <p>We will try to log into WRDS site here using Postgres. Just in case, check to make sure there is not already a connection open.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">exists</span>(<span class="st">"wrds"</span>)){</span>
@@ -291,13 +291,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Now log on by uncommenting the below code, it will prompt for your WRDS username and password. You can use the ‘Keyring’ in the prompt to save the username and password securely.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#wrds &lt;- dbConnect(Postgres(),</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#                 host='wrds-pgdata.wharton.upenn.edu',</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                port=9737,</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   <span class="co">#               user=rstudioapi::askForSecret("WRDS user"),</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">#              password=rstudioapi::askForSecret("WRDS pw"),</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     <span class="co">#             sslmode='require',</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="co">#            dbname='wrds')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#keyring::key_set("WRDS_user")</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#keyring::key_set("WRDS_pw")</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#wrds &lt;- dbConnect(Postgres(),</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                  host = 'wrds-pgdata.wharton.upenn.edu', </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#                  port = 9737,              </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                  user = keyring::key_get("WRDS_USER"),        </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                  password = keyring::key_get("WRDS_PW"),    </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                  sslmode = 'require',                 </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                  dbname = 'wrds')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Run the below line. If you are connected you should see something like the below output in your console:</p>
 <div class="cell">
@@ -311,11 +314,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="define-global-parameters" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Define Global Parameters</h1>
+<section id="define-global-parameters" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="define-global-parameters"><span class="header-section-number">3.2</span> Define Global Parameters</h2>
 <p>In this section, we will first setup a data folder path and create a project specific-parameter.</p>
-<section id="setup-the-data-folder-path" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="setup-the-data-folder-path"><span class="header-section-number">5.1</span> Setup the Data Folder Path</h2>
+<section id="setup-the-data-folder-path" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="setup-the-data-folder-path"><span class="header-section-number">3.2.1</span> Setup the Data Folder Path</h3>
 <p>A useful trick for sharing codes with coauthors is to store the path to your local data folder in your project-level R environment file (.Renviron).</p>
 <p><strong>Step 1</strong>: Uncomment and run the below line to edit your .Renviron file.</p>
 <div class="cell">
@@ -338,8 +341,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>You would then replace “E:/acct_995_data/abr” with your own data path.</p>
 </section>
-<section id="setup-any-project-specific-parameters" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="setup-any-project-specific-parameters"><span class="header-section-number">5.2</span> Setup any project-specific parameters</h2>
+<section id="setup-any-project-specific-parameters" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="setup-any-project-specific-parameters"><span class="header-section-number">3.2.2</span> Setup any project-specific parameters</h3>
 <p>For example, you might want to define sample years here and then you can refer to them throughout the code as needed, there are many use-cases.</p>
 <p><strong>Example parameters</strong>: beg_year and end_year to define the sample period:</p>
 <div class="cell">
@@ -351,11 +354,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="utilities" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Utilities</h1>
+<section id="utilities" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="utilities"><span class="header-section-number">3.3</span> Utilities</h2>
 <p>In this section, we will create some useful utility functions that we can later use throughout the project repeatedly.</p>
-<section id="r-options" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="r-options"><span class="header-section-number">6.1</span> R Options</h2>
+<section id="r-options" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="r-options"><span class="header-section-number">3.3.1</span> R Options</h3>
 <p>The below line will get rid of scientific notation which is unnecessary sometimes.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">999</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -369,8 +372,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="parquet-functions" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="parquet-functions"><span class="header-section-number">6.2</span> Parquet functions</h2>
+<section id="parquet-functions" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="parquet-functions"><span class="header-section-number">3.3.2</span> Parquet functions</h3>
 <p>This allows for use of reading and writing parquet files without library(arrow). This also sets default compression method for writing.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>read_parquet <span class="ot">&lt;-</span> arrow<span class="sc">::</span>read_parquet</span>
@@ -383,8 +386,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="industry-functions" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="industry-functions"><span class="header-section-number">6.3</span> Industry functions</h2>
+<section id="industry-functions" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="industry-functions"><span class="header-section-number">3.3.3</span> Industry functions</h3>
 <p>This section will use Fama-French industry classification to assign names and numbers to various industries. We will use the 12 and 49 industry classifications.</p>
 <p>Assign FF12 industry name, given sic code.</p>
 <div class="cell">
@@ -671,8 +674,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="variable-transformation-functions" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="variable-transformation-functions"><span class="header-section-number">6.4</span> Variable transformation functions</h2>
+<section id="variable-transformation-functions" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="variable-transformation-functions"><span class="header-section-number">3.3.4</span> Variable transformation functions</h3>
 <p>Below is a general function to standardize a variable to mean zero, and standard deviation of one. This is sometimes handy to compare different time series.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>standardize <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
