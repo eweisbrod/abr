@@ -84,7 +84,7 @@ comp.company <- tbl(wrds,in_schema("comp", "company"))
 tictoc::tic()
 ```
 
-In this section, we demonstrate how to retrieve raw firm-level financial data from the Compustat funda table using dbplyr and the PostgreSQL connection to WRDS. We apply standard filters to isolate industrial-format, standardized, domestic, consolidated firm-year observations. Using select() with inline renaming, we extract a focused set of financial and identifying variables. We then merge this data with the company table to bring in additional firm-level information such as SIC and GICS codes.
+In this step, we demonstrate how to retrieve raw firm-level financial data from the Compustat funda table using dbplyr and the PostgreSQL connection to WRDS. We apply standard filters to isolate industrial-format, standardized, domestic, consolidated firm-year observations. Using select() with inline renaming, we extract a focused set of financial and identifying variables. We then merge this data with the company table to bring in additional firm-level information such as SIC and GICS codes.
 
 To enhance comparability across firms, we derive several useful variables. These include a four-digit SIC code (sic4), a two-digit SIC code (sic2), and commonly used financial metrics such as earnings before special items (e) and market value of equity (mve). We exclude highly regulated industries such as financials and utilities, apply missing value handling, and align fiscal years with calendar time following conventions seen in prior literature.
 
@@ -282,7 +282,7 @@ data2 <- data1 |>
 
 ```
 
-Before diving into formal regression analysis, we conduct a simple exploratory exercise to examine how loss-making firms are distributed across industries. Using the cleaned dataset, we begin by summarizing the number of firm-year observations in each Fama-French 12 (FF12) industry classification. Next, we compute the proportion of firms with losses in each industry by calculating the percentage of firm-year observations where the loss indicator equals one.
+We conduct a simple exploratory exercise to examine how loss-making firms are distributed across industries. Using the cleaned dataset, we begin by summarizing the number of firm-year observations in each Fama-French 12 (FF12) industry classification. Next, we compute the proportion of firms with losses in each industry by calculating the percentage of firm-year observations where the loss indicator equals one.
 
 To visualize these patterns, we produce a horizontal bar chart that shows the frequency of losses by FF12 industry. This plot provides an intuitive overview of which sectors are more prone to reporting negative earnings. The use of ggplot2 allows for a clean, professional presentation, with percentage-formatted y-axis labels and a minimalistic theme suitable for inclusion in academic papers.
 ```{r}
