@@ -12,7 +12,7 @@ Parquet’s cross-platform support makes it ideal for working in R, Python (pand
 
 ## Obtain data from WRDS
 Let's first learn how to obtain data from WRDS. The code below shows how to connect to WRDS.
-
+First we load libraries and helper scripts. Then we connect to WRDS.
 ```{r}
 # Setup ------------------------------------------------------------------------
 
@@ -52,6 +52,7 @@ wrds <- dbConnect(Postgres(),
 
 The R script below retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.
 
+First we list all of the tables in Compustat.
 ```{r}
 # See a list of tables in a schema ---------------------------------------------
 # Just an example to play with the Postgres server
@@ -66,6 +67,10 @@ wrds |>
 # can replace "comp" with any schema such as "crsp" "ibes" etc.
 # schemas on the Postgres server are similar to WRDS SAS libraries
 
+```
+
+Then we load table references.
+```{r}
 # Load table references and download data --------------------------------------
 
 # Load funda as a tbl
@@ -77,7 +82,10 @@ comp.company <- tbl(wrds,in_schema("comp", "company"))
 #it will tell you how long it takes between when you run tic() and when you run 
 # toc()
 tictoc::tic()
+```
 
+Then we could download, merge, and apply some filters.
+```{r}
 # Get some raw Compustat data from funda
 raw_funda <-
   comp.funda |> 
@@ -136,7 +144,7 @@ tictoc::toc()
 
 ```
 
-Then we save data
+Finally, we save data in 2 forms.
 ```{r}
 # Save the data to disk --------------------------------------------------------
 
@@ -167,6 +175,7 @@ toc()
 ## Transform WRDS data
 Then we play with transforming data. The R script below processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
 
+First we load libraries and setup directories.
 ```{r}
 # Setup ------------------------------------------------------------------------
 
@@ -182,8 +191,10 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 source("E:/acct_995_data/abr/-Global-Parameters.R")
 source("E:/acct_995_data/abr/utils.R")
 
+```
 
-
+Load data.
+```{r}
 # read in the data from the previous step --------------------------------------
 
 #let's work with the parquet version
@@ -194,7 +205,10 @@ data1 <- read_parquet(glue("{data_path}/raw-data-R.parquet"))
 #note: if you choose to collect your raw data in SAS or Stata
 # these could easily be read in using haven::read_dta() or haven::read_sas()
 
+```
 
+Some ways to check data at the first stage.
+```{r}
 # Some quick peeks at the data -------------------------------------------------
 
 #since the data is structured as a dplyr tibble, just calling its name
@@ -206,8 +220,10 @@ glimpse(data1)
 
 #or summarize
 summary(data1)
+```
 
-
+Then we could start to manipulate our variables and apply some filters.
+```{r}
 # Manipulate a few variables ---------------------------------------------------
 
 #many of the below steps could be combined into one. They also could have been
@@ -254,7 +270,10 @@ data2 <- data1 |>
   #Filter multiple variables to require non-missing values
   filter(if_all(c(at, mve,rd,ff12num,starts_with("roa")), ~ !is.na(.x)))
 
+```
 
+We play around with our data.
+```{r}
 # Play around ------------------------------------------------------------------
 
 #how many observations in each FF12 industry?
@@ -277,6 +296,11 @@ data2 |>
   coord_flip() +
   theme_bw() 
 
+
+```
+
+Then we winsorize and save data.
+```{r}
 # Winsorize the data -----------------------------------------------------------
 
 #check the tail values as an example
