@@ -50,7 +50,7 @@ wrds <- dbConnect(Postgres(),
 
 ```
 
-The R script below retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.
+The R script in this section retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.
 
 First we list all of the tables in Compustat.
 ```{r}
@@ -173,7 +173,7 @@ toc()
 
 
 ## Transform WRDS data
-Then we play with transforming data. The R script below processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
+Then we play with transforming data. The R script in this section processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
 
 First we load libraries and setup directories.
 ```{r}
