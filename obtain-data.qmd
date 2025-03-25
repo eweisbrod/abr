@@ -1,5 +1,5 @@
 # Obtaining and Merging Data
-
+## Introduction
 Parquet files offer significant advantages when dealing with large datasets that need to be retrieved, stored, and merged efficiently. Their columnar storage format allows reading only the necessary columns instead of scanning the entire dataset, making data retrieval much faster compared to traditional formats like CSV or Stata. Additionally, Parquet optimizes input/output operations, reducing the amount of data that needs to be read from disk, which speeds up processing times when merging multiple datasets.
 
 Another key benefit of Parquet is its efficient storage and compression capabilities. Unlike CSV or Stata files, which store data in a row-based format, Parquet applies built-in compression algorithms such as Gzip or Snappy, significantly reducing file size. This not only saves disk space but also speeds up data transfer, especially when obtaining datasets from remote servers like WRDS, AWS, or PostgreSQL databases.
@@ -10,6 +10,7 @@ When merging large datasets, Parquet’s columnar format and filtering capabilit
 
 Parquet’s cross-platform support makes it ideal for working in R, Python (pandas, pyarrow, Polars), SQL databases, and cloud platforms such as AWS S3 and Google BigQuery. This ensures seamless integration with existing workflows, whether working on local machines or in cloud-based data pipelines. Given its speed, storage efficiency, and compatibility, Parquet is a preferred format for obtaining and merging large financial datasets from sources like Compustat, CRSP, and other WRDS databases.
 
+## Obtain data from WRDS
 Let's first learn how to obtain data from WRDS. The code below shows how to connect to WRDS.
 
 ```{r}
@@ -49,7 +50,7 @@ wrds <- dbConnect(Postgres(),
 
 ```
 
-The R script below retrieves and processes financial data from the **Compustat** database using **PostgreSQL** on the **WRDS server**. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain **U.S. firms from 1967 onward** while excluding financial and utility firms.
+The R script below retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.
 
 ```{r}
 # See a list of tables in a schema ---------------------------------------------
@@ -133,7 +134,10 @@ raw_funda <-
 #stop the tictoc timer
 tictoc::toc()
 
+```
 
+Then we save data
+```{r}
 # Save the data to disk --------------------------------------------------------
 
 # saving to Stata is convenient for working with coauthors
@@ -159,6 +163,8 @@ toc()
 
 ```
 
+
+## Transform WRDS data
 Then we play with transforming data. The R script below processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
 
 ```{r}
@@ -305,8 +311,8 @@ write_dta(data3,glue("{data_path}/regdata-R.dta"))
 
 ```
 
-This is my first time working on a Quarto book. So, this first post will be very rough for now. I will try to provide a few different examples of ways to obtain and merge data in R, and a few tips of things to keep in mind.
 
+## Obtain and transform data from other sources
 We already know how to obtain data from WRDS. Let's use this to obtain some returns for the S&P 500. We could use the formal index data, but let's take a shortcut and just use the popular SPY ETF that tracks the S&P 500. To do this, we need to find the CRSP identifier (PERMNO) for the ticker "SPY." We can look in the WRDS stocknames file for this, and then use the SPY PERMNO to pull data from the CRSP monthly stock file.
 
 ```{r}
@@ -560,7 +566,7 @@ merged_data |>
 
 ```
 
-Some other useful materials:
+## Some other useful materials:
 
 <https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html>
 
