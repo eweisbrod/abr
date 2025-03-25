@@ -199,8 +199,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">4.1</span> Introduction</a></li>
+  <li><a href="#obtain-data-from-wrds" id="toc-obtain-data-from-wrds" class="nav-link" data-scroll-target="#obtain-data-from-wrds"><span class="header-section-number">4.2</span> Obtain data from WRDS</a></li>
+  <li><a href="#transform-wrds-data" id="toc-transform-wrds-data" class="nav-link" data-scroll-target="#transform-wrds-data"><span class="header-section-number">4.3</span> Transform WRDS data</a></li>
+  <li><a href="#obtain-and-transform-data-from-other-sources" id="toc-obtain-and-transform-data-from-other-sources" class="nav-link" data-scroll-target="#obtain-and-transform-data-from-other-sources"><span class="header-section-number">4.4</span> Obtain and transform data from other sources</a></li>
+  <li><a href="#good-practices-for-naming-files-and-variables-saving-data" id="toc-good-practices-for-naming-files-and-variables-saving-data" class="nav-link" data-scroll-target="#good-practices-for-naming-files-and-variables-saving-data"><span class="header-section-number">4.5</span> Good Practices for naming files and variables, saving data</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">4.6</span> Summary</a></li>
+  <li><a href="#some-other-useful-materials" id="toc-some-other-useful-materials" class="nav-link" data-scroll-target="#some-other-useful-materials"><span class="header-section-number">4.7</span> Some other useful materials:</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -224,12 +236,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="introduction" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">4.1</span> Introduction</h2>
 <p>Parquet files offer significant advantages when dealing with large datasets that need to be retrieved, stored, and merged efficiently. Their columnar storage format allows reading only the necessary columns instead of scanning the entire dataset, making data retrieval much faster compared to traditional formats like CSV or Stata. Additionally, Parquet optimizes input/output operations, reducing the amount of data that needs to be read from disk, which speeds up processing times when merging multiple datasets.</p>
 <p>Another key benefit of Parquet is its efficient storage and compression capabilities. Unlike CSV or Stata files, which store data in a row-based format, Parquet applies built-in compression algorithms such as Gzip or Snappy, significantly reducing file size. This not only saves disk space but also speeds up data transfer, especially when obtaining datasets from remote servers like WRDS, AWS, or PostgreSQL databases.</p>
 <p>Parquet files also ensure schema consistency and data type preservation, which is crucial when merging datasets from different sources. In contrast to CSV files, where numerical values may sometimes be interpreted as text, Parquet maintains strict data types. It also efficiently handles missing values, reducing potential errors and inconsistencies when performing joins and merges.</p>
 <p>When merging large datasets, Parquet’s columnar format and filtering capabilities help reduce memory usage and processing time. Instead of loading entire datasets into memory, users can select and load only the relevant columns before merging, significantly optimizing resource allocation. Additionally, Parquet is highly compatible with modern data science tools, supporting parallel computing and batch processing with frameworks like Spark, Dask, and DuckDB.</p>
 <p>Parquet’s cross-platform support makes it ideal for working in R, Python (pandas, pyarrow, Polars), SQL databases, and cloud platforms such as AWS S3 and Google BigQuery. This ensures seamless integration with existing workflows, whether working on local machines or in cloud-based data pipelines. Given its speed, storage efficiency, and compatibility, Parquet is a preferred format for obtaining and merging large financial datasets from sources like Compustat, CRSP, and other WRDS databases.</p>
-<p>Let’s first learn how to obtain data from WRDS. The code below shows how to connect to WRDS.</p>
+</section>
+<section id="obtain-data-from-wrds" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="obtain-data-from-wrds"><span class="header-section-number">4.2</span> Obtain data from WRDS</h2>
+<p>Let’s first learn how to obtain data from WRDS. The code below shows how to connect to WRDS. First we load libraries and helper scripts. Then we connect to WRDS.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup ------------------------------------------------------------------------</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -296,7 +313,8 @@ imported transformation functions</code></pre>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sslmode =</span> <span class="st">'require'</span>,</span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dbname =</span> <span class="st">'wrds'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The R script below retrieves and processes financial data from the <strong>Compustat</strong> database using <strong>PostgreSQL</strong> on the <strong>WRDS server</strong>. It begins by listing available tables within a specified schema and then loads the necessary datasets (<code>funda</code> and <code>company</code>). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain <strong>U.S. firms from 1967 onward</strong> while excluding financial and utility firms.</p>
+<p>The R script below in this section retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (<code>funda</code> and <code>company</code>). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.</p>
+<p>First we list all of the tables in Compustat.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See a list of tables in a schema ---------------------------------------------</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Just an example to play with the Postgres server</span></span>
@@ -309,128 +327,141 @@ imported transformation functions</code></pre>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>()  <span class="sc">|&gt;</span>  </span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">View</span>()</span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># can replace "comp" with any schema such as "crsp" "ibes" etc.</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># schemas on the Postgres server are similar to WRDS SAS libraries</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Load table references and download data --------------------------------------</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Load funda as a tbl</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>comp.funda <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"comp"</span>, <span class="st">"funda"</span>))</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>comp.company <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"comp"</span>, <span class="st">"company"</span>))</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional line:</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co">#if you want to see how long a block of code takes you can start a tictoc timer</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co">#it will tell you how long it takes between when you run tic() and when you run </span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co"># toc()</span></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Get some raw Compustat data from funda</span></span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>raw_funda <span class="ot">&lt;-</span></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  comp.funda <span class="sc">|&gt;</span> </span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Apply standard Compustat filters</span></span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(indfmt<span class="sc">==</span><span class="st">'INDL'</span>, datafmt<span class="sc">==</span><span class="st">'STD'</span>, popsrc<span class="sc">==</span><span class="st">'D'</span> ,consol<span class="sc">==</span><span class="st">'C'</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Select the variables we want to download</span></span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>  <span class="co">#the pattern for inline renaming is </span></span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>  <span class="co">#new_name = old_name</span></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(conm, gvkey, datadate, fyear, fyr, <span class="at">cstat_cusip=</span>cusip, <span class="co">#inline renaming</span></span>
-<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>         cik, <span class="at">cstat_ticker=</span> tic, sich, ib, spi, at, xrd, ceq, sale,</span>
-<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>         csho, prcc_f</span>
-<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Merge with the Compustat Company file for header SIC code and GICs code</span></span>
-<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">select</span>(comp.company, gvkey, sic, fic, gind), <span class="at">by=</span><span class="st">"gvkey"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Use historical sic [sich] when available. Otherwise use header sic [sic]</span></span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sic4 =</span> <span class="fu">coalesce</span>(sich, <span class="fu">as.numeric</span>(sic))) <span class="sc">|&gt;</span> </span>
-<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Calculate two digit sic code</span></span>
-<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sic2 =</span> <span class="fu">floor</span>(sic4<span class="sc">/</span><span class="dv">100</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Delete financial and utility industries</span></span>
-<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>  <span class="co">#For some research projects this is common to remove highly regulated firms</span></span>
-<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>  <span class="co">#with unique accounting practices</span></span>
-<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">between</span>(sic2,<span class="dv">60</span>,<span class="dv">69</span>),</span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>         sic2 <span class="sc">!=</span> <span class="dv">49</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># replace missings with 0 for defined vars</span></span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(spi, xrd),</span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>            <span class="sc">~</span> <span class="fu">coalesce</span>(., <span class="dv">0</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create a few additional variables</span></span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Some example code to align the data in June calendar time. </span></span>
-<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Some papers use June of each year and assume a 3 month reporting lag.</span></span>
-<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Effectively this is coded as aligning datadate as of March each year.</span></span>
-<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># See, for example, Hou, Van Dijk, and Zhang (2012 JAE) figure 1</span></span>
-<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This example also demonstrates injecting sql into dplyr code</span></span>
-<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">calyear =</span> <span class="fu">if_else</span>( fyr <span class="sc">&gt;</span> <span class="dv">3</span>,</span>
-<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">sql</span>(<span class="st">"extract(year from datadate)"</span>)<span class="sc">+</span><span class="dv">1</span>,</span>
-<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">sql</span>(<span class="st">"extract(year from datadate)"</span>)),</span>
-<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>    <span class="co"># mve is market value of equity</span></span>
-<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">mve =</span> csho <span class="sc">*</span> prcc_f,</span>
-<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>    <span class="co"># define earnings (e) as earnings before special items</span></span>
-<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">e=</span> ib<span class="sc">-</span>spi,</span>
-<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter to fiscal years after 1955, not much in Compustat before that </span></span>
-<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="dv">1967</span> <span class="sc">&lt;</span> fyear) <span class="sc">|&gt;</span> </span>
-<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter to US companies</span></span>
-<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(fic<span class="sc">==</span><span class="st">"USA"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>  <span class="co"># everything above manupulates the data inside the WRDS postgres server</span></span>
-<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>  <span class="co">#behind the scenes it generates efficient sql code</span></span>
-<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># below line downloads to local machine RAM</span></span>
-<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
-<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if you comment out the above collect() and instead run below command</span></span>
-<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>  <span class="co"># you can see the behind the scenes sql</span></span>
-<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>  <span class="co">#show_query()</span></span>
-<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a><span class="co">#stop the tictoc timer</span></span>
-<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>3.59 sec elapsed</code></pre>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># schemas on the Postgres server are similar to WRDS SAS libraries</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the data to disk --------------------------------------------------------</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># saving to Stata is convenient for working with coauthors</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># glue package allows for dynamic file paths </span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># then each coauthor can specify their own local data folder</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write_dta</span>(raw_funda,<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.dta"</span>)) </span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then we load table references from WRDS.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load table references and download data --------------------------------------</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load funda as a tbl</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>comp.funda <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"comp"</span>, <span class="st">"funda"</span>))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>comp.company <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"comp"</span>, <span class="st">"company"</span>))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional line:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#if you want to see how long a block of code takes you can start a tictoc timer</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#it will tell you how long it takes between when you run tic() and when you run </span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># toc()</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In this step, we demonstrate how to retrieve raw firm-level financial data from the Compustat funda table using dbplyr and the PostgreSQL connection to WRDS. We apply standard filters to isolate industrial-format, standardized, domestic, consolidated firm-year observations. Using select() with inline renaming, we extract a focused set of financial and identifying variables. We then merge this data with the company table to bring in additional firm-level information such as SIC and GICS codes.</p>
+<p>To enhance comparability across firms, we derive several useful variables. These include a four-digit SIC code (sic4), a two-digit SIC code (sic2), and commonly used financial metrics such as earnings before special items (e) and market value of equity (mve). We exclude highly regulated industries such as financials and utilities, apply missing value handling, and align fiscal years with calendar time following conventions seen in prior literature.</p>
+<p>The final collect() statement downloads the filtered dataset to the local R session from the WRDS server, allowing for further manipulation in memory. This approach ensures that only cleaned and relevant data is transferred, minimizing memory usage and processing time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get some raw Compustat data from funda</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>raw_funda <span class="ot">&lt;-</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  comp.funda <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Apply standard Compustat filters</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(indfmt<span class="sc">==</span><span class="st">'INDL'</span>, datafmt<span class="sc">==</span><span class="st">'STD'</span>, popsrc<span class="sc">==</span><span class="st">'D'</span> ,consol<span class="sc">==</span><span class="st">'C'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Select the variables we want to download</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#the pattern for inline renaming is </span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#new_name = old_name</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(conm, gvkey, datadate, fyear, fyr, <span class="at">cstat_cusip=</span>cusip, <span class="co">#inline renaming</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>         cik, <span class="at">cstat_ticker=</span> tic, sich, ib, spi, at, xrd, ceq, sale,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>         csho, prcc_f</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Merge with the Compustat Company file for header SIC code and GICs code</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">select</span>(comp.company, gvkey, sic, fic, gind), <span class="at">by=</span><span class="st">"gvkey"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Use historical sic [sich] when available. Otherwise use header sic [sic]</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sic4 =</span> <span class="fu">coalesce</span>(sich, <span class="fu">as.numeric</span>(sic))) <span class="sc">|&gt;</span> </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Calculate two digit sic code</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sic2 =</span> <span class="fu">floor</span>(sic4<span class="sc">/</span><span class="dv">100</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Delete financial and utility industries</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">#For some research projects this is common to remove highly regulated firms</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">#with unique accounting practices</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">between</span>(sic2,<span class="dv">60</span>,<span class="dv">69</span>),</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>         sic2 <span class="sc">!=</span> <span class="dv">49</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># replace missings with 0 for defined vars</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(spi, xrd),</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>            <span class="sc">~</span> <span class="fu">coalesce</span>(., <span class="dv">0</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create a few additional variables</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Some example code to align the data in June calendar time. </span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Some papers use June of each year and assume a 3 month reporting lag.</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Effectively this is coded as aligning datadate as of March each year.</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># See, for example, Hou, Van Dijk, and Zhang (2012 JAE) figure 1</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This example also demonstrates injecting sql into dplyr code</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">calyear =</span> <span class="fu">if_else</span>( fyr <span class="sc">&gt;</span> <span class="dv">3</span>,</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">sql</span>(<span class="st">"extract(year from datadate)"</span>)<span class="sc">+</span><span class="dv">1</span>,</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">sql</span>(<span class="st">"extract(year from datadate)"</span>)),</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># mve is market value of equity</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">mve =</span> csho <span class="sc">*</span> prcc_f,</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># define earnings (e) as earnings before special items</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">e=</span> ib<span class="sc">-</span>spi,</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter to fiscal years after 1955, not much in Compustat before that </span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="dv">1967</span> <span class="sc">&lt;</span> fyear) <span class="sc">|&gt;</span> </span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter to US companies</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(fic<span class="sc">==</span><span class="st">"USA"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># everything above manupulates the data inside the WRDS postgres server</span></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>  <span class="co">#behind the scenes it generates efficient sql code</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># below line downloads to local machine RAM</span></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>  <span class="co">#if you comment out the above collect() and instead run below command</span></span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># you can see the behind the scenes sql</span></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>  <span class="co">#show_query()</span></span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a><span class="co">#stop the tictoc timer</span></span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3.78 sec elapsed</code></pre>
+</div>
+</div>
+<p>Finally, we save data in dta and parquet forms.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the data to disk --------------------------------------------------------</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># saving to Stata is convenient for working with coauthors</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># glue package allows for dynamic file paths </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># then each coauthor can specify their own local data folder</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write_dta</span>(raw_funda,<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.dta"</span>)) </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.72 sec elapsed</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#looks like about 162 MB on my machine</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># if the data will stay in R or another advanced/modern language like Python</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># then Parquet files are a nice open-source file format for data science</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># they are fast and small and have some other advanced features as well</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># in this example, we have customized the write_parquet function a bit to </span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># default to a high level of gzip compression to save space</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># therefore, the write_parquet function is using the function defined in the </span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># utils script</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">write_parquet</span>(raw_funda,<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.parquet"</span>))</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#looks like about 162 MB on my machine</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># if the data will stay in R or another advanced/modern language like Python</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># then Parquet files are a nice open-source file format for data science</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># they are fast and small and have some other advanced features as well</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># in this example, we have customized the write_parquet function a bit to </span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># default to a high level of gzip compression to save space</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># therefore, the write_parquet function is using the function defined in the </span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># utils script</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tic</span>()</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">write_parquet</span>(raw_funda,<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.parquet"</span>))</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.89 sec elapsed</code></pre>
+<pre><code>1.87 sec elapsed</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the parquet operations are faster and the file is only 32MB on my machine</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the parquet operations are faster and the file is only 32MB on my machine</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Then we play with transforming data. The R script below processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&amp;D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.</p>
+</section>
+<section id="transform-wrds-data" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="transform-wrds-data"><span class="header-section-number">4.3</span> Transform WRDS data</h2>
+<p>Then we play with transforming data. The R script in this section processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&amp;D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.</p>
+<p>First we load libraries and setup directories.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup ------------------------------------------------------------------------</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries [i.e., packages]</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># I like to load tidyverse last to avoid package conflicts</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"E:/acct_995_data/abr/-Global-Parameters.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup ------------------------------------------------------------------------</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries [i.e., packages]</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># I like to load tidyverse last to avoid package conflicts</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"E:/acct_995_data/abr/-Global-Parameters.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>☐ Edit '.Renviron'.</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>☐ Restart R for changes to take effect.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"E:/acct_995_data/abr/utils.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"E:/acct_995_data/abr/utils.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>set R formatting options</code></pre>
 </div>
@@ -443,24 +474,28 @@ imported transformation functions</code></pre>
 <div class="cell-output cell-output-stderr">
 <pre><code>imported transformation functions</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read in the data from the previous step --------------------------------------</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#let's work with the parquet version</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>data1 <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.parquet"</span>))</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co">#note: if you choose to collect your raw data in SAS or Stata</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co"># these could easily be read in using haven::read_dta() or haven::read_sas()</span></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Some quick peeks at the data -------------------------------------------------</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co">#since the data is structured as a dplyr tibble, just calling its name</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co">#will preview the first 10 rows (similar to a head function)</span></span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>data1 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Load data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read in the data from the previous step --------------------------------------</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#let's work with the parquet version</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>data1 <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.parquet"</span>))</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">#note: if you choose to collect your raw data in SAS or Stata</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co"># these could easily be read in using haven::read_dta() or haven::read_sas()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Some ways to check data at the first stage.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Some quick peeks at the data -------------------------------------------------</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#since the data is structured as a dplyr tibble, just calling its name</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#will preview the first 10 rows (similar to a head function)</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>data1 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 302,865 × 25
+<pre><code># A tibble: 302,917 × 25
    conm  gvkey datadate   fyear   fyr cstat_cusip cik   cstat_ticker  sich    ib
    &lt;chr&gt; &lt;chr&gt; &lt;date&gt;     &lt;int&gt; &lt;int&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt;
  1 A &amp; … 0010… 1968-12-31  1968    12 000032102   &lt;NA&gt;  AE.2            NA 0.347
@@ -473,15 +508,15 @@ imported transformation functions</code></pre>
  8 A &amp; … 0010… 1975-12-31  1975    12 000032102   &lt;NA&gt;  AE.2            NA 2.28 
  9 A &amp; … 0010… 1976-12-31  1976    12 000032102   &lt;NA&gt;  AE.2            NA 3.43 
 10 A &amp; … 0010… 1977-12-31  1977    12 000032102   &lt;NA&gt;  AE.2            NA 1.93 
-# ℹ 302,855 more rows
+# ℹ 302,907 more rows
 # ℹ 15 more variables: spi &lt;dbl&gt;, at &lt;dbl&gt;, xrd &lt;dbl&gt;, ceq &lt;dbl&gt;, sale &lt;dbl&gt;,
 #   csho &lt;dbl&gt;, prcc_f &lt;dbl&gt;, sic &lt;chr&gt;, fic &lt;chr&gt;, gind &lt;chr&gt;, sic4 &lt;dbl&gt;,
 #   sic2 &lt;dbl&gt;, calyear &lt;dbl&gt;, mve &lt;dbl&gt;, e &lt;dbl&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#can also glimpse</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#can also glimpse</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 302,865
+<pre><code>Rows: 302,917
 Columns: 25
 $ conm         &lt;chr&gt; "A &amp; E PLASTIK PAK INC", "A &amp; E PLASTIK PAK INC", "A &amp; E …
 $ gvkey        &lt;chr&gt; "001000", "001000", "001000", "001000", "001000", "001000…
@@ -509,119 +544,127 @@ $ calyear      &lt;dbl&gt; 1969, 1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977,
 $ mve          &lt;dbl&gt; NA, NA, 24.460000, 17.221250, 14.872750, 4.970000, 4.5687…
 $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.284, 3…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#or summarize</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#or summarize</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     conm              gvkey              datadate              fyear     
- Length:302865      Length:302865      Min.   :1968-06-30   Min.   :1968  
+ Length:302917      Length:302917      Min.   :1968-06-30   Min.   :1968  
  Class :character   Class :character   1st Qu.:1984-09-30   1st Qu.:1984  
- Mode  :character   Mode  :character   Median :1995-12-31   Median :1995  
-                                       Mean   :1996-05-12   Mean   :1995  
+ Mode  :character   Mode  :character   Median :1996-01-31   Median :1995  
+                                       Mean   :1996-05-13   Mean   :1995  
                                        3rd Qu.:2007-06-30   3rd Qu.:2007  
                                        Max.   :2025-01-31   Max.   :2024  
                                                                           
       fyr         cstat_cusip            cik            cstat_ticker      
- Min.   : 1.000   Length:302865      Length:302865      Length:302865     
+ Min.   : 1.000   Length:302917      Length:302917      Length:302917     
  1st Qu.: 6.000   Class :character   Class :character   Class :character  
  Median :12.000   Mode  :character   Mode  :character   Mode  :character  
- Mean   : 9.471                                                           
+ Mean   : 9.472                                                           
  3rd Qu.:12.000                                                           
  Max.   :12.000                                                           
                                                                           
       sich              ib                 spi                  at           
  Min.   : 100     Min.   :-56121.90   Min.   :-51066.20   Min.   :      0.0  
  1st Qu.:2842     1st Qu.:    -2.07   1st Qu.:    -0.24   1st Qu.:     11.7  
- Median :3823     Median :     0.65   Median :     0.00   Median :     62.7  
- Mean   :4549     Mean   :    73.47   Mean   :   -15.54   Mean   :   1655.3  
- 3rd Qu.:5961     3rd Qu.:    10.73   3rd Qu.:     0.00   3rd Qu.:    396.1  
+ Median :3823     Median :     0.64   Median :     0.00   Median :     62.7  
+ Mean   :4549     Mean   :    73.45   Mean   :   -15.54   Mean   :   1655.2  
+ 3rd Qu.:5961     3rd Qu.:    10.73   3rd Qu.:     0.00   3rd Qu.:    396.2  
  Max.   :9998     Max.   :104821.00   Max.   :120517.00   Max.   :1153881.0  
- NA's   :106820   NA's   :18740                           NA's   :17557      
+ NA's   :106792   NA's   :18736                           NA's   :17553      
       xrd                ceq                sale               csho         
  Min.   :   -0.65   Min.   :-86154.0   Min.   : -1965.0   Min.   :     0.0  
  1st Qu.:    0.00   1st Qu.:     3.0   1st Qu.:     9.4   1st Qu.:     2.9  
  Median :    0.00   Median :    23.1   Median :    63.1   Median :     9.7  
- Mean   :   34.20   Mean   :   570.8   Mean   :  1387.6   Mean   :    73.2  
- 3rd Qu.:    2.11   3rd Qu.:   152.0   3rd Qu.:   406.7   3rd Qu.:    32.7  
+ Mean   :   34.19   Mean   :   570.7   Mean   :  1387.4   Mean   :    73.2  
+ 3rd Qu.:    2.12   3rd Qu.:   152.0   3rd Qu.:   406.7   3rd Qu.:    32.7  
  Max.   :88544.00   Max.   :649368.0   Max.   :680985.0   Max.   :500796.1  
-                    NA's   :18294      NA's   :18818      NA's   :21330     
+                    NA's   :18290      NA's   :18814      NA's   :21325     
      prcc_f              sic                fic                gind          
- Min.   :     0.00   Length:302865      Length:302865      Length:302865     
+ Min.   :     0.00   Length:302917      Length:302917      Length:302917     
  1st Qu.:     2.40   Class :character   Class :character   Class :character  
  Median :     8.62   Mode  :character   Mode  :character   Mode  :character  
  Mean   :    23.45                                                           
  3rd Qu.:    21.88                                                           
  Max.   :141600.00                                                           
- NA's   :62083                                                               
+ NA's   :62082                                                               
       sic4           sic2          calyear          mve         
  Min.   : 100   Min.   : 1.00   Min.   :1969   Min.   :      0  
  1st Qu.:2836   1st Qu.:28.00   1st Qu.:1985   1st Qu.:     13  
  Median :3714   Median :37.00   Median :1996   Median :     66  
- Mean   :4426   Mean   :43.83   Mean   :1996   Mean   :   2337  
- 3rd Qu.:5812   3rd Qu.:58.00   3rd Qu.:2008   3rd Qu.:    439  
+ Mean   :4426   Mean   :43.82   Mean   :1996   Mean   :   2336  
+ 3rd Qu.:5812   3rd Qu.:58.00   3rd Qu.:2008   3rd Qu.:    440  
  Max.   :9998   Max.   :99.00   Max.   :2025   Max.   :3522211  
-                                               NA's   :64797    
+                                               NA's   :64795    
        e            
  Min.   :-39656.00  
  1st Qu.:    -1.38  
  Median :     0.86  
- Mean   :    90.03  
+ Mean   :    90.01  
  3rd Qu.:    13.01  
  Max.   :100834.00  
- NA's   :18740      </code></pre>
+ NA's   :18736      </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Manipulate a few variables ---------------------------------------------------</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#many of the below steps could be combined into one. They also could have been</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co">#done on the WRDS server</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co">#I just separate them for teaching purposes</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data1 <span class="sc">|&gt;</span></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter based on the global parameters for the sample period that we set in</span></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the global-parameters script.</span></span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(calyear <span class="sc">&gt;=</span> beg_year,</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>         calyear <span class="sc">&lt;=</span> end_year) <span class="sc">|&gt;</span> </span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I am going to scale by total assets (at) so I am going to set a minimum at</span></span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># to avoid small denominators</span></span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(at <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">#use the FF utility functions to assign fama french industries</span></span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">FF12 =</span> <span class="fu">assign_FF12</span>(sic4),</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">ff12num =</span> <span class="fu">assign_FF12_num</span>(sic4),</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">FF49 =</span> <span class="fu">assign_FF49</span>(sic4),</span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">ff49num =</span> <span class="fu">assign_FF49_num</span>(sic4),</span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># code a loss dummy, I like 1/0 but true/false is also fine</span></span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">if_else</span>(e <span class="sc">&lt;</span> <span class="dv">0</span> , <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scale e by ending total assets</span></span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FSA purists would probably use average total assets, but just an example</span></span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">roa =</span> e <span class="sc">/</span> at ,</span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scale r&amp;d by ending total assets</span></span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">rd =</span> xrd <span class="sc">/</span> at</span>
-<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># let's do an earnings persistence regression with lead earnings as y</span></span>
-<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># so for each gvkey we need the next earnings for that gvkey</span></span>
-<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># first make sure the data is sorted properly</span></span>
-<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gvkey,datadate) <span class="sc">|&gt;</span> </span>
-<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># then group by firm (gvkey) </span></span>
-<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this will restrict the lead function to only look at the next obs </span></span>
-<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for the same firm</span></span>
-<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gvkey) <span class="sc">|&gt;</span> </span>
-<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">roa_lead_1 =</span> <span class="fu">lead</span>(roa,<span class="dv">1</span>L),</span>
-<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>         <span class="at">datadate_lead_1 =</span> <span class="fu">lead</span>(datadate,<span class="dv">1</span>L)) <span class="sc">|&gt;</span> </span>
-<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">#check to make sure no gaps or fiscal year changes</span></span>
-<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">month</span>(datadate_lead_1) <span class="sc">==</span> <span class="fu">month</span>(datadate),</span>
-<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>         <span class="fu">year</span>(datadate_lead_1) <span class="sc">==</span> <span class="fu">year</span>(datadate) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>  <span class="co">#not a bad idea to ungroup once you are finished</span></span>
-<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Filter multiple variables to require non-missing values</span></span>
-<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">if_all</span>(<span class="fu">c</span>(at, mve,rd,ff12num,<span class="fu">starts_with</span>(<span class="st">"roa"</span>)), <span class="sc">~</span> <span class="sc">!</span><span class="fu">is.na</span>(.x)))</span>
-<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Play around ------------------------------------------------------------------</span></span>
-<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a><span class="co">#how many observations in each FF12 industry?</span></span>
-<span id="cb33-51"><a href="#cb33-51" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">|&gt;</span> </span>
-<span id="cb33-52"><a href="#cb33-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
-<span id="cb33-53"><a href="#cb33-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In this step, we transform the raw Compustat dataset into a cleaned and structured panel suitable for empirical analysis. First, we restrict the sample to the desired calendar window using the beg_year and end_year parameters defined in our global configuration script. To avoid extreme scaling issues, we further limit the dataset to firms with total assets (at) greater than or equal to 10.</p>
+<p>We then construct several key variables that are widely used in empirical finance research. Using utility functions, we assign Fama-French 12- and 49-industry classifications based on each firm’s SIC code. We generate a binary loss indicator (loss), and compute return on assets (roa) and R&amp;D intensity (rd) by scaling by total assets. These metrics serve as foundational inputs for later descriptive and regression analyses.</p>
+<p>To analyze earnings persistence, we calculate lead values of roa and datadate at the firm level. By sorting and grouping the data by firm identifier (gvkey), we ensure the lead function respects firm-level continuity. We retain only observations where the lead date is exactly one year ahead and in the same fiscal month to ensure comparability of year-over-year earnings.</p>
+<p>Finally, we filter the dataset to remove rows with missing values across critical variables, including size (mve), industry classification (ff12num), and all constructed earnings variables. The resulting dataset is a balanced and well-prepared panel that is ready for regression modeling and descriptive analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Manipulate a few variables ---------------------------------------------------</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">#many of the below steps could be combined into one. They also could have been</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#done on the WRDS server</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#I just separate them for teaching purposes</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data1 <span class="sc">|&gt;</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter based on the global parameters for the sample period that we set in</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the global-parameters script.</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(calyear <span class="sc">&gt;=</span> beg_year,</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>         calyear <span class="sc">&lt;=</span> end_year) <span class="sc">|&gt;</span> </span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I am going to scale by total assets (at) so I am going to set a minimum at</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># to avoid small denominators</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(at <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">#use the FF utility functions to assign fama french industries</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">FF12 =</span> <span class="fu">assign_FF12</span>(sic4),</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">ff12num =</span> <span class="fu">assign_FF12_num</span>(sic4),</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">FF49 =</span> <span class="fu">assign_FF49</span>(sic4),</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">ff49num =</span> <span class="fu">assign_FF49_num</span>(sic4),</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># code a loss dummy, I like 1/0 but true/false is also fine</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">if_else</span>(e <span class="sc">&lt;</span> <span class="dv">0</span> , <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scale e by ending total assets</span></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FSA purists would probably use average total assets, but just an example</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">roa =</span> e <span class="sc">/</span> at ,</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scale r&amp;d by ending total assets</span></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">rd =</span> xrd <span class="sc">/</span> at</span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># let's do an earnings persistence regression with lead earnings as y</span></span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># so for each gvkey we need the next earnings for that gvkey</span></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># first make sure the data is sorted properly</span></span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gvkey,datadate) <span class="sc">|&gt;</span> </span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># then group by firm (gvkey) </span></span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this will restrict the lead function to only look at the next obs </span></span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for the same firm</span></span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gvkey) <span class="sc">|&gt;</span> </span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">roa_lead_1 =</span> <span class="fu">lead</span>(roa,<span class="dv">1</span>L),</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>         <span class="at">datadate_lead_1 =</span> <span class="fu">lead</span>(datadate,<span class="dv">1</span>L)) <span class="sc">|&gt;</span> </span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">#check to make sure no gaps or fiscal year changes</span></span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">month</span>(datadate_lead_1) <span class="sc">==</span> <span class="fu">month</span>(datadate),</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>         <span class="fu">year</span>(datadate_lead_1) <span class="sc">==</span> <span class="fu">year</span>(datadate) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>  <span class="co">#not a bad idea to ungroup once you are finished</span></span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Filter multiple variables to require non-missing values</span></span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">if_all</span>(<span class="fu">c</span>(at, mve,rd,ff12num,<span class="fu">starts_with</span>(<span class="st">"roa"</span>)), <span class="sc">~</span> <span class="sc">!</span><span class="fu">is.na</span>(.x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We conduct a simple exploratory exercise to examine how loss-making firms are distributed across industries. Using the cleaned dataset, we begin by summarizing the number of firm-year observations in each Fama-French 12 (FF12) industry classification. Next, we compute the proportion of firms with losses in each industry by calculating the percentage of firm-year observations where the loss indicator equals one.</p>
+<p>To visualize these patterns, we produce a horizontal bar chart that shows the frequency of losses by FF12 industry. This plot provides an intuitive overview of which sectors are more prone to reporting negative earnings. The use of ggplot2 allows for a clean, professional presentation, with percentage-formatted y-axis labels and a minimalistic theme suitable for inclusion in academic papers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Play around ------------------------------------------------------------------</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#how many observations in each FF12 industry?</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">|&gt;</span> </span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 2
 # Groups:   FF12 [10]
@@ -638,10 +681,10 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
  9 Retail               23568
 10 Telecommunications    4979</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#percentage of losses by industry?</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">|&gt;</span> </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#percentage of losses by industry?</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">|&gt;</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 2
    FF12                 pct_loss
@@ -657,122 +700,129 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
  9 Retail                  0.164
 10 Telecommunications      0.378</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#as a quick figure?</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">|&gt;</span> </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> FF12, <span class="at">y=</span> pct_loss)) <span class="sc">+</span> </span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"Freq. of Losses"</span>, <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#as a quick figure?</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">|&gt;</span> </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> FF12, <span class="at">y=</span> pct_loss)) <span class="sc">+</span> </span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"Freq. of Losses"</span>, <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="obtain-data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="obtain-data_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Winsorize the data -----------------------------------------------------------</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">#check the tail values as an example</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data2<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">01</span>,.<span class="dv">99</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To mitigate the influence of extreme values in financial data, we apply winsorization to key variables. Winsorizing replaces values in the upper and lower tails of the distribution with specified cutoff percentiles, reducing the impact of outliers while preserving the overall structure of the data. We first examine the distribution of return on assets (roa) to assess tail behavior.</p>
+<p>Using the default winsorize_x() function, we trim all observations below the 1st percentile and above the 99th percentile for key financial variables such as mve, at, rd, and all variables beginning with “roa”. We also demonstrate an alternative approach by adjusting the cutoff to 2.5% and 97.5%, allowing researchers to control the extent of trimming based on empirical needs.</p>
+<p>After verifying the modified distributions, we save the winsorized dataset in Stata format for use in later empirical analysis. This step ensures that downstream regression results are not unduly driven by outliers, supporting robustness and interpretability.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Winsorize the data -----------------------------------------------------------</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co">#check the tail values as an example</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data2<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">01</span>,.<span class="dv">99</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         0%          1%         99%        100% 
 -39.6179784  -0.8033140   0.2430401   2.5709079 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#default winsorization</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>data3 <span class="ot">&lt;-</span> data2 <span class="sc">|&gt;</span> </span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#default is 1% / 99 % , this winsorizes rd and all roa vars at that cut</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(mve,at,rd,<span class="fu">starts_with</span>(<span class="st">"roa"</span>)), winsorize_x))</span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">#check the winsorized tail values</span></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data3<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">01</span>,.<span class="dv">99</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#default winsorization</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>data3 <span class="ot">&lt;-</span> data2 <span class="sc">|&gt;</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#default is 1% / 99 % , this winsorizes rd and all roa vars at that cut</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(mve,at,rd,<span class="fu">starts_with</span>(<span class="st">"roa"</span>)), winsorize_x))</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co">#check the winsorized tail values</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data3<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">01</span>,.<span class="dv">99</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        0%         1%        99%       100% 
 -0.8033140 -0.8033083  0.2430382  0.2430401 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#alternate version, if we want to change the tails</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>data3b <span class="ot">&lt;-</span> data2 <span class="sc">|&gt;</span> </span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#winsorize 2.5% / 97.5 % </span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">c</span>(rd,<span class="fu">starts_with</span>(<span class="st">"roa"</span>)), <span class="sc">~</span> <span class="fu">winsorize_x</span>(.x,<span class="at">cuts =</span> <span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.025</span>)))</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data2<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">025</span>,.<span class="dv">975</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">#alternate version, if we want to change the tails</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>data3b <span class="ot">&lt;-</span> data2 <span class="sc">|&gt;</span> </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#winsorize 2.5% / 97.5 % </span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">c</span>(rd,<span class="fu">starts_with</span>(<span class="st">"roa"</span>)), <span class="sc">~</span> <span class="fu">winsorize_x</span>(.x,<span class="at">cuts =</span> <span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.025</span>)))</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co">#check</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data2<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">025</span>,.<span class="dv">975</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         0%        2.5%       97.5%        100% 
 -39.6179784  -0.5113552   0.1891310   2.5709079 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data3b<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">025</span>,.<span class="dv">975</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data3b<span class="sc">$</span>roa, <span class="at">probs =</span> <span class="fu">c</span>(<span class="dv">0</span>,.<span class="dv">025</span>,.<span class="dv">975</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        0%       2.5%      97.5%       100% 
 -0.5113552 -0.5113345  0.1891293  0.1891310 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the winsorized data  ----------------------------------------------------</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co"># just saving to Stata format this time for brevity</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_dta</span>(data3,<span class="fu">glue</span>(<span class="st">"{data_path}/regdata-R.dta"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the winsorized data  ----------------------------------------------------</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="co"># just saving to Stata format this time for brevity</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_dta</span>(data3,<span class="fu">glue</span>(<span class="st">"{data_path}/regdata-R.dta"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This is my first time working on a Quarto book. So, this first post will be very rough for now. I will try to provide a few different examples of ways to obtain and merge data in R, and a few tips of things to keep in mind.</p>
+</section>
+<section id="obtain-and-transform-data-from-other-sources" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="obtain-and-transform-data-from-other-sources"><span class="header-section-number">4.4</span> Obtain and transform data from other sources</h2>
 <p>We already know how to obtain data from WRDS. Let’s use this to obtain some returns for the S&amp;P 500. We could use the formal index data, but let’s take a shortcut and just use the popular SPY ETF that tracks the S&amp;P 500. To do this, we need to find the CRSP identifier (PERMNO) for the ticker “SPY.” We can look in the WRDS stocknames file for this, and then use the SPY PERMNO to pull data from the CRSP monthly stock file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries [i.e., packages]</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dbplyr)</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RPostgres)</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tictoc) <span class="co">#very optional timer, mostly as a teaching example</span></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># I like to load tidyverse last to avoid package conflicts</span></span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="co">#I have done this in a separate chunk with the options</span></span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="co"># results: FALSE </span></span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="co"># message: FALSE</span></span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a><span class="co">#because I don't need to see the messages from loading the packages. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries [i.e., packages]</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dbplyr)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RPostgres)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tictoc) <span class="co">#very optional timer, mostly as a teaching example</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># I like to load tidyverse last to avoid package conflicts</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="co">#I have done this in a separate chunk with the options</span></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="co"># results: FALSE </span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a><span class="co"># message: FALSE</span></span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="co">#because I don't need to see the messages from loading the packages. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log in to WRDS -------------------------------------------------------------------</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co">#before running this block, I used these commands to securely store my WRDS username and password:</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># keyring::key_set("WRDS_user")</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># keyring::key_set("WRDS_pw")</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">exists</span>(<span class="st">"wrds"</span>)){</span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbDisconnect</span>(wrds)  <span class="co"># because otherwise WRDS might time out</span></span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>wrds <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="fu">Postgres</span>(),</span>
-<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">host =</span> <span class="st">'wrds-pgdata.wharton.upenn.edu'</span>,</span>
-<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">port =</span> <span class="dv">9737</span>,</span>
-<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">user =</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"WRDS_user"</span>),</span>
-<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">password =</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"WRDS_pw"</span>),</span>
-<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sslmode =</span> <span class="st">'require'</span>,</span>
-<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dbname =</span> <span class="st">'wrds'</span>)</span>
-<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Create WRDS Table References -------------------------------------------------</span></span>
-<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>crsp.msf <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"crsp"</span>,<span class="st">"msf"</span>))</span>
-<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>stocknames <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"crsp"</span>,<span class="st">"stocknames"</span>))</span>
-<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a><span class="co">#I am collecting this data locally to play with duplicates</span></span>
-<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="ot">&lt;-</span> stocknames <span class="sc">|&gt;</span> <span class="fu">filter</span>(ticker <span class="sc">==</span> <span class="st">"SPY"</span>) <span class="sc">|&gt;</span> <span class="fu">collect</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log in to WRDS -------------------------------------------------------------------</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co">#before running this block, I used these commands to securely store my WRDS username and password:</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># keyring::key_set("WRDS_user")</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co"># keyring::key_set("WRDS_pw")</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">exists</span>(<span class="st">"wrds"</span>)){</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbDisconnect</span>(wrds)  <span class="co"># because otherwise WRDS might time out</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>wrds <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="fu">Postgres</span>(),</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">host =</span> <span class="st">'wrds-pgdata.wharton.upenn.edu'</span>,</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">port =</span> <span class="dv">9737</span>,</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">user =</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"WRDS_user"</span>),</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">password =</span> keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"WRDS_pw"</span>),</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sslmode =</span> <span class="st">'require'</span>,</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dbname =</span> <span class="st">'wrds'</span>)</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Create WRDS Table References -------------------------------------------------</span></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>crsp.msf <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"crsp"</span>,<span class="st">"msf"</span>))</span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>stocknames <span class="ot">&lt;-</span> <span class="fu">tbl</span>(wrds,<span class="fu">in_schema</span>(<span class="st">"crsp"</span>,<span class="st">"stocknames"</span>))</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a><span class="co">#I am collecting this data locally to play with duplicates</span></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="ot">&lt;-</span> stocknames <span class="sc">|&gt;</span> <span class="fu">filter</span>(ticker <span class="sc">==</span> <span class="st">"SPY"</span>) <span class="sc">|&gt;</span> <span class="fu">collect</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Notice that there are six observations in the stocknames table that all share the same ticker “SPY.” I am going to use this as a toy example to play with duplicates. My goal is for this data to be unique at the level of ticker-permno links. First, I can check whether this is true.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">#check whether there are duplicates </span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co">#this simple logic is useful in general</span></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">#group by the level I want to make unique,</span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co">#count within each group</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">#sort by descending count so that if there are duplicates</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="co">#they will show up at the top. </span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="sc">|&gt;</span> </span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ticker,permno) <span class="sc">|&gt;</span> </span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#check whether there are duplicates </span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="co">#this simple logic is useful in general</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="co">#group by the level I want to make unique,</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="co">#count within each group</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="co">#sort by descending count so that if there are duplicates</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="co">#they will show up at the top. </span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="sc">|&gt;</span> </span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ticker,permno) <span class="sc">|&gt;</span> </span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
 # Groups:   ticker, permno [3]
@@ -785,8 +835,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 </div>
 <p>There are multiple permnos connected to the SPY ticker and some duplicate entries for permno 84398 so I better just look at the data. Also this tells me that there are only a few rows so it doesn’t hurt to just print the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| #note that we can use the kable commmand to embed a simple table in the quarto document</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(spy_permnos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| #note that we can use the kable commmand to embed a simple table in the quarto document</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(spy_permnos)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -924,11 +974,11 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 </div>
 <p>Looking at the data, the company name for permno 84398 matches the SPDR S&amp;P 500 ETF I am looking for. It looks like the duplicate entries might have to do with a change in the listing exchange for the ETF (exchcd) and then a slight name change in 2010 to make the name of the trust more descriptive. Let’s keep using this toy example to demonstrate some other functions for dealing with duplicates:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">#if I want to just collapse the duplicates, I can use "distinct" across the groups that I care about</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="sc">|&gt;</span> </span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ticker,permno) <span class="sc">|&gt;</span> </span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">#if I want to just collapse the duplicates, I can use "distinct" across the groups that I care about</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="sc">|&gt;</span> </span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ticker,permno) <span class="sc">|&gt;</span> </span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   ticker permno
@@ -940,11 +990,11 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 </div>
 <p>Now there are only three observations,which is what I asked for, but sometimes it might matter which of the duplicate observations I keep. For example, perhaps what I should do is keep the most recent observation from the spy_permno dataset, in terms of nameenddt.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">#select the max data within each group as more advanced way to keep one obs per </span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co">#group</span></span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="sc">|&gt;</span> </span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ticker,permno) <span class="sc">|&gt;</span></span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nameenddt<span class="sc">==</span><span class="fu">max</span>(nameenddt))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co">#select the max data within each group as more advanced way to keep one obs per </span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="co">#group</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>spy_permnos <span class="sc">|&gt;</span> </span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ticker,permno) <span class="sc">|&gt;</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nameenddt<span class="sc">==</span><span class="fu">max</span>(nameenddt))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 16
 # Groups:   ticker, permno [3]
@@ -956,34 +1006,34 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 # ℹ 6 more variables: permco &lt;int&gt;, hexcd &lt;int&gt;, cusip &lt;chr&gt;, st_date &lt;date&gt;,
 #   end_date &lt;date&gt;, namedum &lt;dbl&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ultimately we can assign the permno of the current observation, which we already know from manually checking is the correct permno, 84398</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>spy_permno <span class="ot">&lt;-</span> spy_permnos <span class="sc">|&gt;</span> </span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ticker,permno) <span class="sc">|&gt;</span></span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nameenddt<span class="sc">==</span><span class="fu">max</span>(nameenddt)) <span class="sc">|&gt;</span> </span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nameenddt<span class="sc">==</span><span class="fu">max</span>(nameenddt)) <span class="sc">|&gt;</span> </span>
-<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(permno) <span class="sc">|&gt;</span> </span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>()</span>
-<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>spy_permno</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ultimately we can assign the permno of the current observation, which we already know from manually checking is the correct permno, 84398</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>spy_permno <span class="ot">&lt;-</span> spy_permnos <span class="sc">|&gt;</span> </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ticker,permno) <span class="sc">|&gt;</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nameenddt<span class="sc">==</span><span class="fu">max</span>(nameenddt)) <span class="sc">|&gt;</span> </span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nameenddt<span class="sc">==</span><span class="fu">max</span>(nameenddt)) <span class="sc">|&gt;</span> </span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(permno) <span class="sc">|&gt;</span> </span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>()</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>spy_permno</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 84398</code></pre>
 </div>
 </div>
 <p>Now we can use the SPY permno to pull monthly returns for SPY:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull CRSP MSI Data -----------------------------------------------------------</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Data seems to begin in feb 1993, lets start in 1995 as a nice round number</span></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co">#notice that this implicitly feeds the permno I calculated locally back up to WRDS in my crsp query. </span></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>mkt_index <span class="ot">&lt;-</span> crsp.msf <span class="sc">|&gt;</span> </span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="st">"1995-01-01"</span>,</span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>         permno <span class="sc">==</span> spy_permno) <span class="sc">|&gt;</span> </span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date,ret,prc) <span class="sc">|&gt;</span> </span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date),</span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pull CRSP MSI Data -----------------------------------------------------------</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Data seems to begin in feb 1993, lets start in 1995 as a nice round number</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="co">#notice that this implicitly feeds the permno I calculated locally back up to WRDS in my crsp query. </span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>mkt_index <span class="ot">&lt;-</span> crsp.msf <span class="sc">|&gt;</span> </span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="st">"1995-01-01"</span>,</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>         permno <span class="sc">==</span> spy_permno) <span class="sc">|&gt;</span> </span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(date,ret,prc) <span class="sc">|&gt;</span> </span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date),</span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then I can plot them, note that if you look at the source code for this page, I do this in a chunk with echo=false so that I only see the output and not the code. This would be useful for creating an actual paper rather than coding examples:</p>
 <div class="cell">
@@ -997,29 +1047,29 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 </div>
 <p>This plot would look nice with recessions shaded. We can get recession dates from FRED. FRED data can be accessed from an API, there is a custom package to work with FRED data in R called fredr. First you need to obtain a FRED API key by signing up here: <a href="https://fred.stlouisfed.org/docs/api/api_key.html" class="uri">https://fred.stlouisfed.org/docs/api/api_key.html</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load the fredr package</span></span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fredr)</span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Unblock the below and run to set your password</span></span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="co">#keyring::key_set("fred_api_key")</span></span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="co">#set my API key which is saved in keyring</span></span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fredr_set_key</span>(keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"fred_api_key"</span>))</span>
-<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a><span class="co">#collect the data from the series USRECD</span></span>
-<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a><span class="co"># https://fred.stlouisfed.org/series/USRECD</span></span>
-<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>fred_data<span class="ot">&lt;-</span><span class="fu">fredr</span>(<span class="at">series_id =</span> <span class="st">"USRECD"</span>,</span>
-<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">observation_start =</span> <span class="fu">as.Date</span>(<span class="st">"1995-01-01"</span>),</span>
-<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">observation_end =</span> <span class="fu">as.Date</span>(<span class="st">"2024-12-31"</span>),</span>
-<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">frequency =</span> <span class="st">"m"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I am going to add month and year variables because I think this is </span></span>
-<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#easier for linking</span></span>
-<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date),</span>
-<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(date))</span>
-<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a><span class="co"># show the first few rows which has a value of 0 or 1 where 1 is recession</span></span>
-<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a>fred_data <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load the fredr package</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fredr)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Unblock the below and run to set your password</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="co">#keyring::key_set("fred_api_key")</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a><span class="co">#set my API key which is saved in keyring</span></span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="fu">fredr_set_key</span>(keyring<span class="sc">::</span><span class="fu">key_get</span>(<span class="st">"fred_api_key"</span>))</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a><span class="co">#collect the data from the series USRECD</span></span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a><span class="co"># https://fred.stlouisfed.org/series/USRECD</span></span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>fred_data<span class="ot">&lt;-</span><span class="fu">fredr</span>(<span class="at">series_id =</span> <span class="st">"USRECD"</span>,</span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">observation_start =</span> <span class="fu">as.Date</span>(<span class="st">"1995-01-01"</span>),</span>
+<span id="cb63-15"><a href="#cb63-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">observation_end =</span> <span class="fu">as.Date</span>(<span class="st">"2024-12-31"</span>),</span>
+<span id="cb63-16"><a href="#cb63-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">frequency =</span> <span class="st">"m"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb63-17"><a href="#cb63-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I am going to add month and year variables because I think this is </span></span>
+<span id="cb63-18"><a href="#cb63-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#easier for linking</span></span>
+<span id="cb63-19"><a href="#cb63-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">month</span>(date),</span>
+<span id="cb63-20"><a href="#cb63-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">year</span>(date))</span>
+<span id="cb63-21"><a href="#cb63-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-22"><a href="#cb63-22" aria-hidden="true" tabindex="-1"></a><span class="co"># show the first few rows which has a value of 0 or 1 where 1 is recession</span></span>
+<span id="cb63-23"><a href="#cb63-23" aria-hidden="true" tabindex="-1"></a>fred_data <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -1047,8 +1097,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-01-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-03-23</td>
-<td style="text-align: left;">2025-03-23</td>
+<td style="text-align: left;">2025-03-25</td>
+<td style="text-align: left;">2025-03-25</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1056,8 +1106,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-02-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-03-23</td>
-<td style="text-align: left;">2025-03-23</td>
+<td style="text-align: left;">2025-03-25</td>
+<td style="text-align: left;">2025-03-25</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1065,8 +1115,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-03-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-03-23</td>
-<td style="text-align: left;">2025-03-23</td>
+<td style="text-align: left;">2025-03-25</td>
+<td style="text-align: left;">2025-03-25</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1074,8 +1124,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-04-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-03-23</td>
-<td style="text-align: left;">2025-03-23</td>
+<td style="text-align: left;">2025-03-25</td>
+<td style="text-align: left;">2025-03-25</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1083,8 +1133,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-05-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-03-23</td>
-<td style="text-align: left;">2025-03-23</td>
+<td style="text-align: left;">2025-03-25</td>
+<td style="text-align: left;">2025-03-25</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1092,8 +1142,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-06-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-03-23</td>
-<td style="text-align: left;">2025-03-23</td>
+<td style="text-align: left;">2025-03-25</td>
+<td style="text-align: left;">2025-03-25</td>
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1103,17 +1153,17 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 </div>
 <p>Now we need to merge the SPY data with the recession data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">&lt;-</span> mkt_index <span class="sc">|&gt;</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I am going to select only the columns I need from   #the FRED data</span></span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(fred_data <span class="sc">|&gt;</span> </span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>               <span class="fu">select</span>(month,year,<span class="at">recession=</span>value),</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">by=</span><span class="fu">join_by</span>(month,year))</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a><span class="co"># check to make sure it is still unique by month </span></span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>merged_data <span class="sc">|&gt;</span> </span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month,year) <span class="sc">|&gt;</span> </span>
-<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">&lt;-</span> mkt_index <span class="sc">|&gt;</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I am going to select only the columns I need from   #the FRED data</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(fred_data <span class="sc">|&gt;</span> </span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>               <span class="fu">select</span>(month,year,<span class="at">recession=</span>value),</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">by=</span><span class="fu">join_by</span>(month,year))</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a><span class="co"># check to make sure it is still unique by month </span></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>merged_data <span class="sc">|&gt;</span> </span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month,year) <span class="sc">|&gt;</span> </span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 360 × 3
 # Groups:   month, year [360]
@@ -1134,56 +1184,56 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 </div>
 <p>Now we can make the plot with shades for recession months</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co">#turns out the merged data was not the preferred way to do this kind of plot</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="co">#here is some code I found online to reshape the recession data and add it to the plot </span></span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a><span class="co">#rename/assign fred data to recession because </span></span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a><span class="co">#that was the name in the example I found </span></span>
-<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>recession<span class="ot">&lt;-</span>fred_data</span>
-<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a><span class="co">#load a package they used</span></span>
-<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ecm)</span>
-<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a><span class="co">#reshape the recession data for the way </span></span>
-<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_rect likes the data shaped</span></span>
-<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a>recession<span class="sc">$</span>diff<span class="ot">&lt;-</span>recession<span class="sc">$</span>value<span class="sc">-</span><span class="fu">lagpad</span>(recession<span class="sc">$</span>value,<span class="at">k=</span><span class="dv">1</span>)</span>
-<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a>  recession<span class="ot">&lt;-</span>recession[<span class="sc">!</span><span class="fu">is.na</span>(recession<span class="sc">$</span>diff),]</span>
-<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a>  recession.start<span class="ot">&lt;-</span>recession[recession<span class="sc">$</span>diff<span class="sc">==</span><span class="dv">1</span>,]<span class="sc">$</span>date</span>
-<span id="cb62-20"><a href="#cb62-20" aria-hidden="true" tabindex="-1"></a>  recession.end<span class="ot">&lt;-</span>recession[recession<span class="sc">$</span>diff<span class="sc">==</span>(<span class="sc">-</span><span class="dv">1</span>),]<span class="sc">$</span>date</span>
-<span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb62-22"><a href="#cb62-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(recession.start)<span class="sc">&gt;</span><span class="fu">length</span>(recession.end))</span>
-<span id="cb62-23"><a href="#cb62-23" aria-hidden="true" tabindex="-1"></a>  {recession.end<span class="ot">&lt;-</span><span class="fu">c</span>(recession.end,<span class="fu">Sys.Date</span>())}</span>
-<span id="cb62-24"><a href="#cb62-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(recession.end)<span class="sc">&gt;</span><span class="fu">length</span>(recession.start))</span>
-<span id="cb62-25"><a href="#cb62-25" aria-hidden="true" tabindex="-1"></a>  {recession.start<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fu">min</span>(recession<span class="sc">$</span>date),recession.start)}</span>
-<span id="cb62-26"><a href="#cb62-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb62-27"><a href="#cb62-27" aria-hidden="true" tabindex="-1"></a>  recs<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(recession.start,recession.end))</span>
-<span id="cb62-28"><a href="#cb62-28" aria-hidden="true" tabindex="-1"></a>  recs<span class="sc">$</span>recession.start<span class="ot">&lt;-</span><span class="fu">as.Date</span>(<span class="fu">as.numeric</span>(recs<span class="sc">$</span>recession.start),<span class="at">origin=</span><span class="fu">as.Date</span>(<span class="st">"1970-01-01"</span>))</span>
-<span id="cb62-29"><a href="#cb62-29" aria-hidden="true" tabindex="-1"></a>  recs<span class="sc">$</span>recession.end<span class="ot">&lt;-</span><span class="fu">as.Date</span>(recs<span class="sc">$</span>recession.end,<span class="at">origin=</span><span class="fu">as.Date</span>(<span class="st">"1970-01-01"</span>))</span>
-<span id="cb62-30"><a href="#cb62-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-31"><a href="#cb62-31" aria-hidden="true" tabindex="-1"></a><span class="co">#look at the reshaped data</span></span>
-<span id="cb62-32"><a href="#cb62-32" aria-hidden="true" tabindex="-1"></a>recs </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co">#turns out the merged data was not the preferred way to do this kind of plot</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="co">#here is some code I found online to reshape the recession data and add it to the plot </span></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a><span class="co">#rename/assign fred data to recession because </span></span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="co">#that was the name in the example I found </span></span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>recession<span class="ot">&lt;-</span>fred_data</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a><span class="co">#load a package they used</span></span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ecm)</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a><span class="co">#reshape the recession data for the way </span></span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_rect likes the data shaped</span></span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>recession<span class="sc">$</span>diff<span class="ot">&lt;-</span>recession<span class="sc">$</span>value<span class="sc">-</span><span class="fu">lagpad</span>(recession<span class="sc">$</span>value,<span class="at">k=</span><span class="dv">1</span>)</span>
+<span id="cb66-18"><a href="#cb66-18" aria-hidden="true" tabindex="-1"></a>  recession<span class="ot">&lt;-</span>recession[<span class="sc">!</span><span class="fu">is.na</span>(recession<span class="sc">$</span>diff),]</span>
+<span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a>  recession.start<span class="ot">&lt;-</span>recession[recession<span class="sc">$</span>diff<span class="sc">==</span><span class="dv">1</span>,]<span class="sc">$</span>date</span>
+<span id="cb66-20"><a href="#cb66-20" aria-hidden="true" tabindex="-1"></a>  recession.end<span class="ot">&lt;-</span>recession[recession<span class="sc">$</span>diff<span class="sc">==</span>(<span class="sc">-</span><span class="dv">1</span>),]<span class="sc">$</span>date</span>
+<span id="cb66-21"><a href="#cb66-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-22"><a href="#cb66-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(recession.start)<span class="sc">&gt;</span><span class="fu">length</span>(recession.end))</span>
+<span id="cb66-23"><a href="#cb66-23" aria-hidden="true" tabindex="-1"></a>  {recession.end<span class="ot">&lt;-</span><span class="fu">c</span>(recession.end,<span class="fu">Sys.Date</span>())}</span>
+<span id="cb66-24"><a href="#cb66-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(recession.end)<span class="sc">&gt;</span><span class="fu">length</span>(recession.start))</span>
+<span id="cb66-25"><a href="#cb66-25" aria-hidden="true" tabindex="-1"></a>  {recession.start<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fu">min</span>(recession<span class="sc">$</span>date),recession.start)}</span>
+<span id="cb66-26"><a href="#cb66-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb66-27"><a href="#cb66-27" aria-hidden="true" tabindex="-1"></a>  recs<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(recession.start,recession.end))</span>
+<span id="cb66-28"><a href="#cb66-28" aria-hidden="true" tabindex="-1"></a>  recs<span class="sc">$</span>recession.start<span class="ot">&lt;-</span><span class="fu">as.Date</span>(<span class="fu">as.numeric</span>(recs<span class="sc">$</span>recession.start),<span class="at">origin=</span><span class="fu">as.Date</span>(<span class="st">"1970-01-01"</span>))</span>
+<span id="cb66-29"><a href="#cb66-29" aria-hidden="true" tabindex="-1"></a>  recs<span class="sc">$</span>recession.end<span class="ot">&lt;-</span><span class="fu">as.Date</span>(recs<span class="sc">$</span>recession.end,<span class="at">origin=</span><span class="fu">as.Date</span>(<span class="st">"1970-01-01"</span>))</span>
+<span id="cb66-30"><a href="#cb66-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-31"><a href="#cb66-31" aria-hidden="true" tabindex="-1"></a><span class="co">#look at the reshaped data</span></span>
+<span id="cb66-32"><a href="#cb66-32" aria-hidden="true" tabindex="-1"></a>recs </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  recession.start recession.end
 1      2001-04-01    2001-12-01
 2      2008-01-01    2009-07-01
 3      2020-03-01    2020-05-01</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot the new plot with recession bars</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>merged_data <span class="sc">|&gt;</span> </span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>date,<span class="at">y=</span><span class="fu">abs</span>(prc))) <span class="sc">+</span> </span>
-<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">name =</span> <span class="st">"Date"</span>,</span>
-<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">date_breaks=</span> <span class="st">"5 years"</span>,</span>
-<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
-<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"SPY Closing Price"</span>) <span class="sc">+</span></span>
-<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(<span class="at">data=</span>recs, <span class="at">inherit.aes=</span>F, </span>
-<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">aes</span>(<span class="at">xmin=</span>recession.start, <span class="at">xmax=</span>recession.end, <span class="at">ymin=</span><span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax=</span><span class="sc">+</span><span class="cn">Inf</span>), </span>
-<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill=</span><span class="st">"darkgrey"</span>, <span class="at">alpha=</span><span class="fl">0.5</span>)<span class="sc">+</span></span>
-<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot the new plot with recession bars</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>merged_data <span class="sc">|&gt;</span> </span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>date,<span class="at">y=</span><span class="fu">abs</span>(prc))) <span class="sc">+</span> </span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">name =</span> <span class="st">"Date"</span>,</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">date_breaks=</span> <span class="st">"5 years"</span>,</span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"SPY Closing Price"</span>) <span class="sc">+</span></span>
+<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(<span class="at">data=</span>recs, <span class="at">inherit.aes=</span>F, </span>
+<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">aes</span>(<span class="at">xmin=</span>recession.start, <span class="at">xmax=</span>recession.end, <span class="at">ymin=</span><span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax=</span><span class="sc">+</span><span class="cn">Inf</span>), </span>
+<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill=</span><span class="st">"darkgrey"</span>, <span class="at">alpha=</span><span class="fl">0.5</span>)<span class="sc">+</span></span>
+<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1192,12 +1242,23 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 </div>
 </div>
 </div>
-<p>Some other useful materials:</p>
+</section>
+<section id="good-practices-for-naming-files-and-variables-saving-data" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="good-practices-for-naming-files-and-variables-saving-data"><span class="header-section-number">4.5</span> Good Practices for naming files and variables, saving data</h2>
+<p>Good practices for naming files and variables, as well as saving data, are essential for ensuring clarity, reproducibility, and collaboration in any research or coding project. File and variable names should be descriptive, consistent, and concise, avoiding vague terms or arbitrary abbreviations. Using lowercase letters with underscores or hyphens instead of spaces makes names more readable and compatible with various systems. Including relevant details such as dates (in YYYY-MM-DD format), version numbers, or dataset characteristics in filenames helps track progress and makes organization easier. Variables should reflect the data they contain or the function they serve, using a consistent naming convention like snake_case or camelCase depending on the programming language or project style. When saving data, it is important to separate raw, cleaned, and processed datasets using clear prefixes (such as raw_, clean_, or final_) and to always save files in open, widely-used formats like CSV or TXT when possible, ensuring accessibility and ease of reuse. Backing up data regularly and storing it in structured, well-documented folders also supports long-term usability and minimizes confusion when revisiting or sharing the project.</p>
+</section>
+<section id="summary" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="summary"><span class="header-section-number">4.6</span> Summary</h2>
+<p>In this Chapter we introduced a reproducible and efficient workflow for obtaining, transforming, and saving financial datasets using R and modern data science tools. Emphasizing the advantages of Parquet files, we explored their superior performance in terms of storage efficiency, faster retrieval, and reliable data type handling compared to traditional formats like CSV or Stata. Step by step, we demonstrated how to connect to the WRDS PostgreSQL database, retrieve firm-level data from Compustat, and apply standard filters and transformations to construct a clean, analysis-ready dataset. We discussed strategies for merging datasets, deriving financial variables, applying industry classifications, and preparing panel data for regression analysis. The chapter also highlighted the importance of handling duplicates, aligning fiscal periods, and winsorizing key variables to manage outliers. In the latter part, we extended the analysis by integrating external data sources such as CRSP for market returns and FRED for macroeconomic indicators, and we visualized these data in meaningful ways, including time-series plots with recession shading. Throughout the chapter, we reinforced best practices for naming files and variables, organizing data workflows, and saving datasets in interoperable, well-documented formats to support transparency, collaboration, and long-term research reproducibility.</p>
+</section>
+<section id="some-other-useful-materials" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="some-other-useful-materials"><span class="header-section-number">4.7</span> Some other useful materials:</h2>
 <p><a href="https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html" class="uri">https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html</a></p>
 <p><a href="https://iangow.github.io/far_book/web-data.html" class="uri">https://iangow.github.io/far_book/web-data.html</a></p>
 <p><a href="https://iangow.github.io/far_book/identifiers.html" class="uri">https://iangow.github.io/far_book/identifiers.html</a></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
