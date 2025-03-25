@@ -301,7 +301,7 @@ combined_corr |>
     booktabs = TRUE # Use booktabs for professional-looking tables
   ) |>
   kable_styling(
-    latex_options = c("striped", "hold_position","scale_down"), # LaTeX-specific styling
+    latex_options = c("striped","scale_down"), # LaTeX-specific styling
     full_width = FALSE
   )
 ```
@@ -309,7 +309,7 @@ combined_corr |>
 ``` r
 ```
 
-```{# {r}
+```{r}
 # #| label: tbl-regression1
 # #| tbl-cap: "Regression"
 # #| echo: FALSE
@@ -332,6 +332,7 @@ source('reg_table.R')
 ```{r}
 #| label: fig-FF
 #| fig-cap: "**Frequency of Losses by Industry**"
+#| fig-cap-location: top
 #| fig-align: center
 #| echo: FALSE
 #| results: asis
@@ -345,12 +346,17 @@ source("ff12_fig.R")
 
 ```
 
+\newpage
+
 ```{r}
-#| label: fig-1
-#| fig-cap: "2 figures"
-#| fig-align: center
+#| layout-ncol: 2
+#| label: fig-2
 #| echo: FALSE
-#| results: asis
+#| fig-cap: "Comparison of Loss Frequency and ROA Persistence"
+#| fig-subcap: 
+#|   - "Frequency of Losses by Size Quintile"
+#|   - "ROA Persistence by Loss Status"
+#| fig-cap-location: top
 #| warning: FALSE
 #| message: FALSE
 
