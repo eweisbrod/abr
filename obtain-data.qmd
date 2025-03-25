@@ -50,7 +50,7 @@ wrds <- dbConnect(Postgres(),
 
 ```
 
-The R script in this section retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.
+The R script below in this section retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.
 
 First we list all of the tables in Compustat.
 ```{r}
