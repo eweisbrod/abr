@@ -69,7 +69,7 @@ wrds |>
 
 ```
 
-Then we load table references.
+Then we load table references from WRDS.
 ```{r}
 # Load table references and download data --------------------------------------
 
@@ -84,7 +84,7 @@ comp.company <- tbl(wrds,in_schema("comp", "company"))
 tictoc::tic()
 ```
 
-Then we could download, merge, and apply some filters.
+The code below extracts raw firm-level financial data from the Compustat funda and company tables on WRDS, applying standard filters to keep industrial-format, consolidated, domestic U.S. companies while excluding financial and utility firms. It selects and renames relevant variables, merges in company-level identifiers, computes key fields such as SIC codes, market value of equity, and adjusted calendar year, then downloads the resulting dataset to local memory for further analysis.
 ```{r}
 # Get some raw Compustat data from funda
 raw_funda <-
@@ -144,7 +144,7 @@ tictoc::toc()
 
 ```
 
-Finally, we save data in 2 forms.
+Finally, we save data in dta and parquet forms.
 ```{r}
 # Save the data to disk --------------------------------------------------------
 
@@ -222,7 +222,7 @@ glimpse(data1)
 summary(data1)
 ```
 
-Then we could start to manipulate our variables and apply some filters.
+Then we could start to manipulate our variables and apply some filters. This code processes firm-level financial data by filtering for valid observations, constructing key variables like return on assets and R&D intensity, assigning Fama-French industry classifications, and generating lead earnings to support earnings persistence analysis. It then explores industry-level patterns by calculating and visualizing the frequency of losses across FF12 industry groups using grouped summaries and a horizontal bar chart.
 ```{r}
 # Manipulate a few variables ---------------------------------------------------
 
@@ -272,7 +272,7 @@ data2 <- data1 |>
 
 ```
 
-We play around with our data.
+This code explores firm performance across Fama-French 12 industry groups by first counting the number of observations in each group, then calculating the percentage of firms reporting losses. It concludes with a horizontal bar chart visualizing the frequency of losses by industry, providing a quick and intuitive overview of profitability patterns across sectors.
 ```{r}
 # Play around ------------------------------------------------------------------
 
@@ -299,7 +299,7 @@ data2 |>
 
 ```
 
-Then we winsorize and save data.
+This code applies winsorization to key financial variables such as return on assets (roa), R&D intensity (rd), and firm size measures to limit the influence of extreme outliers. It first uses a default 1%–99% cut, then demonstrates an alternative 2.5%–97.5% trim, and finally saves the cleaned dataset in Stata format for further analysis or sharing with collaborators.
 ```{r}
 # Winsorize the data -----------------------------------------------------------
 
