@@ -306,7 +306,17 @@ combined_corr |>
   )
 ```
 
-```         
+``` r
+```
+
+```{# {r}
+# #| label: tbl-regression1
+# #| tbl-cap: "Regression"
+# #| echo: FALSE
+# #| message: FALSE
+# #| results: asis
+# 
+# source('table-4.R')
 ```
 
 ```{r}
@@ -382,4 +392,8 @@ fig2 <- figdata |>
 
 # Print the second figure
 print(fig2)
+```
+
+```{r}
+
 ```
