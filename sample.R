@@ -33,7 +33,7 @@ table_output <- kable(
   booktabs = TRUE   # Use booktabs for better LaTeX tables
 ) %>%
   kable_styling(
-    latex_options = c("striped", "hold_position", "scale_down")  # Add LaTeX styling
+    latex_options = c("striped", "scale_down")  # Add LaTeX styling
   ) %>%
   add_header_above(c(" " = 1, "THESE ARE NOT REAL NUMBERS" = 1)) %>%  # Add a header
   row_spec(6, bold = TRUE) %>%  # Bold the 6th row

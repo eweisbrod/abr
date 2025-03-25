@@ -27,7 +27,7 @@ table_data <- data.frame(
 )
 
 # Generate the table using kable with LaTeX options
-table_output <- kable(
+table_output <- kableExtra::kable(
   table_data,
   col.names = c("Variable", "Definition"),
   align = c("l", "l"),  # Use simple left alignment for both columns
@@ -37,7 +37,7 @@ table_output <- kable(
   #longtable = TRUE   # Use longtable for multi-page tables
 ) %>%
   kable_styling(
-    latex_options = c("line","hold_position","scale_down"),  # Add LaTeX styling
+    latex_options = c("line","scale_down"),  # Add LaTeX styling
     font_size = 10   # Adjust font size
   ) |> 
   row_spec(1, bold = TRUE) %>%
