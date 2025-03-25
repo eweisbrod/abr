@@ -589,6 +589,8 @@ merged_data |>
 
 
 ```
+## Good Practices for naming files and variables, saving data
+Good practices for naming files and variables, as well as saving data, are essential for ensuring clarity, reproducibility, and collaboration in any research or coding project. File and variable names should be descriptive, consistent, and concise, avoiding vague terms or arbitrary abbreviations. Using lowercase letters with underscores or hyphens instead of spaces makes names more readable and compatible with various systems. Including relevant details such as dates (in YYYY-MM-DD format), version numbers, or dataset characteristics in filenames helps track progress and makes organization easier. Variables should reflect the data they contain or the function they serve, using a consistent naming convention like snake_case or camelCase depending on the programming language or project style. When saving data, it is important to separate raw, cleaned, and processed datasets using clear prefixes (such as raw_, clean_, or final_) and to always save files in open, widely-used formats like CSV or TXT when possible, ensuring accessibility and ease of reuse. Backing up data regularly and storing it in structured, well-documented folders also supports long-term usability and minimizes confusion when revisiting or sharing the project.
 
 ## Some other useful materials:
 
