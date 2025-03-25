@@ -84,7 +84,11 @@ comp.company <- tbl(wrds,in_schema("comp", "company"))
 tictoc::tic()
 ```
 
-The code below extracts raw firm-level financial data from the Compustat funda and company tables on WRDS, applying standard filters to keep industrial-format, consolidated, domestic U.S. companies while excluding financial and utility firms. It selects and renames relevant variables, merges in company-level identifiers, computes key fields such as SIC codes, market value of equity, and adjusted calendar year, then downloads the resulting dataset to local memory for further analysis.
+In this section, we demonstrate how to retrieve raw firm-level financial data from the Compustat funda table using dbplyr and the PostgreSQL connection to WRDS. We apply standard filters to isolate industrial-format, standardized, domestic, consolidated firm-year observations. Using select() with inline renaming, we extract a focused set of financial and identifying variables. We then merge this data with the company table to bring in additional firm-level information such as SIC and GICS codes.
+
+To enhance comparability across firms, we derive several useful variables. These include a four-digit SIC code (sic4), a two-digit SIC code (sic2), and commonly used financial metrics such as earnings before special items (e) and market value of equity (mve). We exclude highly regulated industries such as financials and utilities, apply missing value handling, and align fiscal years with calendar time following conventions seen in prior literature.
+
+The final collect() statement downloads the filtered dataset to the local R session from the WRDS server, allowing for further manipulation in memory. This approach ensures that only cleaned and relevant data is transferred, minimizing memory usage and processing time.
 ```{r}
 # Get some raw Compustat data from funda
 raw_funda <-
@@ -222,7 +226,13 @@ glimpse(data1)
 summary(data1)
 ```
 
-Then we could start to manipulate our variables and apply some filters. This code processes firm-level financial data by filtering for valid observations, constructing key variables like return on assets and R&D intensity, assigning Fama-French industry classifications, and generating lead earnings to support earnings persistence analysis. It then explores industry-level patterns by calculating and visualizing the frequency of losses across FF12 industry groups using grouped summaries and a horizontal bar chart.
+In this step, we transform the raw Compustat dataset into a cleaned and structured panel suitable for empirical analysis. First, we restrict the sample to the desired calendar window using the beg_year and end_year parameters defined in our global configuration script. To avoid extreme scaling issues, we further limit the dataset to firms with total assets (at) greater than or equal to 10.
+
+We then construct several key variables that are widely used in empirical finance research. Using utility functions, we assign Fama-French 12- and 49-industry classifications based on each firm’s SIC code. We generate a binary loss indicator (loss), and compute return on assets (roa) and R&D intensity (rd) by scaling by total assets. These metrics serve as foundational inputs for later descriptive and regression analyses.
+
+To analyze earnings persistence, we calculate lead values of roa and datadate at the firm level. By sorting and grouping the data by firm identifier (gvkey), we ensure the lead function respects firm-level continuity. We retain only observations where the lead date is exactly one year ahead and in the same fiscal month to ensure comparability of year-over-year earnings.
+
+Finally, we filter the dataset to remove rows with missing values across critical variables, including size (mve), industry classification (ff12num), and all constructed earnings variables. The resulting dataset is a balanced and well-prepared panel that is ready for regression modeling and descriptive analysis.
 ```{r}
 # Manipulate a few variables ---------------------------------------------------
 
@@ -272,7 +282,9 @@ data2 <- data1 |>
 
 ```
 
-This code explores firm performance across Fama-French 12 industry groups by first counting the number of observations in each group, then calculating the percentage of firms reporting losses. It concludes with a horizontal bar chart visualizing the frequency of losses by industry, providing a quick and intuitive overview of profitability patterns across sectors.
+Before diving into formal regression analysis, we conduct a simple exploratory exercise to examine how loss-making firms are distributed across industries. Using the cleaned dataset, we begin by summarizing the number of firm-year observations in each Fama-French 12 (FF12) industry classification. Next, we compute the proportion of firms with losses in each industry by calculating the percentage of firm-year observations where the loss indicator equals one.
+
+To visualize these patterns, we produce a horizontal bar chart that shows the frequency of losses by FF12 industry. This plot provides an intuitive overview of which sectors are more prone to reporting negative earnings. The use of ggplot2 allows for a clean, professional presentation, with percentage-formatted y-axis labels and a minimalistic theme suitable for inclusion in academic papers.
 ```{r}
 # Play around ------------------------------------------------------------------
 
@@ -299,7 +311,11 @@ data2 |>
 
 ```
 
-This code applies winsorization to key financial variables such as return on assets (roa), R&D intensity (rd), and firm size measures to limit the influence of extreme outliers. It first uses a default 1%–99% cut, then demonstrates an alternative 2.5%–97.5% trim, and finally saves the cleaned dataset in Stata format for further analysis or sharing with collaborators.
+To mitigate the influence of extreme values in financial data, we apply winsorization to key variables. Winsorizing replaces values in the upper and lower tails of the distribution with specified cutoff percentiles, reducing the impact of outliers while preserving the overall structure of the data. We first examine the distribution of return on assets (roa) to assess tail behavior.
+
+Using the default winsorize_x() function, we trim all observations below the 1st percentile and above the 99th percentile for key financial variables such as mve, at, rd, and all variables beginning with "roa". We also demonstrate an alternative approach by adjusting the cutoff to 2.5% and 97.5%, allowing researchers to control the extent of trimming based on empirical needs.
+
+After verifying the modified distributions, we save the winsorized dataset in Stata format for use in later empirical analysis. This step ensures that downstream regression results are not unduly driven by outliers, supporting robustness and interpretability.
 ```{r}
 # Winsorize the data -----------------------------------------------------------
 
