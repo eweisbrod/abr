@@ -16,7 +16,7 @@ source("-Global-Parameters.R")
 source("utils.R")
 
 # Read in the data
-data_path <- "C:/Users/k021s566/Desktop/Eric/ACCT 995/Git/abr_project/abr"
+data_path<- Sys.getenv('DATA_PATH')
 regdata <- read_dta(glue("{data_path}/regdata-R.dta"))
 
 # Generate the figure

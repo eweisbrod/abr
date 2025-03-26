@@ -66,6 +66,7 @@ format:
         \usepackage{lipsum}
         \usepackage{dutchcal}
         \usepackage{amsmath}
+        \usepackage{adjustbox}
     include-before-body:
       text: |
         \newgeometry{top=3cm,bottom=3cm,left=3cm,right=3cm}  % Custom margins for the first page
@@ -102,7 +103,7 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 #| echo: FALSE
 #| message: FALSE
 #| warning: FALSE
-data_path <- "C:/Users/k021s566/Desktop/Eric/ACCT 995/Git/abr_project/abr"
+data_path <- data_path<- Sys.getenv('DATA_PATH')
 regdata <- read_dta(glue("{data_path}/regdata-R.dta"))
 ```
 
@@ -181,9 +182,9 @@ We can use LaTeX references to refer/link readers to the tables as we discuss th
 
 -   @tbl-corr provides a correlation matrix, created in R.
 
--   @tbl-regression provides an example regression table, created in R.
+-   @tbl-regression1 provides an example regression table, created in R.
 
-    Here are some examples of inline table references, including references to the relevant equation and hypothesis. @tbl-corr and @tbl-regression present the results from estimating Eq. (\ref{eq:losses}). The significantly negative coefficients on \$ LOSS \times ROA\_{t}\$ in Columns (4) and (5) provide some evidence consistent with H\ref{hyp:losses}. However, it seems to be important to control for firm characteristics when testing this hypothesis.
+    Here are some examples of inline table references, including references to the relevant equation and hypothesis. @tbl-corr and @tbl-regression1 present the results from estimating Eq. (\ref{eq:losses}). The significantly negative coefficients on \$ LOSS \times ROA\_{t}\$ in Columns (4) and (5) provide some evidence consistent with H\ref{hyp:losses}. However, it seems to be important to control for firm characteristics when testing this hypothesis.
 
     We can also link a graph by [here](#fig-FF).
 
@@ -310,23 +311,17 @@ combined_corr |>
 ```
 
 ```{r}
-# #| label: tbl-regression1
-# #| tbl-cap: "Regression"
-# #| echo: FALSE
-# #| message: FALSE
-# #| results: asis
-# 
-# source('table-4.R')
-```
-
-```{r}
-#| label: tbl-regression
+#| label: tbl-regression1
 #| tbl-cap: "Regression"
 #| echo: FALSE
 #| message: FALSE
 #| results: asis
 
-source('reg_table.R')
+source('table-4.R')
+
+```
+
+```{}
 ```
 
 ```{r}

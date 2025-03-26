@@ -12,7 +12,7 @@ library(tictoc) # very optional, mostly as a teaching example
 library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 # Load Data
-data_path <- "C:/Users/k021s566/Desktop/Eric/ACCT 995/Git/abr_project/abr"
+data_path<- Sys.getenv('DATA_PATH')
 regdata <- read_dta(glue("{data_path}/regdata-R.dta"))
 
 ## Create formatting functions --------------------------------------------------
