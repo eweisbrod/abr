@@ -1,0 +1,797 @@
+# Obtaining and Merging Data
+
+Parquet files offer significant advantages when dealing with large datasets that need to be retrieved, stored, and merged efficiently. Their columnar storage format allows reading only the necessary columns instead of scanning the entire dataset, making data retrieval much faster compared to traditional formats like CSV or Stata. Additionally, Parquet optimizes input/output operations, reducing the amount of data that needs to be read from disk, which speeds up processing times when merging multiple datasets.
+
+Another key benefit of Parquet is its efficient storage and compression capabilities. Unlike CSV or Stata files, which store data in a row-based format, Parquet applies built-in compression algorithms such as Gzip or Snappy, significantly reducing file size. This not only saves disk space but also speeds up data transfer, especially when obtaining datasets from remote servers like WRDS, AWS, or PostgreSQL databases.
+
+Parquet files also ensure schema consistency and data type preservation, which is crucial when merging datasets from different sources. In contrast to CSV files, where numerical values may sometimes be interpreted as text, Parquet maintains strict data types. It also efficiently handles missing values, reducing potential errors and inconsistencies when performing joins and merges.
+
+When merging large datasets, Parquet’s columnar format and filtering capabilities help reduce memory usage and processing time. Instead of loading entire datasets into memory, users can select and load only the relevant columns before merging, significantly optimizing resource allocation. Additionally, Parquet is highly compatible with modern data science tools, supporting parallel computing and batch processing with frameworks like Spark, Dask, and DuckDB.
+
+Parquet’s cross-platform support makes it ideal for working in R, Python (pandas, pyarrow, Polars), SQL databases, and cloud platforms such as AWS S3 and Google BigQuery. This ensures seamless integration with existing workflows, whether working on local machines or in cloud-based data pipelines. Given its speed, storage efficiency, and compatibility, Parquet is a preferred format for obtaining and merging large financial datasets from sources like Compustat, CRSP, and other WRDS databases.
+
+Let's first learn how to obtain data from WRDS. The code below shows how to connect to WRDS.
+
+```{r}
+# Setup ------------------------------------------------------------------------
+
+# Load Libraries [i.e., packages]
+library(dbplyr)
+library(RPostgres)
+library(DBI)
+library(glue)
+library(arrow)
+library(haven)
+library(tictoc) #very optional timer, mostly as a teaching example
+library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+
+
+#load helper scripts
+#similar to "include" statement in SAS.
+source("E:/acct_995_data/abr/-Global-Parameters.R")
+source("E:/acct_995_data/abr/utils.R")
+
+
+# Log into wrds ----------------------------------------------------------------
+
+if(exists("wrds")){
+  dbDisconnect(wrds)  # because otherwise WRDS might time out
+}
+wrds <- dbConnect(Postgres(),
+                  host = 'wrds-pgdata.wharton.upenn.edu',
+                  port = 9737,
+                  user = keyring::key_get("WRDS_USER"),
+                  password = keyring::key_get("WRDS_PW"),
+                  sslmode = 'require',
+                  dbname = 'wrds')
+
+
+
+```
+
+The R script below retrieves and processes financial data from the **Compustat** database using **PostgreSQL** on the **WRDS server**. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain **U.S. firms from 1967 onward** while excluding financial and utility firms.
+
+```{r}
+# See a list of tables in a schema ---------------------------------------------
+# Just an example to play with the Postgres server
+
+# List all of the tables in Compustat (comp)
+wrds |>
+  DBI::dbListObjects(DBI::Id(schema = 'comp')) |> 
+  dplyr::pull(table) |> 
+  purrr::map(~slot(.x, 'name'))  |> 
+  dplyr::bind_rows()  |>  
+  View()
+# can replace "comp" with any schema such as "crsp" "ibes" etc.
+# schemas on the Postgres server are similar to WRDS SAS libraries
+
+# Load table references and download data --------------------------------------
+
+# Load funda as a tbl
+comp.funda <- tbl(wrds,in_schema("comp", "funda"))
+comp.company <- tbl(wrds,in_schema("comp", "company"))
+
+# Optional line:
+#if you want to see how long a block of code takes you can start a tictoc timer
+#it will tell you how long it takes between when you run tic() and when you run 
+# toc()
+tictoc::tic()
+
+# Get some raw Compustat data from funda
+raw_funda <-
+  comp.funda |> 
+  #Apply standard Compustat filters
+  filter(indfmt=='INDL', datafmt=='STD', popsrc=='D' ,consol=='C') |>
+  #Select the variables we want to download
+  #the pattern for inline renaming is 
+  #new_name = old_name
+  select(conm, gvkey, datadate, fyear, fyr, cstat_cusip=cusip, #inline renaming
+         cik, cstat_ticker= tic, sich, ib, spi, at, xrd, ceq, sale,
+         csho, prcc_f
+  ) |> 
+  #Merge with the Compustat Company file for header SIC code and GICs code
+  inner_join(select(comp.company, gvkey, sic, fic, gind), by="gvkey") |> 
+  #Use historical sic [sich] when available. Otherwise use header sic [sic]
+  mutate(sic4 = coalesce(sich, as.numeric(sic))) |> 
+  #Calculate two digit sic code
+  mutate(sic2 = floor(sic4/100)) |> 
+  #Delete financial and utility industries
+  #For some research projects this is common to remove highly regulated firms
+  #with unique accounting practices
+  filter(!between(sic2,60,69),
+         sic2 != 49) |> 
+  # replace missings with 0 for defined vars
+  mutate(across(c(spi, xrd),
+            ~ coalesce(., 0))) |> 
+  # create a few additional variables
+  mutate(
+    # Some example code to align the data in June calendar time. 
+    # Some papers use June of each year and assume a 3 month reporting lag.
+    # Effectively this is coded as aligning datadate as of March each year.
+    # See, for example, Hou, Van Dijk, and Zhang (2012 JAE) figure 1
+    # This example also demonstrates injecting sql into dplyr code
+    calyear = if_else( fyr > 3,
+                       sql("extract(year from datadate)")+1,
+                       sql("extract(year from datadate)")),
+    # mve is market value of equity
+    mve = csho * prcc_f,
+    # define earnings (e) as earnings before special items
+    e= ib-spi,
+  ) |>
+  # filter to fiscal years after 1955, not much in Compustat before that 
+  filter(1967 < fyear) |> 
+  # filter to US companies
+  filter(fic=="USA") |> 
+  # everything above manupulates the data inside the WRDS postgres server
+  #behind the scenes it generates efficient sql code
+  # below line downloads to local machine RAM
+  collect()
+  #if you comment out the above collect() and instead run below command
+  # you can see the behind the scenes sql
+  #show_query()
+
+#stop the tictoc timer
+tictoc::toc()
+
+
+# Save the data to disk --------------------------------------------------------
+
+# saving to Stata is convenient for working with coauthors
+# glue package allows for dynamic file paths 
+# then each coauthor can specify their own local data folder
+tic()
+write_dta(raw_funda,glue("{data_path}/raw-data-R.dta")) 
+toc()
+#looks like about 162 MB on my machine
+
+# if the data will stay in R or another advanced/modern language like Python
+# then Parquet files are a nice open-source file format for data science
+# they are fast and small and have some other advanced features as well
+
+# in this example, we have customized the write_parquet function a bit to 
+# default to a high level of gzip compression to save space
+# therefore, the write_parquet function is using the function defined in the 
+# utils script
+tic()
+write_parquet(raw_funda,glue("{data_path}/raw-data-R.parquet"))
+toc()
+# the parquet operations are faster and the file is only 32MB on my machine
+
+```
+
+Then we play with transforming data. The R script below processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
+
+```{r}
+# Setup ------------------------------------------------------------------------
+
+# Load Libraries [i.e., packages]
+library(lubridate)
+library(glue)
+library(arrow)
+library(haven)
+library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+
+
+
+source("E:/acct_995_data/abr/-Global-Parameters.R")
+source("E:/acct_995_data/abr/utils.R")
+
+
+
+# read in the data from the previous step --------------------------------------
+
+#let's work with the parquet version
+
+data1 <- read_parquet(glue("{data_path}/raw-data-R.parquet"))
+
+
+#note: if you choose to collect your raw data in SAS or Stata
+# these could easily be read in using haven::read_dta() or haven::read_sas()
+
+
+# Some quick peeks at the data -------------------------------------------------
+
+#since the data is structured as a dplyr tibble, just calling its name
+#will preview the first 10 rows (similar to a head function)
+data1 
+
+#can also glimpse
+glimpse(data1)
+
+#or summarize
+summary(data1)
+
+
+# Manipulate a few variables ---------------------------------------------------
+
+#many of the below steps could be combined into one. They also could have been
+#done on the WRDS server
+#I just separate them for teaching purposes
+
+data2 <- data1 |>
+  #filter based on the global parameters for the sample period that we set in
+  # the global-parameters script.
+  filter(calyear >= beg_year,
+         calyear <= end_year) |> 
+  #I am going to scale by total assets (at) so I am going to set a minimum at
+  # to avoid small denominators
+  filter(at >= 10) |> 
+  mutate(
+    #use the FF utility functions to assign fama french industries
+    FF12 = assign_FF12(sic4),
+    ff12num = assign_FF12_num(sic4),
+    FF49 = assign_FF49(sic4),
+    ff49num = assign_FF49_num(sic4),
+    # code a loss dummy, I like 1/0 but true/false is also fine
+    loss = if_else(e < 0 , 1, 0),
+    # scale e by ending total assets
+    # FSA purists would probably use average total assets, but just an example
+    roa = e / at ,
+    # scale r&d by ending total assets
+    rd = xrd / at
+  ) |> 
+  # let's do an earnings persistence regression with lead earnings as y
+  # so for each gvkey we need the next earnings for that gvkey
+  # first make sure the data is sorted properly
+  arrange(gvkey,datadate) |> 
+  # then group by firm (gvkey) 
+  # this will restrict the lead function to only look at the next obs 
+  # for the same firm
+  group_by(gvkey) |> 
+  mutate(roa_lead_1 = lead(roa,1L),
+         datadate_lead_1 = lead(datadate,1L)) |> 
+  #check to make sure no gaps or fiscal year changes
+  filter(month(datadate_lead_1) == month(datadate),
+         year(datadate_lead_1) == year(datadate) + 1) |> 
+  #not a bad idea to ungroup once you are finished
+  ungroup() |> 
+  #Filter multiple variables to require non-missing values
+  filter(if_all(c(at, mve,rd,ff12num,starts_with("roa")), ~ !is.na(.x)))
+
+
+# Play around ------------------------------------------------------------------
+
+#how many observations in each FF12 industry?
+data2 |> 
+  group_by(FF12) |> 
+  count()
+
+#percentage of losses by industry?
+data2 |> 
+  group_by(FF12) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n())
+
+#as a quick figure?
+data2 |> 
+  group_by(FF12) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n()) |> 
+  ggplot(aes(x = FF12, y= pct_loss)) + 
+  scale_y_continuous(name = "Freq. of Losses", labels = scales::percent) +
+  geom_col() +
+  coord_flip() +
+  theme_bw() 
+
+# Winsorize the data -----------------------------------------------------------
+
+#check the tail values as an example
+quantile(data2$roa, probs = c(0,.01,.99,1))
+
+#default winsorization
+data3 <- data2 |> 
+  #default is 1% / 99 % , this winsorizes rd and all roa vars at that cut
+  mutate(across(c(mve,at,rd,starts_with("roa")), winsorize_x))
+
+
+#check the winsorized tail values
+quantile(data3$roa, probs = c(0,.01,.99,1))
+
+
+#alternate version, if we want to change the tails
+data3b <- data2 |> 
+  #winsorize 2.5% / 97.5 % 
+  mutate(
+    across(c(rd,starts_with("roa")), ~ winsorize_x(.x,cuts = c(0.025,0.025)))
+  )
+
+#check
+quantile(data2$roa, probs = c(0,.025,.975,1))
+quantile(data3b$roa, probs = c(0,.025,.975,1))
+
+# Save the winsorized data  ----------------------------------------------------
+
+# just saving to Stata format this time for brevity
+write_dta(data3,glue("{data_path}/regdata-R.dta"))
+
+
+```
+
+This is my first time working on a Quarto book. So, this first post will be very rough for now. I will try to provide a few different examples of ways to obtain and merge data in R, and a few tips of things to keep in mind.
+
+The data analysis workflow typically follows these key steps:
+
+1.  Define the Question
+
+2.  Collect the Data
+
+3.  Clean the Data
+
+4.  Explore the Data (EDA)
+
+5.  Transform / Feature Engineering
+
+6.  Model the Data
+
+7.  Interpret Results
+
+Having already collected data from WRDS and cleaned it to retain only relevant companies—excluding outliers and missing values—we now move into **Step 4: Exploratory Data Analysis (EDA)**. This stage focuses on visualizing the processed financial data to identify patterns, trends, and relationships that inform subsequent analysis.
+
+### 
+
+This section utilizes several key R packages:
+
+-   **`ggplot2`** and **`corrplot`** for data visualization.( check for [ggplot](https://ggplot2.tidyverse.org/) and [corrplot](https://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram?utm_source=chatgpt.com) library tutorial in the provided links)
+
+-   **`modelsummary`**, **`kableExtra`**, and **`formattable`** for formatting tables and outputs. ( To learn more about [modelsummary](https://modelsummary.com/.) , [kableExtra](https://bookdown.org/yihui/rmarkdown-cookbook/kableextra.html), and [formattable](https://www.r-bloggers.com/2018/11/make-beautiful-tables-with-the-formattable-package/) click on provided links)
+
+All visual outputs are exported in two formats: PDF for publication-quality outputs (e.g., academic papers), and PNG for use in presentations or reports.
+
+```{r}
+
+
+#| label: load-libraries
+#| results: FALSE 
+#| message: FALSE
+# Load Libraries [i.e., packages]
+
+# Setup ------------------------------------------------------------------------
+
+# Load Libraries [i.e., packages]
+library(modelsummary)
+library(kableExtra)
+library(formattable)
+#library(lubridate)
+#library(glue)
+#library(haven)
+library(fixest)
+library(forcats)
+#library(tidyverse) # 
+
+```
+
+### 1. Losses by Industry (FF12 Classification)
+
+Firms are grouped by Fama-French 12 (FF12) industry categories. For each category, we calculate the proportion of firms reporting financial losses. These figures are visualized using a horizontal bar chart. The chart highlights which sectors tend to have higher frequencies of loss-making firms, offering insight into industry-specific financial vulnerabilities.
+
+```{r}
+
+
+#load helper scripts
+source("src/-Global-Parameters.R")
+source("src/utils.R")
+
+
+# read in the data from the previous step --------------------------------------
+
+#read in the winsorized data
+regdata <- read_dta(glue("{data_path}/regdata-R.dta")) |> 
+  select(gvkey,datadate,calyear,roa,roa_lead_1,loss,at,mve,rd,FF12,ff12num) 
+
+
+# Losses by Industry -----------------------------------------------------------
+
+
+fig <- regdata |> 
+  group_by(FF12) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n()) |> 
+  #Next line reorders the FF12 industries to make them appear in order of %loss
+  mutate(FF12 = forcats::fct_reorder(factor(FF12), (pct_loss))) |> 
+  ggplot(aes(x = FF12, y= pct_loss)) + 
+  geom_col(fill = "#0051ba") +
+  # Fill color = Kansas Blue from : https://brand.ku.edu/guidelines/design/color
+  scale_y_continuous(name = "Freq. of Losses", labels = scales::percent) +
+  scale_x_discrete(name = "Fama-French Industry") +
+  coord_flip() +
+  #base_family = serif sets font to times new roman
+  theme_bw(base_family = "serif") 
+
+#Look at it in R  
+fig
+
+#For Latex output you might want to output to PDF
+ggsave(glue("{data_path}/output/ff12_fig.pdf"), fig, width = 7, height = 6)
+
+#For Word output you might want to output to an image such as .png
+ggsave(glue("{data_path}/output/ff12_fig.png"), fig, width = 4.2, height = 3.6)
+
+```
+
+### 2. Losses by Firm Size Over Time
+
+Firms are categorized into **size quintiles** based on market value within each calendar year. The proportion of loss-making firms is then computed annually for each quintile. These trends are displayed using line charts, enabling comparison of financial performance across different firm sizes over time.
+
+```{r}
+
+# Losses by Size Quintile Over Time --------------------------------------------
+
+
+fig <- regdata |> 
+  group_by(calyear) |> 
+  #create size quintiles by calyear
+  mutate(size_qnt = factor(ntile(mve,5))) |> 
+  group_by(calyear, size_qnt) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n()) |> 
+  ggplot(aes(x = calyear, y= pct_loss, color = size_qnt, linetype = size_qnt)) + 
+  geom_line() + geom_point() + 
+  scale_y_continuous(name = "Freq. of Losses", labels = scales::percent) +
+  scale_x_continuous(name = "Year", breaks = seq(1970,2025,5)) +
+  #If you give these scales the same name they will appear in the same legend
+  scale_color_discrete(name = "Size Quintile") +
+  scale_linetype_discrete(name = "Size Quintile") +
+  theme_bw(base_family = "serif") 
+
+#Look at it in R  
+fig
+
+#For Latex
+ggsave(glue("{data_path}/output/size_year.pdf"), fig, width = 7, height = 6)
+
+#For Word
+ggsave(glue("{data_path}/output/size_year.png"), fig, width = 7, height = 6)
+
+```
+
+### 3. Correlation Matrix
+
+A subset of key financial metrics is selected, including: Return on Assets (current and future), Loss indicators, R&D intensity, Total Assets, Market Value of Equity. A correlation matrix is generated and visualized via a heatmap to reveal relationships among these variables, helping identify potential multicollinearity or associations worth further exploration.
+
+```{r}
+
+
+
+# Correlation Matrix Plot ------------------------------------------------------
+
+#optional package you need to install if you want to try this example
+library(corrplot)
+
+
+corrdata <- regdata |> 
+  select(`ROA_{t+1}` = roa_lead_1,
+         `ROA_t` = roa, 
+         `LOSS` = loss,
+         `R\\&D` = rd,
+         `TA` = at,
+         `SIZE` = mve)
+
+corrdata
+
+correlation = cor(corrdata)
+col2 = colorRampPalette(c('red', 'white', 'blue'))  
+
+pdf(file=glue("{data_path}/output/corr_fig.pdf"))
+corrplot(correlation, method = 'square', 
+         addCoef.col = 'black', 
+         diag = FALSE,
+         tl.col='black', 
+         type = 'full',
+         tl.cex = 1,
+         tl.srt = 0,
+         tl.offset = 1,
+         number.cex = 0.7,
+         cl.ratio = 0.1,
+         cl.pos = "r",
+         col=col2(20),
+         win.asp = .8)
+dev.off()
+
+```
+
+### 4. Annual Regressions – Earnings Persistence
+
+Yearly regressions are run to evaluate the relationship between current and future earnings. These regressions are performed separately for firms with and without reported losses. Confidence bands are included to show estimation uncertainty. This analysis investigates earnings persistence, which is crucial for financial forecasting and valuation.
+
+Files are stored in a designated `output/` directory using standardized naming conventions for easy reference and reproducibility.
+
+```{# Annual Regressions with confidence bands -------------------------------------}
+
+# bonus example just for fun
+
+figdata <- regdata |>
+  #nest the regressions by year and loss
+  nest_by(calyear,loss) |> 
+  # fit the regressions
+  mutate(
+    fit = list(lm(roa_lead_1 ~ roa, data = data))
+  ) |> 
+  # use the broom package to tidy the regressions
+  #option conf.int outputs the confidence intervals so we can plot them
+  summarise(broom::tidy(fit, conf.int = TRUE)) |> 
+  #I don't plan to plot the intercept so i will drop it from the data
+  filter(term !="(Intercept)") 
+
+#can also use this setup to do Fama-Macbeth regressions, etc. 
+#can also use pmg package for Fama-Macbeth
+
+#now make a ggplot object from the data
+fig <- figdata |> 
+  mutate(loss = factor(loss)) |> 
+  ggplot(aes(x=calyear,y=estimate))  +
+  geom_ribbon(aes(ymin = conf.low, ymax=conf.high, 
+                  group = loss),
+                  fill = "grey80") + 
+  geom_line(aes(color=loss)) +
+  geom_point(aes(color=loss)) +
+  theme_bw(base_family = "serif") 
+
+#Look at it in R  
+fig
+
+#For Latex
+ggsave(glue("{data_path}/output/coef_year.pdf"), fig, width = 7, height = 6)
+
+#For Word
+ggsave(glue("{data_path}/output/coef_year.png"), fig, width = 7, height = 6)
+
+
+
+```
+
+We already know how to obtain data from WRDS. Let's use this to obtain some returns for the S&P 500. We could use the formal index data, but let's take a shortcut and just use the popular SPY ETF that tracks the S&P 500. To do this, we need to find the CRSP identifier (PERMNO) for the ticker "SPY." We can look in the WRDS stocknames file for this, and then use the SPY PERMNO to pull data from the CRSP monthly stock file.
+
+```{r}
+#| label: load-libraries
+#| results: FALSE 
+#| message: FALSE
+# Load Libraries [i.e., packages]
+library(dbplyr)
+library(RPostgres)
+library(DBI)
+library(glue)
+library(arrow)
+library(haven)
+library(tictoc) #very optional timer, mostly as a teaching example
+library(tidyverse) # I like to load tidyverse last to avoid package conflicts
+
+#I have done this in a separate chunk with the options
+# results: FALSE 
+# message: FALSE
+#because I don't need to see the messages from loading the packages. 
+```
+
+```{r}
+#| label: wrds-login
+# Log in to WRDS -------------------------------------------------------------------
+
+#before running this block, I used these commands to securely store my WRDS username and password:
+# keyring::key_set("WRDS_user")
+# keyring::key_set("WRDS_pw")
+
+if(exists("wrds")){
+  dbDisconnect(wrds)  # because otherwise WRDS might time out
+}
+
+wrds <- dbConnect(Postgres(),
+                  host = 'wrds-pgdata.wharton.upenn.edu',
+                  port = 9737,
+                  user = keyring::key_get("WRDS_user"),
+                  password = keyring::key_get("WRDS_pw"),
+                  sslmode = 'require',
+                  dbname = 'wrds')
+
+
+# Create WRDS Table References -------------------------------------------------
+crsp.msf <- tbl(wrds,in_schema("crsp","msf"))
+stocknames <- tbl(wrds,in_schema("crsp","stocknames"))
+
+#I am collecting this data locally to play with duplicates
+spy_permnos <- stocknames |> filter(ticker == "SPY") |> collect() 
+
+```
+
+Notice that there are six observations in the stocknames table that all share the same ticker "SPY." I am going to use this as a toy example to play with duplicates. My goal is for this data to be unique at the level of ticker-permno links. First, I can check whether this is true.
+
+```{r}
+#| label: view-duplicates
+
+#check whether there are duplicates 
+#this simple logic is useful in general
+#group by the level I want to make unique,
+#count within each group
+#sort by descending count so that if there are duplicates
+#they will show up at the top. 
+spy_permnos |> 
+  group_by(ticker,permno) |> 
+  count() |> 
+  arrange(-n)
+```
+
+There are multiple permnos connected to the SPY ticker and some duplicate entries for permno 84398 so I better just look at the data. Also this tells me that there are only a few rows so it doesn't hurt to just print the data.
+
+```{r}
+#| label: view-permnos
+
+#| #note that we can use the kable commmand to embed a simple table in the quarto document
+knitr::kable(spy_permnos)
+```
+
+Looking at the data, the company name for permno 84398 matches the SPDR S&P 500 ETF I am looking for. It looks like the duplicate entries might have to do with a change in the listing exchange for the ETF (exchcd) and then a slight name change in 2010 to make the name of the trust more descriptive. Let's keep using this toy example to demonstrate some other functions for dealing with duplicates:
+
+```{r}
+#| label: play-duplicates_1
+
+#if I want to just collapse the duplicates, I can use "distinct" across the groups that I care about
+
+spy_permnos |> 
+  select(ticker,permno) |> 
+  distinct()
+
+```
+
+Now there are only three observations,which is what I asked for, but sometimes it might matter which of the duplicate observations I keep. For example, perhaps what I should do is keep the most recent observation from the spy_permno dataset, in terms of nameenddt.
+
+```{r}
+#| label: play-duplicates_2
+
+#select the max data within each group as more advanced way to keep one obs per 
+#group
+spy_permnos |> 
+  group_by(ticker,permno) |>
+  filter(nameenddt==max(nameenddt))
+
+#ultimately we can assign the permno of the current observation, which we already know from manually checking is the correct permno, 84398
+
+spy_permno <- spy_permnos |> 
+  group_by(ticker,permno) |>
+  filter(nameenddt==max(nameenddt)) |> 
+  ungroup() |> 
+  filter(nameenddt==max(nameenddt)) |> 
+  select(permno) |> 
+  as.numeric()
+
+spy_permno
+```
+
+Now we can use the SPY permno to pull monthly returns for SPY:
+
+```{r}
+#| label: pull-returns
+
+# Pull CRSP MSI Data -----------------------------------------------------------
+
+#Data seems to begin in feb 1993, lets start in 1995 as a nice round number
+#notice that this implicitly feeds the permno I calculated locally back up to WRDS in my crsp query. 
+mkt_index <- crsp.msf |> 
+  filter(date >= "1995-01-01",
+         permno == spy_permno) |> 
+  select(date,ret,prc) |> 
+  collect() |> 
+  mutate(month = month(date),
+         year = year(date))
+
+```
+
+Then I can plot them, note that if you look at the source code for this page, I do this in a chunk with echo=false so that I only see the output and not the code. This would be useful for creating an actual paper rather than coding examples:
+
+```{r}
+#| label: plot-returns
+#| echo: FALSE
+
+mkt_index |> 
+  ggplot(aes(x=date,y=abs(prc))) + 
+  geom_line() +
+  scale_x_date(name = "Date",
+               date_breaks= "5 years",
+               date_labels = "%Y") +
+  scale_y_continuous(name = "SPY Closing Price") +
+  theme_bw()
+
+```
+
+This plot would look nice with recessions shaded. We can get recession dates from FRED. FRED data can be accessed from an API, there is a custom package to work with FRED data in R called fredr. First you need to obtain a FRED API key by signing up here: <https://fred.stlouisfed.org/docs/api/api_key.html>
+
+```{r}
+#| label: pull-fred-data
+
+#load the fredr package
+library(fredr)
+
+#Unblock the below and run to set your password
+#keyring::key_set("fred_api_key")
+
+#set my API key which is saved in keyring
+fredr_set_key(keyring::key_get("fred_api_key"))
+
+#collect the data from the series USRECD
+# https://fred.stlouisfed.org/series/USRECD
+
+fred_data<-fredr(series_id = "USRECD",
+                 observation_start = as.Date("1995-01-01"),
+                 observation_end = as.Date("2024-12-31"),
+                 frequency = "m") |> 
+  #I am going to add month and year variables because I think this is 
+  #easier for linking
+  mutate(month = month(date),
+         year = year(date))
+
+# show the first few rows which has a value of 0 or 1 where 1 is recession
+fred_data |> head() |> knitr::kable()
+```
+
+Now we need to merge the SPY data with the recession data.
+
+```{r}
+#| label: merge-data
+
+merged_data <- mkt_index |>
+  #I am going to select only the columns I need from   #the FRED data
+  inner_join(fred_data |> 
+               select(month,year,recession=value),
+             by=join_by(month,year))
+
+# check to make sure it is still unique by month 
+merged_data |> 
+  group_by(month,year) |> 
+  count() |> 
+  arrange(-n)
+```
+
+Now we can make the plot with shades for recession months
+
+```{r}
+#| label: merged-plot
+
+#turns out the merged data was not the preferred way to do this kind of plot
+
+
+
+
+#here is some code I found online to reshape the recession data and add it to the plot 
+
+#rename/assign fred data to recession because 
+#that was the name in the example I found 
+recession<-fred_data
+
+#load a package they used
+library(ecm)
+
+#reshape the recession data for the way 
+#geom_rect likes the data shaped
+recession$diff<-recession$value-lagpad(recession$value,k=1)
+  recession<-recession[!is.na(recession$diff),]
+  recession.start<-recession[recession$diff==1,]$date
+  recession.end<-recession[recession$diff==(-1),]$date
+  
+  if(length(recession.start)>length(recession.end))
+  {recession.end<-c(recession.end,Sys.Date())}
+  if(length(recession.end)>length(recession.start))
+  {recession.start<-c(min(recession$date),recession.start)}
+  
+  recs<-as.data.frame(cbind(recession.start,recession.end))
+  recs$recession.start<-as.Date(as.numeric(recs$recession.start),origin=as.Date("1970-01-01"))
+  recs$recession.end<-as.Date(recs$recession.end,origin=as.Date("1970-01-01"))
+
+#look at the reshaped data
+recs 
+
+#plot the new plot with recession bars
+merged_data |> 
+  ggplot(aes(x=date,y=abs(prc))) + 
+  geom_line() +
+  scale_x_date(name = "Date",
+               date_breaks= "5 years",
+               date_labels = "%Y") +
+  scale_y_continuous(name = "SPY Closing Price") +
+  geom_rect(data=recs, inherit.aes=F, 
+                         aes(xmin=recession.start, xmax=recession.end, ymin=-Inf, ymax=+Inf), 
+                fill="darkgrey", alpha=0.5)+
+  theme_bw()
+
+
+```
+
+Some other useful materials:
+
+<https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html>
+
+<https://iangow.github.io/far_book/web-data.html>
+
+<https://iangow.github.io/far_book/identifiers.html>
