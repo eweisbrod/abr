@@ -43,8 +43,9 @@ You can also find more information about collecting FRED data in R using the "fr
 So far in our example project, we are exploring the persistence of firm's earnings. Our main hypothesis is that earnings are less persistent for loss firms than profitable firms. Perhaps, we also think this persistence could be moderated by the quality of the internal controls. For instance, internal controls are processes intended to provide assurance about the three major objectives: operations, reporting and compliance. Insufficient controls could lead to ineffective and inefficient operations and ultimately lower profitability. To test this, let's grab data that could be useful indicators of poor financial reporting quality from Audit Analytics. We will access this data via WRDS or you can download CSV datasets from Audit Analytics and import into R.
 
 ```{r echo=F}
-#| label: get AA data
-#| 
+#| label: Set up
+#| echo: FALSE
+#| message: FALSE
 
 # Load Libraries [i.e., packages]
 library(dbplyr)
@@ -79,6 +80,11 @@ wrds <- dbConnect(Postgres(),
                   sslmode = 'require',
                   dbname = 'wrds')
 
+```
+
+
+```{r}
+#| label: Download AA data
 
 # Download Audit Analytics Data -------------------------------------------------
 #Let's grab restatement and internal control data from WRDS. We only need to run this once and save the data locally to use in the future. If we wanted to update for the latest available version, we can uncomment the below to recollect the data and save it down.
@@ -100,12 +106,20 @@ ic_data <- read_parquet(glue("{data_path}/audit_404.parquet"))
 Now that we have downloaded the data let's inspect the new internal control data to get a sense of the firm identifiers that we can use to link internal control data to our financial statement data. Without viewing the internal control data, we can see it has 240 variables (columns). Typically, the primary key(s) of the table will be the first few columns, so let's peek at the dataframe.
 
 ```{r}
+#| label: glimpse_data
+
+#We can look at the first few rows using head() which will look like a mini-dataframe
 ic_data |> head()
+
+#We can also use glimpse() to see every column name as a row with corresponding data type and first few data poitns in that column. I will leave it commented out for space purposes.
+#glimpse(ic_data)
 ```
 
 After running the above, we see the second column is called "ic_op_fkey" which is the primary key for this table. In other words, each internal control opinion will have a unique value for this field and should correspond to one row/observations in the data. Let's verify by ensuring there are no duplicate internal control opinion keys. There are a several ways to do this. Examine the code below to confirm there are no duplicate restatement keys.
 
 ```{r}
+#| label: validate_dups
+
 #(1) We can select the column(s) we think make up the primary key for this table and use the command unique() followed by a count() command to see how many rows this returns. We can compare to the original dataframe to see if they are the same. 
 ic_data |> select(ic_op_fkey) |> unique() |> count()
 #The above returns 228,376 which matches the number of observations in our original data set.
@@ -120,18 +134,22 @@ count(dups)
 We next will look at how the internal control data is organized to understand how we can link this into our financial statement data. Our financial statement data is organized as a panel data with annual financial statement variables for each firm for each period beginning as early as 1968. However, our internal control data begins in the early 2000's. Often times the internal control data could have two observations per year because one opinion comes from management and the other comes the external auditor. To visualize, let's look at Lockheed Martin Corporation in both datasets. Below, we see in our financial statement data Lockheed Martin appears once per year starting in 1968 with the "datadate" variable representing the end date of each fiscal year's financial statements. In our internal control data, Lockheed Martin began reporting on internal controls post-SOX which was effective starting in 2004 for this firm. Scanning the internal control data, we see two things: (1) there are two observations for each fiscal year with the type "m" and "a" corresponding to the "management" and "auditor" opinion, respectively, and (2) Lockheed Martin did not have effective internal controls for the fiscal year-ended 12-31-2016.
 
 ```{r}
+#| label: example_company
+
 #Looking at Lockheed Martin in our financial statement data
 fs_data |> filter(cstat_ticker=="LMT") |> select(cstat_ticker,conm,cik,datadate)
 
 #Looking at Lockheed Martin internal control opinions. Notice the two observations per year and the ineffective control opinion in 2016.
-ic_data |> filter(company_fkey=="0000936468") |> select(ic_op_fkey,ic_op_type,form_fkey,file_date,fye_ic_op,fy_ic_op,ic_is_effective) |>
-  filter(fy_ic_op>2013) |> arrange(file_date)
+ic_data |> filter(company_fkey=="0000936468") |> select(ic_op_fkey,ic_op_type,form_fkey,fye_ic_op,fy_ic_op,ic_is_effective) |>
+  filter(fy_ic_op>2013) |> arrange(fye_ic_op)
 
 ```
 
 For our question, we haven't made any predictions about whether it matters which party deems internal controls ineffective, so let's collapse the data down to get one observation for each firm-fiscal year to match our financial statement data.
 
 ```{r}
+#| label: collapse_data
+
 #Summarizing data to be at the firm ("company_fkey") and fiscal year level ("fy_ic_op"). Also keeping "fye_ic_op" which will be date of fiscal year end that we will use to match to financial statement data and creating an indicator variable whether there was control issue discovered for that year for any opinion.
 ic_data2 <- ic_data |> group_by(company_fkey,fye_ic_op,fy_ic_op) |> 
   summarise(ic_issue = if_else(any(ic_is_effective == "N"), 1, 0),.groups = "keep") |> 
@@ -151,6 +169,8 @@ ic_data2 |> filter(company_fkey=="0000936468") |> filter(fy_ic_op>2010)
 Now that we have prepared our internal control data, we can link it to our financial statement data. Using the linking table above, we see we can link Compustat financial statement data to Audit Analytic data on CIKs which stands for Central Index Key and is assigned by the SEC. In our financial statement data this variable is "cik" and in our internal control data this is "company_fkey." We will also match on fiscal year end date of the financial statements. In Compustat this variable is "datadate" and in our internal control data this is "fye_ic_op."
 
 ```{r}
+#| label: merge_icdata_to_fsdata
+
 #Let's left join the internal control data to our financial statement data because the financial statement data goes back all the way to 1968 and our control data starts in the early 2000s. We don't need to throw out the prior years.
 
 fs_data2 <- fs_data |> 
@@ -186,6 +206,8 @@ dups <-  fs_data2 |> group_by(gvkey,datadate) |> summarise(obs = n()) |> filter(
 We could also link in macroeconomic data we think could moderate the persistence of firm profitability. Perhaps we think the aggregate consumer sentiment moderate how persistent earnings are for all firms across different time periods. We can practice merging in time-series data by accessing the consumer sentiment data from the University of Michigan Surveys of Consumers via FRED.
 
 ```{r}
+#| label: get_FRED_data
+
 #load the fredr package
 library(fredr)
 
@@ -209,6 +231,8 @@ fred_data<-fredr(series_id = "UMCSENT",
 Some companies don't have a fiscal year end that matches a calendar year end (e.g. Apple Inc.). However, we want to create the average value of the consumer sentiment index over the same calendar time between a company's fiscal year end.
 
 ```{r}
+#| label: manipulate_merge_FRED
+
 #Let's first create two variable that capture the prior fiscal year end 
 fs_data3 <- fs_data2 |> 
   #We could do just 12 months before the datadate variable
@@ -250,5 +274,15 @@ fs_data4 <- fs_data3 |>
 
 #Number of missing monthly sentiment values over years - good after 1979
 fs_data4 |> mutate(missing_sent = if_else(is.na(avg_cons_sent),1,0)) |> group_by(year(datadate)) |> summarise(missing = sum(missing_sent) )
+
+```
+
+
+Finally, we will save down this dataset which we will use in our analysis chapter.
+
+```{r}
+#| label: save
+
+write_parquet(fs_data4,glue("{data_path}/merged_data.parquet"))
 
 ```
