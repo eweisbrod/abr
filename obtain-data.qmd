@@ -29,8 +29,8 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 
 #load helper scripts
 #similar to "include" statement in SAS.
-source("E:/acct_995_data/abr/-Global-Parameters.R")
-source("E:/acct_995_data/abr/utils.R")
+source("src/-Global-Parameters.R")
+source("src/utils.R")
 
 
 # Log into wrds ----------------------------------------------------------------

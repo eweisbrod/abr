@@ -12,8 +12,8 @@ library(forcats)
 library(tidyverse)
 
 # Load helper scripts (if needed)
-source("-Global-Parameters.R")
-source("utils.R")
+source("src/-Global-Parameters.R")
+source("src/utils.R")
 
 # Read in the data
 data_path<- Sys.getenv('DATA_PATH')
