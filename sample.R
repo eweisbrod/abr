@@ -1,17 +1,20 @@
-# Load necessary libraries
+# sample_selection_table.R
+# Simple script to generate and print a formatted table
+
+# Load required packages
 library(knitr)
 library(kableExtra)
 
-# Create the data frame for the table
-sample_selection <- data.frame(
+# Create the data frame
+sample_data <- data.frame(
   Description = c(
-    "First I downloaded some data from WRDS",
+    "Initial data download from WRDS",
     "After removing financial and utility firms",
     "After requiring lead ROA data",
-    "After some other requirements",
-    "With data from another database available",
-    "Less: firm-years missing data to compute control variables defined in Appendix",
-    "Full Sample"
+    "After applying additional screening criteria",
+    "With matching data from secondary database",
+    "Less: firm-years missing control variables",
+    "Final Analysis Sample"
   ),
   Observations = c(
     194728,
@@ -21,26 +24,23 @@ sample_selection <- data.frame(
     71408,
     -3500,
     163269
-  )
+  ),
+  stringsAsFactors = FALSE
 )
 
-# Generate the table using kable with LaTeX options
-table_output <- kable(
-  sample_selection,
-  col.names = c("Description", "Observations"),
-  align = c("l", "r"),  # Left-align the first column, right-align the second
-  format = "latex",  # Use LaTeX format for PDF output
-  booktabs = TRUE   # Use booktabs for better LaTeX tables
-) %>%
-  kable_styling(
-    latex_options = c("striped", "scale_down")  # Add LaTeX styling
-  ) %>%
-  add_header_above(c(" " = 1, "THESE ARE NOT REAL NUMBERS" = 1)) %>%  # Add a header
-  row_spec(6, bold = TRUE) %>%  # Bold the 6th row
-  row_spec(7, bold = TRUE, italic = TRUE) %>%  # Bold and italicize the 7th row
-  #column_spec(2, width = "4cm") |>   # Set width for the second column
-  column_spec(1, width = "10cm", latex_valign = "p") |>  # Set width and wrap text in the first column
-  add_footnote("This table describes the initial sample selection procedure used to collect the data analyzed in our study. Data requirements specific to individual tables or analyses are provided in the descriptions of those analyses.", notation = "none")
+# Format numbers with commas
+sample_data$Observations_formatted <- format(sample_data$Observations, big.mark = ",", scientific = FALSE)
 
-# Print the table output
-print(table_output)
+# Generate and print the table
+kable(sample_data[, c("Description", "Observations_formatted")], 
+      col.names = c("Sample Selection Step", "Firm-Years"),
+      align = c("l", "r"),
+      format = "simple") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"),
+                full_width = FALSE,
+                position = "center") %>%
+  row_spec(6, bold = TRUE) %>%
+  row_spec(7, bold = TRUE, italic = TRUE) %>%
+  add_footnote("Note: This table describes the sample selection procedure.", 
+               notation = "none") %>%
+  print()

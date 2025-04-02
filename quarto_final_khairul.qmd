@@ -189,11 +189,7 @@ We can use LaTeX references to refer/link readers to the tables as we discuss th
 
 # Appendix
 
-```         
-```
-
-```         
-```
+\newpage
 
 ```{r}
 #| label: tbl-variable-def
@@ -203,6 +199,8 @@ We can use LaTeX references to refer/link readers to the tables as we discuss th
 #| warning: false
 source("table-a1.R")
 ```
+
+\newpage
 
 ```{r}
 #| label: tbl-summary
@@ -256,6 +254,8 @@ kable(table1,  align = c("l", "r", "r", "r")) %>%
   kable_styling(latex_options = c("striped", "hold_position", "scale_down"))
 ```
 
+\newpage
+
 ```{r}
 #| label: tbl-descriptive
 #| tbl-cap: "Summary Statistics"
@@ -269,6 +269,8 @@ source('summarystat_table.R')
 
 ```         
 ```
+
+\newpage
 
 ```{r}
 #| label: tbl-corr
@@ -309,6 +311,8 @@ combined_corr |>
 ``` r
 ```
 
+\newpage
+
 ```{r}
 #| label: tbl-regression1
 #| tbl-cap: "Regression"
@@ -320,8 +324,10 @@ source('table-4.R')
 
 ```
 
-```{}
+```         
 ```
+
+\newpage
 
 ```{r}
 #| label: fig-FF
@@ -339,8 +345,6 @@ source('table-4.R')
 source("ff12_fig.R")
 
 ```
-
-\newpage
 
 ```{r}
 #| layout-ncol: 2
@@ -394,6 +398,4 @@ fig2 <- figdata |>
 print(fig2)
 ```
 
-```{r}
-
-```
+\newpage
