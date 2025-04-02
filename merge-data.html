@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./regression-table.html" rel="next">
+<link href="./visualizations.html" rel="next">
 <link href="./obtain-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -178,14 +178,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./visualizations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Visualization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./regression-table.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression Tables</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -521,7 +527,7 @@ override using the `.groups` argument.</code></pre>
  5  2011  0.212 
  6  2012  0.217 
  7  2013  0.221 
- 8  2014  0.203 
+ 8  2014  0.202 
  9  2015  0.196 
 10  2016  0.194 
 11  2017  0.193 
@@ -529,9 +535,9 @@ override using the `.groups` argument.</code></pre>
 13  2019  0.229 
 14  2020  0.220 
 15  2021  0.162 
-16  2022  0.0951
-17  2023  0.0735
-18  2024  0.439 </code></pre>
+16  2022  0.0955
+17  2023  0.0740
+18  2024  0.459 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check duplicates. It is always a good idea to check duplicates after merging.</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dups <span class="ot">&lt;-</span>  fs_data2 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(gvkey,datadate) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">obs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">filter</span>(obs<span class="sc">&gt;</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -606,8 +612,8 @@ override using the `.groups` argument.</code></pre>
   match    obs
   &lt;dbl&gt;  &lt;int&gt;
 1     0   4682
-2     1 274687
-3    NA  23696</code></pre>
+2     1 274779
+3    NA  23698</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Let's use the minus 12 month approach and create a dataset that merges in sentiment between those two dates</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fs_monthly <span class="ot">&lt;-</span> fs_data3 <span class="sc">|&gt;</span> </span>
@@ -1089,8 +1095,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./regression-table.html" class="pagination-link" aria-label="Regression Tables">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./visualizations.html" class="pagination-link" aria-label="Visualization">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Visualization</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

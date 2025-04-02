@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>6&nbsp; Regression Tables – Applied Business Research</title>
+<title>7&nbsp; Regression Tables – Applied Business Research</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./summary.html" rel="next">
-<link href="./merge-data.html" rel="prev">
+<link href="./visualizations.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -115,7 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./regression-table.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./regression-table.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression Tables</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -178,14 +178,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./visualizations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Visualization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./regression-table.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression Tables</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -204,23 +210,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#basic-preview-table" id="toc-basic-preview-table" class="nav-link active" data-scroll-target="#basic-preview-table"><span class="header-section-number">6.1</span> Basic Preview Table</a>
+  <li><a href="#basic-preview-table" id="toc-basic-preview-table" class="nav-link active" data-scroll-target="#basic-preview-table"><span class="header-section-number">7.1</span> Basic Preview Table</a>
   <ul class="collapse">
-  <li><a href="#read-in-the-data-from-the-previous-step" id="toc-read-in-the-data-from-the-previous-step" class="nav-link" data-scroll-target="#read-in-the-data-from-the-previous-step"><span class="header-section-number">6.1.1</span> Read in the data from the previous step</a></li>
-  <li><a href="#observations-by-decade" id="toc-observations-by-decade" class="nav-link" data-scroll-target="#observations-by-decade"><span class="header-section-number">6.1.2</span> Observations by Decade</a></li>
+  <li><a href="#read-in-the-data-from-the-previous-step" id="toc-read-in-the-data-from-the-previous-step" class="nav-link" data-scroll-target="#read-in-the-data-from-the-previous-step"><span class="header-section-number">7.1.1</span> Read in the data from the previous step</a></li>
+  <li><a href="#observations-by-decade" id="toc-observations-by-decade" class="nav-link" data-scroll-target="#observations-by-decade"><span class="header-section-number">7.1.2</span> Observations by Decade</a></li>
   </ul></li>
-  <li><a href="#summary-statistics-table" id="toc-summary-statistics-table" class="nav-link" data-scroll-target="#summary-statistics-table"><span class="header-section-number">6.2</span> Summary Statistics Table</a>
+  <li><a href="#summary-statistics-table" id="toc-summary-statistics-table" class="nav-link" data-scroll-target="#summary-statistics-table"><span class="header-section-number">7.2</span> Summary Statistics Table</a>
   <ul class="collapse">
-  <li><a href="#preparing-the-date-for-descriptive-statistics" id="toc-preparing-the-date-for-descriptive-statistics" class="nav-link" data-scroll-target="#preparing-the-date-for-descriptive-statistics"><span class="header-section-number">6.2.1</span> Preparing the Date for Descriptive Statistics</a></li>
-  <li><a href="#run-the-datasummary-function" id="toc-run-the-datasummary-function" class="nav-link" data-scroll-target="#run-the-datasummary-function"><span class="header-section-number">6.2.2</span> Run the <code>datasummary</code> function</a></li>
+  <li><a href="#preparing-the-date-for-descriptive-statistics" id="toc-preparing-the-date-for-descriptive-statistics" class="nav-link" data-scroll-target="#preparing-the-date-for-descriptive-statistics"><span class="header-section-number">7.2.1</span> Preparing the Date for Descriptive Statistics</a></li>
+  <li><a href="#run-the-datasummary-function" id="toc-run-the-datasummary-function" class="nav-link" data-scroll-target="#run-the-datasummary-function"><span class="header-section-number">7.2.2</span> Run the <code>datasummary</code> function</a></li>
   </ul></li>
-  <li><a href="#correlation-matrix-table" id="toc-correlation-matrix-table" class="nav-link" data-scroll-target="#correlation-matrix-table"><span class="header-section-number">6.3</span> Correlation Matrix Table</a></li>
-  <li><a href="#regression-table" id="toc-regression-table" class="nav-link" data-scroll-target="#regression-table"><span class="header-section-number">6.4</span> Regression Table</a>
+  <li><a href="#correlation-matrix-table" id="toc-correlation-matrix-table" class="nav-link" data-scroll-target="#correlation-matrix-table"><span class="header-section-number">7.3</span> Correlation Matrix Table</a></li>
+  <li><a href="#regression-table" id="toc-regression-table" class="nav-link" data-scroll-target="#regression-table"><span class="header-section-number">7.4</span> Regression Table</a>
   <ul class="collapse">
-  <li><a href="#customizing-coefficient-labels-and-goodness-of-fit-statistics" id="toc-customizing-coefficient-labels-and-goodness-of-fit-statistics" class="nav-link" data-scroll-target="#customizing-coefficient-labels-and-goodness-of-fit-statistics"><span class="header-section-number">6.4.1</span> Customizing Coefficient Labels and Goodness of Fit Statistics</a></li>
-  <li><a href="#adding-fixed-effect-rows-to-the-regression-table" id="toc-adding-fixed-effect-rows-to-the-regression-table" class="nav-link" data-scroll-target="#adding-fixed-effect-rows-to-the-regression-table"><span class="header-section-number">6.4.2</span> Adding Fixed-Effect Rows to the Regression Table</a></li>
+  <li><a href="#customizing-coefficient-labels-and-goodness-of-fit-statistics" id="toc-customizing-coefficient-labels-and-goodness-of-fit-statistics" class="nav-link" data-scroll-target="#customizing-coefficient-labels-and-goodness-of-fit-statistics"><span class="header-section-number">7.4.1</span> Customizing Coefficient Labels and Goodness of Fit Statistics</a></li>
+  <li><a href="#adding-fixed-effect-rows-to-the-regression-table" id="toc-adding-fixed-effect-rows-to-the-regression-table" class="nav-link" data-scroll-target="#adding-fixed-effect-rows-to-the-regression-table"><span class="header-section-number">7.4.2</span> Adding Fixed-Effect Rows to the Regression Table</a></li>
   </ul></li>
-  <li><a href="#wrapping-up" id="toc-wrapping-up" class="nav-link" data-scroll-target="#wrapping-up"><span class="header-section-number">6.5</span> Wrapping Up</a></li>
+  <li><a href="#wrapping-up" id="toc-wrapping-up" class="nav-link" data-scroll-target="#wrapping-up"><span class="header-section-number">7.5</span> Wrapping Up</a></li>
   </ul>
 </nav>
     </div>
@@ -229,7 +235,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regression Tables</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regression Tables</span></h1>
 </div>
 
 
@@ -257,21 +263,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 </div>
 <p>In this chapter, we will explore how to use R, specifically the <code>modelsummary</code> package, to generate some of the most common and essential tables used in empirical research. The goal is to automate the workflow of table generation in a reproducible way, ensuring that tables are consistent and accurate, all while avoiding manual edits. To meet reproducibility standards, the tables will be exported in Latex format.</p>
-<section id="basic-preview-table" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="basic-preview-table"><span class="header-section-number">6.1</span> Basic Preview Table</h2>
+<section id="basic-preview-table" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="basic-preview-table"><span class="header-section-number">7.1</span> Basic Preview Table</h2>
 <p>Let’s start by loading the necessary packages and libraries.</p>
 <p>This section loads the necessary helper scripts into the environment. Make sure to adjust the <code>data_path</code> to your own working directory to ensure that the required scripts are correctly sourced.</p>
 <p>For clean and simple outputs, we set this option for <code>modelsummary</code> to ensure that numeric values are displayed without additional formatting, like scientific notation or rounding, making the results easier to read.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">modelsummary_format_numeric_latex =</span> <span class="st">"plain"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="read-in-the-data-from-the-previous-step" class="level3" data-number="6.1.1">
-<h3 data-number="6.1.1" class="anchored" data-anchor-id="read-in-the-data-from-the-previous-step"><span class="header-section-number">6.1.1</span> Read in the data from the previous step</h3>
+<section id="read-in-the-data-from-the-previous-step" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="read-in-the-data-from-the-previous-step"><span class="header-section-number">7.1.1</span> Read in the data from the previous step</h3>
 <p>We now load the data for our analysis. Given that there are fewer firms in 1969s, we will start the dataset from year 1970 onward.</p>
 <p>The <code>sjlabelled::var_labels</code> function is used to assign meaningful labels to the variables for better readability, especially when producing tables or graphs.</p>
 </section>
-<section id="observations-by-decade" class="level3" data-number="6.1.2">
-<h3 data-number="6.1.2" class="anchored" data-anchor-id="observations-by-decade"><span class="header-section-number">6.1.2</span> Observations by Decade</h3>
+<section id="observations-by-decade" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="observations-by-decade"><span class="header-section-number">7.1.2</span> Observations by Decade</h3>
 <p>The goal is to demonstrate how to export a basic manual table or data frame into a paper. Initially, I grouped the data by year, but it was too lengthy. Instead, I will manually group the data by decade for better clarity.</p>
 <p>Here, we create a new row that summarizes the total number of firms, loss firms, and the percentage of firms with losses across the entire dataset. This total row is then appended to the previously computed table.</p>
 <div class="cell">
@@ -329,8 +335,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 </div>
 </section>
 </section>
-<section id="summary-statistics-table" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="summary-statistics-table"><span class="header-section-number">6.2</span> Summary Statistics Table</h2>
+<section id="summary-statistics-table" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="summary-statistics-table"><span class="header-section-number">7.2</span> Summary Statistics Table</h2>
 <p>In empirical research, it is common to present descriptive statistics for key variables. These typically include the mean, median, standard deviation, minimum, and maximum values. Such statistics can be highly informative and sometimes provide researchers with unexpected insights. In this section, we will demonstrate how to generate a clean and reproducible summary statistics table.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Create formatting functions --------------------------------------------------</span></span>
@@ -352,8 +358,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here, we define functions for formatting the numeric values in the summary table. The <code>my_fmt</code> function is used to format numbers with three decimal places, and <code>NN</code> is a helper function for counting the number of non-missing observations (i.e., valid data points).</p>
-<section id="preparing-the-date-for-descriptive-statistics" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="preparing-the-date-for-descriptive-statistics"><span class="header-section-number">6.2.1</span> Preparing the Date for Descriptive Statistics</h3>
+<section id="preparing-the-date-for-descriptive-statistics" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="preparing-the-date-for-descriptive-statistics"><span class="header-section-number">7.2.1</span> Preparing the Date for Descriptive Statistics</h3>
 <p>Next, we select the variables that will be included in the summary statistics table and apply the variable labels to make the table more readable.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#If you make a subset of the data </span></span>
@@ -369,8 +375,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">label_to_colnames</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="run-the-datasummary-function" class="level3" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="run-the-datasummary-function"><span class="header-section-number">6.2.2</span> Run the <code>datasummary</code> function</h3>
+<section id="run-the-datasummary-function" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="run-the-datasummary-function"><span class="header-section-number">7.2.2</span> Run the <code>datasummary</code> function</h3>
 <p>Now, we are ready to run the <code>datasummary</code> to generate a summary statistics table for the selected variables. This function formats the variables and outputs them in a clear and structured way.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datasummary</span>( <span class="fu">All</span>(descripdata) <span class="sc">~</span> (<span class="at">N =</span> NN) <span class="sc">+</span> Mean <span class="sc">*</span> <span class="fu">Arguments</span>(<span class="at">fmt =</span> my_fmt) <span class="sc">+</span> </span>
@@ -389,8 +395,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <script>
 
-      function styleCell_5o6tz4q72ingm89xtxp3(i, j, css_id) {
-          var table = document.getElementById("tinytable_5o6tz4q72ingm89xtxp3");
+      function styleCell_0cu3zke4hph6uy2nijia(i, j, css_id) {
+          var table = document.getElementById("tinytable_0cu3zke4hph6uy2nijia");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -400,7 +406,7 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_5o6tz4q72ingm89xtxp3');
+        var table = document.getElementById('tinytable_0cu3zke4hph6uy2nijia');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -408,8 +414,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_5o6tz4q72ingm89xtxp3(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_5o6tz4q72ingm89xtxp3");
+      function spanCell_0cu3zke4hph6uy2nijia(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_0cu3zke4hph6uy2nijia");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -439,18 +445,18 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 7 }, { i: 0, j: 4 }, { i: 0, j: 6 }, { i: 0, j: 8 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_yfunrztl48gt56tp9k3q',}, 
-          { positions: [ { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 5, j: 3 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 2, j: 3 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 3, j: 7 }, { i: 4, j: 7 }, { i: 5, j: 7 }, { i: 1, j: 4 }, { i: 2, j: 4 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 3, j: 8 }, { i: 4, j: 8 }, { i: 5, j: 8 }, { i: 1, j: 5 }, { i: 1, j: 7 }, { i: 2, j: 7 }, { i: 1, j: 6 }, { i: 1, j: 8 }, { i: 2, j: 8 },  ], css_id: 'tinytable_css_o7gj564ywkxaqo8wtt8b',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_l3qzq64la8nsjod2gya1',}, 
-          { positions: [ { i: 6, j: 7 }, { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 }, { i: 6, j: 8 },  ], css_id: 'tinytable_css_gu9gm2vf1hp7f0rj3cvo',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_dj1s86icfn759gvpfgsr',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_cx1f3shkwzt6yeys21xh',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_vs93ovzhhsfwqgtw4slh',}, 
+          { positions: [ { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 5, j: 3 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 2, j: 3 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 3, j: 7 }, { i: 4, j: 7 }, { i: 5, j: 7 }, { i: 1, j: 4 }, { i: 2, j: 4 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 3, j: 8 }, { i: 4, j: 8 }, { i: 5, j: 8 }, { i: 1, j: 5 }, { i: 1, j: 7 }, { i: 2, j: 7 }, { i: 1, j: 6 }, { i: 1, j: 8 }, { i: 2, j: 8 },  ], css_id: 'tinytable_css_ukrjni57ij722a7ddt3j',}, 
+          { positions: [ { i: 6, j: 7 }, { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 }, { i: 6, j: 8 },  ], css_id: 'tinytable_css_rzjqvcjp7vpwc5w659ri',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_ni3kv8xr6zqyvab43gf1',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_l1ihj5bzmvj46pag36ai',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 7 }, { i: 0, j: 4 }, { i: 0, j: 6 }, { i: 0, j: 8 }, { i: 0, j: 2 },  ], css_id: 'tinytable_css_ef30s4ewt2dbbv3yaiao',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_5o6tz4q72ingm89xtxp3(cell.i, cell.j, group.css_id);
+                  styleCell_0cu3zke4hph6uy2nijia(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -458,15 +464,15 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_yfunrztl48gt56tp9k3q, .table th.tinytable_css_yfunrztl48gt56tp9k3q { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_o7gj564ywkxaqo8wtt8b, .table th.tinytable_css_o7gj564ywkxaqo8wtt8b { text-align: right; }
-      .table td.tinytable_css_l3qzq64la8nsjod2gya1, .table th.tinytable_css_l3qzq64la8nsjod2gya1 { text-align: left; }
-      .table td.tinytable_css_gu9gm2vf1hp7f0rj3cvo, .table th.tinytable_css_gu9gm2vf1hp7f0rj3cvo { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_dj1s86icfn759gvpfgsr, .table th.tinytable_css_dj1s86icfn759gvpfgsr { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_cx1f3shkwzt6yeys21xh, .table th.tinytable_css_cx1f3shkwzt6yeys21xh { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_vs93ovzhhsfwqgtw4slh, .table th.tinytable_css_vs93ovzhhsfwqgtw4slh { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_ukrjni57ij722a7ddt3j, .table th.tinytable_css_ukrjni57ij722a7ddt3j { text-align: right; }
+      .table td.tinytable_css_rzjqvcjp7vpwc5w659ri, .table th.tinytable_css_rzjqvcjp7vpwc5w659ri { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_ni3kv8xr6zqyvab43gf1, .table th.tinytable_css_ni3kv8xr6zqyvab43gf1 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_l1ihj5bzmvj46pag36ai, .table th.tinytable_css_l1ihj5bzmvj46pag36ai { text-align: left; }
+      .table td.tinytable_css_ef30s4ewt2dbbv3yaiao, .table th.tinytable_css_ef30s4ewt2dbbv3yaiao { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_5o6tz4q72ingm89xtxp3" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_0cu3zke4hph6uy2nijia" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -559,8 +565,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 <p>By commenting out the <code>output = 'latex'</code> line, we ensure the table is displayed in a readable format in the console. If you need the LaTeX code, simply uncomment it. Additionally, the last line can be uncommented to save the LaTeX table to a .tex file for use in your LaTeX document.</p>
 </section>
 </section>
-<section id="correlation-matrix-table" class="level2" data-number="6.3">
-<h2 data-number="6.3" class="anchored" data-anchor-id="correlation-matrix-table"><span class="header-section-number">6.3</span> Correlation Matrix Table</h2>
+<section id="correlation-matrix-table" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="correlation-matrix-table"><span class="header-section-number">7.3</span> Correlation Matrix Table</h2>
 <p>Next, we examine how to generate a correlation matrix using <code>datasummary</code>. The matrix will display the Pearson correlation above the diagonal and the Spearman correlation below the diagonal. This provides a comprehensive view of the relationships between the variables in the dataset.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datasummary_correlation</span>(descripdata, <span class="at">method =</span> <span class="st">"pearspear"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -569,8 +575,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <script>
 
-      function styleCell_ss7pcyessxzxszs978p0(i, j, css_id) {
-          var table = document.getElementById("tinytable_ss7pcyessxzxszs978p0");
+      function styleCell_fg4c4revugh8gg0x2694(i, j, css_id) {
+          var table = document.getElementById("tinytable_fg4c4revugh8gg0x2694");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -580,7 +586,7 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_ss7pcyessxzxszs978p0');
+        var table = document.getElementById('tinytable_fg4c4revugh8gg0x2694');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -588,8 +594,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_ss7pcyessxzxszs978p0(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_ss7pcyessxzxszs978p0");
+      function spanCell_fg4c4revugh8gg0x2694(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_fg4c4revugh8gg0x2694");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -619,18 +625,18 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 },  ], css_id: 'tinytable_css_wnk90kva32di2y9o7cpi',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_ux4owl4x9wo8ukav7u8l',}, 
-          { positions: [ { i: 5, j: 3 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 2, j: 3 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 1, j: 6 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 1, j: 4 },  ], css_id: 'tinytable_css_ez51rdl5dte628l93uzb',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_cyvzg8a3hntzesm2s22h',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 4 }, { i: 0, j: 6 },  ], css_id: 'tinytable_css_3e9zms6kj8e3updywk7i',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_31swehaoh6mh6otu8657',}, 
+          { positions: [ { i: 5, j: 3 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 2, j: 3 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 1, j: 6 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 1, j: 4 },  ], css_id: 'tinytable_css_nr1gdergdi8u4gf91xpk',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_nlk9x980jt3ws3plyun2',}, 
+          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 },  ], css_id: 'tinytable_css_h3k22fm7oypf899ruobk',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_bwp5e7m7vpcs3i6o6qj9',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_64312okzzm0l0mc3gfuc',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 4 }, { i: 0, j: 6 },  ], css_id: 'tinytable_css_48z73ki7r8sym5xijcpv',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_ss7pcyessxzxszs978p0(cell.i, cell.j, group.css_id);
+                  styleCell_fg4c4revugh8gg0x2694(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -638,15 +644,15 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_wnk90kva32di2y9o7cpi, .table th.tinytable_css_wnk90kva32di2y9o7cpi { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_ux4owl4x9wo8ukav7u8l, .table th.tinytable_css_ux4owl4x9wo8ukav7u8l { text-align: left; }
-      .table td.tinytable_css_ez51rdl5dte628l93uzb, .table th.tinytable_css_ez51rdl5dte628l93uzb { text-align: right; }
-      .table td.tinytable_css_cyvzg8a3hntzesm2s22h, .table th.tinytable_css_cyvzg8a3hntzesm2s22h { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_3e9zms6kj8e3updywk7i, .table th.tinytable_css_3e9zms6kj8e3updywk7i { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_31swehaoh6mh6otu8657, .table th.tinytable_css_31swehaoh6mh6otu8657 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_nr1gdergdi8u4gf91xpk, .table th.tinytable_css_nr1gdergdi8u4gf91xpk { text-align: right; }
+      .table td.tinytable_css_nlk9x980jt3ws3plyun2, .table th.tinytable_css_nlk9x980jt3ws3plyun2 { text-align: left; }
+      .table td.tinytable_css_h3k22fm7oypf899ruobk, .table th.tinytable_css_h3k22fm7oypf899ruobk { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_bwp5e7m7vpcs3i6o6qj9, .table th.tinytable_css_bwp5e7m7vpcs3i6o6qj9 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_64312okzzm0l0mc3gfuc, .table th.tinytable_css_64312okzzm0l0mc3gfuc { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_48z73ki7r8sym5xijcpv, .table th.tinytable_css_48z73ki7r8sym5xijcpv { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_ss7pcyessxzxszs978p0" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_fg4c4revugh8gg0x2694" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -731,8 +737,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <script>
 
-      function styleCell_o9u6usdojtk5rol2mqqq(i, j, css_id) {
-          var table = document.getElementById("tinytable_o9u6usdojtk5rol2mqqq");
+      function styleCell_nuvd29amupf1cu6zfkkg(i, j, css_id) {
+          var table = document.getElementById("tinytable_nuvd29amupf1cu6zfkkg");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -742,7 +748,7 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_o9u6usdojtk5rol2mqqq');
+        var table = document.getElementById('tinytable_nuvd29amupf1cu6zfkkg');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -750,8 +756,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_o9u6usdojtk5rol2mqqq(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_o9u6usdojtk5rol2mqqq");
+      function spanCell_nuvd29amupf1cu6zfkkg(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_nuvd29amupf1cu6zfkkg");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -781,18 +787,18 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_whhvg2y1klia3lm4j7t4',}, 
-          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 },  ], css_id: 'tinytable_css_vzqxajxzwp52snjm3w66',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_nqsqkhuqcvwv0ctef1tu',}, 
-          { positions: [ { i: 5, j: 3 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 2, j: 3 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 1, j: 6 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 1, j: 4 },  ], css_id: 'tinytable_css_ke7avwrq5ukxia3gomq8',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_3vi1llwr99cifdrrs761',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 4 }, { i: 0, j: 6 },  ], css_id: 'tinytable_css_2s4qet1xs2g3je2k0800',}, 
+          { positions: [ { i: 5, j: 3 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 3, j: 2 }, { i: 4, j: 2 }, { i: 5, j: 2 }, { i: 5, j: 4 }, { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 2, j: 3 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 4, j: 6 }, { i: 5, j: 6 }, { i: 1, j: 3 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 1, j: 6 }, { i: 2, j: 6 }, { i: 3, j: 6 }, { i: 1, j: 4 },  ], css_id: 'tinytable_css_uixhcx7x2yte4gmi87qk',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 3 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 4 }, { i: 0, j: 6 },  ], css_id: 'tinytable_css_r9t68wfeih607040lafn',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_qk5jvtaeyvpd5a1s3wpd',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 },  ], css_id: 'tinytable_css_lgth6g09t6bdu4dhh5mf',}, 
+          { positions: [ { i: 6, j: 1 }, { i: 6, j: 3 }, { i: 6, j: 5 }, { i: 6, j: 2 }, { i: 6, j: 4 }, { i: 6, j: 6 },  ], css_id: 'tinytable_css_atqzq3spuus1hfokjv66',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_034cl11v3bvom4671wfb',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_o9u6usdojtk5rol2mqqq(cell.i, cell.j, group.css_id);
+                  styleCell_nuvd29amupf1cu6zfkkg(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -800,15 +806,15 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_whhvg2y1klia3lm4j7t4, .table th.tinytable_css_whhvg2y1klia3lm4j7t4 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_vzqxajxzwp52snjm3w66, .table th.tinytable_css_vzqxajxzwp52snjm3w66 { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_nqsqkhuqcvwv0ctef1tu, .table th.tinytable_css_nqsqkhuqcvwv0ctef1tu { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_ke7avwrq5ukxia3gomq8, .table th.tinytable_css_ke7avwrq5ukxia3gomq8 { text-align: right; }
-      .table td.tinytable_css_3vi1llwr99cifdrrs761, .table th.tinytable_css_3vi1llwr99cifdrrs761 { text-align: left; }
-      .table td.tinytable_css_2s4qet1xs2g3je2k0800, .table th.tinytable_css_2s4qet1xs2g3je2k0800 { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_uixhcx7x2yte4gmi87qk, .table th.tinytable_css_uixhcx7x2yte4gmi87qk { text-align: right; }
+      .table td.tinytable_css_r9t68wfeih607040lafn, .table th.tinytable_css_r9t68wfeih607040lafn { text-align: right; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_qk5jvtaeyvpd5a1s3wpd, .table th.tinytable_css_qk5jvtaeyvpd5a1s3wpd { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_lgth6g09t6bdu4dhh5mf, .table th.tinytable_css_lgth6g09t6bdu4dhh5mf { text-align: left; }
+      .table td.tinytable_css_atqzq3spuus1hfokjv66, .table th.tinytable_css_atqzq3spuus1hfokjv66 { text-align: right; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_034cl11v3bvom4671wfb, .table th.tinytable_css_034cl11v3bvom4671wfb { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_o9u6usdojtk5rol2mqqq" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_nuvd29amupf1cu6zfkkg" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -886,11 +892,11 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 </div>
 <p>This will print the correlation matrix in LaTeX format, which you can easily copy and paste into your Overleaf document. Again, you can uncomment the <code>save_kable()</code> function to save the LaTeX table to a .tex file.</p>
 </section>
-<section id="regression-table" class="level2" data-number="6.4">
-<h2 data-number="6.4" class="anchored" data-anchor-id="regression-table"><span class="header-section-number">6.4</span> Regression Table</h2>
+<section id="regression-table" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="regression-table"><span class="header-section-number">7.4</span> Regression Table</h2>
 <p>Now, we turn to creating a regression table. We’ll use the <code>feols</code> function from the <code>fixest</code> package to estimate fixed effects models, both with and without controls, and with different fixed effects specifications. The modelsummary package will be used to combine the regression results.</p>
-<section id="customizing-coefficient-labels-and-goodness-of-fit-statistics" class="level3" data-number="6.4.1">
-<h3 data-number="6.4.1" class="anchored" data-anchor-id="customizing-coefficient-labels-and-goodness-of-fit-statistics"><span class="header-section-number">6.4.1</span> Customizing Coefficient Labels and Goodness of Fit Statistics</h3>
+<section id="customizing-coefficient-labels-and-goodness-of-fit-statistics" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="customizing-coefficient-labels-and-goodness-of-fit-statistics"><span class="header-section-number">7.4.1</span> Customizing Coefficient Labels and Goodness of Fit Statistics</h3>
 <p>Coefficient map The order of the coefficients will follow this map, also if you wish to leave out coefficients, simply don’t list them in the map there may be ways to experiment with doing this with less work/code, but this method gives a lot of control over the output. Note how this allows for labeling interaction terms as well.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
@@ -940,8 +946,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <script>
 
-      function styleCell_e2ytp627ik9jyeulm98a(i, j, css_id) {
-          var table = document.getElementById("tinytable_e2ytp627ik9jyeulm98a");
+      function styleCell_2j86ocks2jyqyfrdqr6j(i, j, css_id) {
+          var table = document.getElementById("tinytable_2j86ocks2jyqyfrdqr6j");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -951,7 +957,7 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_e2ytp627ik9jyeulm98a');
+        var table = document.getElementById('tinytable_2j86ocks2jyqyfrdqr6j');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -959,8 +965,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_e2ytp627ik9jyeulm98a(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_e2ytp627ik9jyeulm98a");
+      function spanCell_2j86ocks2jyqyfrdqr6j(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_2j86ocks2jyqyfrdqr6j");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -990,20 +996,20 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 6, j: 3 }, { i: 6, j: 1 }, { i: 6, j: 2 }, { i: 6, j: 5 }, { i: 6, j: 4 },  ], css_id: 'tinytable_css_ztk8ugan0sshmhso8wh9',}, 
-          { positions: [ { i: 9, j: 2 }, { i: 9, j: 3 }, { i: 9, j: 4 }, { i: 9, j: 1 }, { i: 9, j: 5 },  ], css_id: 'tinytable_css_eq0u9b66dfz2qvpgjd16',}, 
-          { positions: [ { i: 5, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 8, j: 1 }, { i: 2, j: 3 }, { i: 2, j: 4 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 1, j: 1 }, { i: 5, j: 2 }, { i: 2, j: 5 }, { i: 4, j: 1 }, { i: 8, j: 2 }, { i: 5, j: 5 }, { i: 7, j: 1 }, { i: 1, j: 3 }, { i: 5, j: 4 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 5, j: 3 }, { i: 7, j: 2 }, { i: 4, j: 2 }, { i: 8, j: 3 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 1, j: 4 }, { i: 7, j: 3 }, { i: 7, j: 4 }, { i: 8, j: 4 }, { i: 8, j: 5 }, { i: 4, j: 5 }, { i: 1, j: 5 }, { i: 3, j: 5 }, { i: 7, j: 5 },  ], css_id: 'tinytable_css_deyus3szn3eoihrhhj97',}, 
-          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_c499uefa8anmilttw3ek',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_9m8fjf9u3bwawcmbllkv',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 },  ], css_id: 'tinytable_css_439pc73evhj8w9v5fxbm',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 },  ], css_id: 'tinytable_css_3xbvc8pynjufcy2eoyg8',}, 
-          { positions: [ { i: 9, j: 0 },  ], css_id: 'tinytable_css_09qt3cyghhmfvtaura5f',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 5 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 },  ], css_id: 'tinytable_css_tc067e7lmja97h3sp0s3',}, 
+          { positions: [ { i: 9, j: 0 },  ], css_id: 'tinytable_css_qw5mam4sz6bvpmpnntgk',}, 
+          { positions: [ { i: 5, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 8, j: 1 }, { i: 2, j: 3 }, { i: 2, j: 4 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 3, j: 2 }, { i: 1, j: 1 }, { i: 5, j: 2 }, { i: 2, j: 5 }, { i: 4, j: 1 }, { i: 8, j: 2 }, { i: 5, j: 5 }, { i: 7, j: 1 }, { i: 1, j: 3 }, { i: 5, j: 4 }, { i: 3, j: 3 }, { i: 4, j: 3 }, { i: 5, j: 3 }, { i: 7, j: 2 }, { i: 4, j: 2 }, { i: 8, j: 3 }, { i: 3, j: 4 }, { i: 4, j: 4 }, { i: 1, j: 4 }, { i: 7, j: 3 }, { i: 7, j: 4 }, { i: 8, j: 4 }, { i: 8, j: 5 }, { i: 4, j: 5 }, { i: 1, j: 5 }, { i: 3, j: 5 }, { i: 7, j: 5 },  ], css_id: 'tinytable_css_muliz3q9cib1v2h26p6z',}, 
+          { positions: [ { i: 6, j: 3 }, { i: 6, j: 1 }, { i: 6, j: 2 }, { i: 6, j: 5 }, { i: 6, j: 4 },  ], css_id: 'tinytable_css_m2g2qje1l6glln7o3j5o',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_h98xnhg7vu26he4biwff',}, 
+          { positions: [ { i: 6, j: 0 },  ], css_id: 'tinytable_css_dngvwnevmke8bv8mtzck',}, 
+          { positions: [ { i: 9, j: 2 }, { i: 9, j: 3 }, { i: 9, j: 4 }, { i: 9, j: 1 }, { i: 9, j: 5 },  ], css_id: 'tinytable_css_avmh4o6hc4b589sc0740',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 7, j: 0 }, { i: 8, j: 0 },  ], css_id: 'tinytable_css_6uidwjfba4xx6h4d16yr',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_e2ytp627ik9jyeulm98a(cell.i, cell.j, group.css_id);
+                  styleCell_2j86ocks2jyqyfrdqr6j(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1011,17 +1017,17 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_ztk8ugan0sshmhso8wh9, .table th.tinytable_css_ztk8ugan0sshmhso8wh9 { text-align: center; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_eq0u9b66dfz2qvpgjd16, .table th.tinytable_css_eq0u9b66dfz2qvpgjd16 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_deyus3szn3eoihrhhj97, .table th.tinytable_css_deyus3szn3eoihrhhj97 { text-align: center; }
-      .table td.tinytable_css_c499uefa8anmilttw3ek, .table th.tinytable_css_c499uefa8anmilttw3ek { text-align: left; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_9m8fjf9u3bwawcmbllkv, .table th.tinytable_css_9m8fjf9u3bwawcmbllkv { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_439pc73evhj8w9v5fxbm, .table th.tinytable_css_439pc73evhj8w9v5fxbm { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_3xbvc8pynjufcy2eoyg8, .table th.tinytable_css_3xbvc8pynjufcy2eoyg8 { text-align: left; }
-      .table td.tinytable_css_09qt3cyghhmfvtaura5f, .table th.tinytable_css_09qt3cyghhmfvtaura5f { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_tc067e7lmja97h3sp0s3, .table th.tinytable_css_tc067e7lmja97h3sp0s3 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_qw5mam4sz6bvpmpnntgk, .table th.tinytable_css_qw5mam4sz6bvpmpnntgk { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_muliz3q9cib1v2h26p6z, .table th.tinytable_css_muliz3q9cib1v2h26p6z { text-align: center; }
+      .table td.tinytable_css_m2g2qje1l6glln7o3j5o, .table th.tinytable_css_m2g2qje1l6glln7o3j5o { text-align: center; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_h98xnhg7vu26he4biwff, .table th.tinytable_css_h98xnhg7vu26he4biwff { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_dngvwnevmke8bv8mtzck, .table th.tinytable_css_dngvwnevmke8bv8mtzck { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_avmh4o6hc4b589sc0740, .table th.tinytable_css_avmh4o6hc4b589sc0740 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_6uidwjfba4xx6h4d16yr, .table th.tinytable_css_6uidwjfba4xx6h4d16yr { text-align: left; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_e2ytp627ik9jyeulm98a" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_2j86ocks2jyqyfrdqr6j" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -1046,10 +1052,10 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
                 <tr>
                   <td></td>
                   <td>(62.731)</td>
-                  <td>(48.158)</td>
-                  <td>(48.625)</td>
-                  <td>(38.635)</td>
-                  <td>(35.599)</td>
+                  <td>(48.156)</td>
+                  <td>(48.622)</td>
+                  <td>(38.636)</td>
+                  <td>(35.600)</td>
                 </tr>
                 <tr>
                   <td>$LOSS$</td>
@@ -1064,8 +1070,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
                   <td></td>
                   <td>(-7.949)</td>
                   <td>(-7.755)</td>
-                  <td>(-7.560)</td>
-                  <td>(-8.117)</td>
+                  <td>(-7.561)</td>
+                  <td>(-8.118)</td>
                 </tr>
                 <tr>
                   <td>$ROA_{t} \times LOSS$</td>
@@ -1073,15 +1079,15 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
                   <td>0.032</td>
                   <td>0.012</td>
                   <td>-0.285***</td>
-                  <td>-0.294***</td>
+                  <td>-0.293***</td>
                 </tr>
                 <tr>
                   <td></td>
                   <td></td>
-                  <td>(1.470)</td>
-                  <td>(0.535)</td>
+                  <td>(1.471)</td>
+                  <td>(0.536)</td>
                   <td>(-13.307)</td>
-                  <td>(-12.620)</td>
+                  <td>(-12.621)</td>
                 </tr>
                 <tr>
                   <td>N</td>
@@ -1114,8 +1120,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 </div>
 </div>
 </section>
-<section id="adding-fixed-effect-rows-to-the-regression-table" class="level3" data-number="6.4.2">
-<h3 data-number="6.4.2" class="anchored" data-anchor-id="adding-fixed-effect-rows-to-the-regression-table"><span class="header-section-number">6.4.2</span> Adding Fixed-Effect Rows to the Regression Table</h3>
+<section id="adding-fixed-effect-rows-to-the-regression-table" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="adding-fixed-effect-rows-to-the-regression-table"><span class="header-section-number">7.4.2</span> Adding Fixed-Effect Rows to the Regression Table</h3>
 <p>In this LaTeX example, I will show how to manually add heading and FE rows.However, in the R code to output to Word, I have provided the code to use the built in ability of <code>fixest</code> to create the FE Rows. This defines the rows we wish to add.The terms should match what you used as the model/column names in the model list.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>my_rows <span class="ot">&lt;-</span> <span class="fu">tribble</span>(<span class="sc">~</span>term,<span class="sc">~</span><span class="st">"Base"</span>,<span class="sc">~</span><span class="st">"No FE"</span>, <span class="sc">~</span><span class="st">"Year FE"</span>,<span class="sc">~</span><span class="st">"Two-Way FE"</span>,<span class="sc">~</span><span class="st">"With Controls"</span>,</span>
@@ -1154,8 +1160,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <script>
 
-      function styleCell_mdm72dose62b53xbvsmo(i, j, css_id) {
-          var table = document.getElementById("tinytable_mdm72dose62b53xbvsmo");
+      function styleCell_r21z3d195tw7qqy2b94k(i, j, css_id) {
+          var table = document.getElementById("tinytable_r21z3d195tw7qqy2b94k");
           var cell = table.rows[i]?.cells[j];  // Safe navigation to avoid errors
           if (cell) {
               console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
@@ -1165,7 +1171,7 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
           }
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_mdm72dose62b53xbvsmo');
+        var table = document.getElementById('tinytable_r21z3d195tw7qqy2b94k');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -1173,8 +1179,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_mdm72dose62b53xbvsmo(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_mdm72dose62b53xbvsmo");
+      function spanCell_r21z3d195tw7qqy2b94k(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_r21z3d195tw7qqy2b94k");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -1204,20 +1210,20 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: 12, j: 0 },  ], css_id: 'tinytable_css_u0du7t2ci2cd95ptsyn0',}, 
-          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 },  ], css_id: 'tinytable_css_rq1w8x5i4k0hqtyrxubt',}, 
-          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_o7be8mkis64jxnarfffc',}, 
-          { positions: [ { i: 8, j: 0 },  ], css_id: 'tinytable_css_gt3ct26twwyf1nyqml1v',}, 
-          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_cba2rrlcq76njc32xb8z',}, 
-          { positions: [ { i: 8, j: 1 }, { i: 8, j: 5 }, { i: 8, j: 2 }, { i: 8, j: 3 }, { i: 8, j: 4 },  ], css_id: 'tinytable_css_8qh4qh0vkorl5nbhp7nd',}, 
-          { positions: [ { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 }, { i: 12, j: 5 },  ], css_id: 'tinytable_css_5n4v0blv0n0o32syjbhg',}, 
-          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 3, j: 2 }, { i: 9, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 7, j: 2 }, { i: 4, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 11, j: 2 }, { i: 3, j: 3 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 2, j: 3 }, { i: 7, j: 3 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 6, j: 3 }, { i: 11, j: 3 }, { i: 4, j: 3 }, { i: 1, j: 3 }, { i: 10, j: 3 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 5, j: 3 }, { i: 1, j: 4 }, { i: 6, j: 4 }, { i: 7, j: 4 }, { i: 9, j: 3 }, { i: 5, j: 4 }, { i: 10, j: 4 }, { i: 11, j: 4 }, { i: 4, j: 4 }, { i: 9, j: 4 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 6, j: 5 }, { i: 7, j: 5 }, { i: 9, j: 5 }, { i: 10, j: 5 }, { i: 11, j: 5 },  ], css_id: 'tinytable_css_0wbftx9t7smameczo3sl',}, 
+          { positions: [ { i: 0, j: 0 },  ], css_id: 'tinytable_css_wtj7v82ub9jue3tjdvwv',}, 
+          { positions: [ { i: 12, j: 0 },  ], css_id: 'tinytable_css_v14ajn30d0v17v16d7op',}, 
+          { positions: [ { i: 8, j: 1 }, { i: 8, j: 5 }, { i: 8, j: 2 }, { i: 8, j: 3 }, { i: 8, j: 4 },  ], css_id: 'tinytable_css_rps1b5spw53do28v5fi7',}, 
+          { positions: [ { i: 8, j: 0 },  ], css_id: 'tinytable_css_gwc7haay1yvbaq4ak1mh',}, 
+          { positions: [ { i: 12, j: 1 }, { i: 12, j: 2 }, { i: 12, j: 3 }, { i: 12, j: 4 }, { i: 12, j: 5 },  ], css_id: 'tinytable_css_f4v7shddsdlahk2lcb1n',}, 
+          { positions: [ { i: 1, j: 1 }, { i: 2, j: 1 }, { i: 3, j: 1 }, { i: 4, j: 1 }, { i: 5, j: 1 }, { i: 6, j: 1 }, { i: 7, j: 1 }, { i: 3, j: 2 }, { i: 9, j: 1 }, { i: 10, j: 1 }, { i: 11, j: 1 }, { i: 7, j: 2 }, { i: 4, j: 2 }, { i: 1, j: 2 }, { i: 2, j: 2 }, { i: 11, j: 2 }, { i: 3, j: 3 }, { i: 5, j: 2 }, { i: 6, j: 2 }, { i: 2, j: 3 }, { i: 7, j: 3 }, { i: 9, j: 2 }, { i: 10, j: 2 }, { i: 6, j: 3 }, { i: 11, j: 3 }, { i: 4, j: 3 }, { i: 1, j: 3 }, { i: 10, j: 3 }, { i: 2, j: 4 }, { i: 3, j: 4 }, { i: 5, j: 3 }, { i: 1, j: 4 }, { i: 6, j: 4 }, { i: 7, j: 4 }, { i: 9, j: 3 }, { i: 5, j: 4 }, { i: 10, j: 4 }, { i: 11, j: 4 }, { i: 4, j: 4 }, { i: 9, j: 4 }, { i: 1, j: 5 }, { i: 2, j: 5 }, { i: 3, j: 5 }, { i: 4, j: 5 }, { i: 5, j: 5 }, { i: 6, j: 5 }, { i: 7, j: 5 }, { i: 9, j: 5 }, { i: 10, j: 5 }, { i: 11, j: 5 },  ], css_id: 'tinytable_css_f21jl7q6it9k8i7xphwe',}, 
+          { positions: [ { i: 1, j: 0 }, { i: 2, j: 0 }, { i: 3, j: 0 }, { i: 4, j: 0 }, { i: 5, j: 0 }, { i: 6, j: 0 }, { i: 7, j: 0 }, { i: 9, j: 0 }, { i: 10, j: 0 }, { i: 11, j: 0 },  ], css_id: 'tinytable_css_di0wvwys2fzt6la1yiqn',}, 
+          { positions: [ { i: 0, j: 1 }, { i: 0, j: 2 }, { i: 0, j: 3 }, { i: 0, j: 4 }, { i: 0, j: 5 },  ], css_id: 'tinytable_css_4ikjrga5v4njdohva3ap',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_mdm72dose62b53xbvsmo(cell.i, cell.j, group.css_id);
+                  styleCell_r21z3d195tw7qqy2b94k(cell.i, cell.j, group.css_id);
               });
           });
       });
@@ -1225,17 +1231,17 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 
     <style>
       /* tinytable css entries after */
-      .table td.tinytable_css_u0du7t2ci2cd95ptsyn0, .table th.tinytable_css_u0du7t2ci2cd95ptsyn0 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_rq1w8x5i4k0hqtyrxubt, .table th.tinytable_css_rq1w8x5i4k0hqtyrxubt { text-align: left; }
-      .table td.tinytable_css_o7be8mkis64jxnarfffc, .table th.tinytable_css_o7be8mkis64jxnarfffc { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_gt3ct26twwyf1nyqml1v, .table th.tinytable_css_gt3ct26twwyf1nyqml1v { text-align: left; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_cba2rrlcq76njc32xb8z, .table th.tinytable_css_cba2rrlcq76njc32xb8z { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_8qh4qh0vkorl5nbhp7nd, .table th.tinytable_css_8qh4qh0vkorl5nbhp7nd { text-align: center; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_5n4v0blv0n0o32syjbhg, .table th.tinytable_css_5n4v0blv0n0o32syjbhg { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_0wbftx9t7smameczo3sl, .table th.tinytable_css_0wbftx9t7smameczo3sl { text-align: center; }
+      .table td.tinytable_css_wtj7v82ub9jue3tjdvwv, .table th.tinytable_css_wtj7v82ub9jue3tjdvwv { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_v14ajn30d0v17v16d7op, .table th.tinytable_css_v14ajn30d0v17v16d7op { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_rps1b5spw53do28v5fi7, .table th.tinytable_css_rps1b5spw53do28v5fi7 { text-align: center; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_gwc7haay1yvbaq4ak1mh, .table th.tinytable_css_gwc7haay1yvbaq4ak1mh { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_f4v7shddsdlahk2lcb1n, .table th.tinytable_css_f4v7shddsdlahk2lcb1n { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_f21jl7q6it9k8i7xphwe, .table th.tinytable_css_f21jl7q6it9k8i7xphwe { text-align: center; }
+      .table td.tinytable_css_di0wvwys2fzt6la1yiqn, .table th.tinytable_css_di0wvwys2fzt6la1yiqn { text-align: left; }
+      .table td.tinytable_css_4ikjrga5v4njdohva3ap, .table th.tinytable_css_4ikjrga5v4njdohva3ap { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_mdm72dose62b53xbvsmo" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_r21z3d195tw7qqy2b94k" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -1260,10 +1266,10 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
                 <tr>
                   <td></td>
                   <td>(62.731)</td>
-                  <td>(48.158)</td>
-                  <td>(48.625)</td>
-                  <td>(38.635)</td>
-                  <td>(35.599)</td>
+                  <td>(48.156)</td>
+                  <td>(48.622)</td>
+                  <td>(38.636)</td>
+                  <td>(35.600)</td>
                 </tr>
                 <tr>
                   <td>$LOSS$</td>
@@ -1278,8 +1284,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
                   <td></td>
                   <td>(-7.949)</td>
                   <td>(-7.755)</td>
-                  <td>(-7.560)</td>
-                  <td>(-8.117)</td>
+                  <td>(-7.561)</td>
+                  <td>(-8.118)</td>
                 </tr>
                 <tr>
                   <td>$ROA_{t} \times LOSS$</td>
@@ -1287,15 +1293,15 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
                   <td>0.032</td>
                   <td>0.012</td>
                   <td>-0.285\sym{***}</td>
-                  <td>-0.294\sym{***}</td>
+                  <td>-0.293\sym{***}</td>
                 </tr>
                 <tr>
                   <td></td>
                   <td></td>
-                  <td>(1.470)</td>
-                  <td>(0.535)</td>
+                  <td>(1.471)</td>
+                  <td>(0.536)</td>
                   <td>(-13.307)</td>
-                  <td>(-12.620)</td>
+                  <td>(-12.621)</td>
                 </tr>
                 <tr>
                   <td>Year FE</td>
@@ -1353,8 +1359,8 @@ Total &amp; 163,298 &amp; 41,881 &amp; 25.65\%\\
 </div>
 </section>
 </section>
-<section id="wrapping-up" class="level2" data-number="6.5">
-<h2 data-number="6.5" class="anchored" data-anchor-id="wrapping-up"><span class="header-section-number">6.5</span> Wrapping Up</h2>
+<section id="wrapping-up" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="wrapping-up"><span class="header-section-number">7.5</span> Wrapping Up</h2>
 <p>In this chapter, we explored how to use the <code>modelsummary</code> and <code>datasummary</code> packages to automate the creation of regression tables, summary statistics tables, and other common statistical outputs. We also covered customizing the tables to match specific formatting and adding fixed effects rows to regression models.</p>
 <p>By automating the process, we ensure that tables are reproducible and consistent across different analysis runs, which is crucial for maintaining research transparency and reproducibility.</p>
 <p>Now, you are equipped with the knowledge to efficiently create and customize regression tables in R for your own data analysis projects.</p>
@@ -1785,13 +1791,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./merge-data.html" class="pagination-link" aria-label="Merging Data">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Merging Data</span></span>
+      <a href="./visualizations.html" class="pagination-link" aria-label="Visualization">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Visualization</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./summary.html" class="pagination-link" aria-label="Summary">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Summary</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
