@@ -12,6 +12,7 @@ book:
     - global-params-packs-util.qmd
     - obtain-data.qmd
     - merge-data.qmd
+    -visualizations.qmd
     - regression-table.qmd
     - summary.qmd
     - references.qmd
