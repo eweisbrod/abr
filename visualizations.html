@@ -205,8 +205,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#visualizing-losses-by-industry" id="toc-visualizing-losses-by-industry" class="nav-link active" data-scroll-target="#visualizing-losses-by-industry"><span class="header-section-number">6.1</span> Visualizing Losses by Industry</a></li>
+  <li><a href="#losses-by-firm-size-over-time" id="toc-losses-by-firm-size-over-time" class="nav-link" data-scroll-target="#losses-by-firm-size-over-time"><span class="header-section-number">6.2</span> Losses by Firm Size Over Time</a></li>
+  <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix"><span class="header-section-number">6.3</span> Correlation Matrix</a></li>
+  <li><a href="#yearly-earnings-persistence" id="toc-yearly-earnings-persistence" class="nav-link" data-scroll-target="#yearly-earnings-persistence"><span class="header-section-number">6.4</span> Yearly Earnings Persistence</a></li>
+  <li><a href="#advanced-visualization-techniques" id="toc-advanced-visualization-techniques" class="nav-link" data-scroll-target="#advanced-visualization-techniques"><span class="header-section-number">6.5</span> Advanced Visualization Techniques</a>
+  <ul class="collapse">
+  <li><a href="#enhanced-heatmap-using-ggcorrplot" id="toc-enhanced-heatmap-using-ggcorrplot" class="nav-link" data-scroll-target="#enhanced-heatmap-using-ggcorrplot"><span class="header-section-number">6.5.1</span> Enhanced Heatmap Using ggcorrplot</a></li>
+  <li><a href="#correlation-table-using-gt-and-gtextras" id="toc-correlation-table-using-gt-and-gtextras" class="nav-link" data-scroll-target="#correlation-table-using-gt-and-gtextras"><span class="header-section-number">6.5.2</span> Correlation Table Using gt and gtExtras</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">6.6</span> Summary</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -231,15 +246,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Exploratory Data Analysis(EDA) is a critical step in any data analysis workflow. After collecting and cleaning our WRDS dataset—focusing on public firms and removing outliers—we now explore key financial patterns. In this chapter, we:</p>
-<p>Visualize industry-specific financial losses</p>
-<p>Explore firm size and loss trends over time</p>
-<p>Examine variable relationships via a correlation matrix</p>
-<p>Evaluate earnings persistence using yearly regressions</p>
+<ul>
+<li>Visualize industry-specific financial losses<br>
+</li>
+<li>Explore firm size and loss trends over time<br>
+</li>
+<li>Examine variable relationships via a correlation matrix<br>
+</li>
+<li>Evaluate earnings persistence using yearly regressions</li>
+</ul>
 <p>We use high-quality, publication-ready graphics (PDF) and presentation-ready graphics (PNG) with R packages like ggplot2, corrplot, and modelsummary.</p>
 <p>To learn more about the R packages used in this chapter, see the following tutorials:</p>
-<p><a href="https://ggplot2.tidyverse.org/">ggplot</a> – for creating elegant data visualizations</p>
-<p><a href="https://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram?utm_source=chatgpt.com">corrplot</a> – for visualizing correlation matrices</p>
-<p><a href="https://modelsummary.com/.">modelsummary</a> – for formatting regression tables and model outputs</p>
+<ul>
+<li><p><a href="https://ggplot2.tidyverse.org/">ggplot</a> – for creating elegant data visualizations</p></li>
+<li><p><a href="https://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram?utm_source=chatgpt.com">corrplot</a> for visualizing correlation matrices</p></li>
+</ul>
 <p>We work with a cleaned and winsorized version of firm-level financial data. The key variables include:</p>
 <table class="caption-top table">
 <colgroup>
@@ -299,226 +320,1106 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>###6.2 Visualizing Losses by Industry Objective: Identify which industries are more prone to reporting losses, using FF12 categories.</p>
+<section id="visualizing-losses-by-industry" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="visualizing-losses-by-industry"><span class="header-section-number">6.1</span> Visualizing Losses by Industry</h2>
+<p>Objective: Identify which industries are more prone to reporting losses, using FF12 categories.</p>
 <p>Plot: Horizontal bar chart of % of firms with loss == 1 per FF12 category.</p>
 <p>Interpretation: This figure reveals financial vulnerability patterns. For instance, tech or healthcare might have higher losses due to R&amp;D intensity, while utilities may show fewer.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-path</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: 'hide'</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>data_path <span class="ot">&lt;-</span> <span class="st">"E:/acct_995_data/abr"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-losses-by-industry</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Proportion of Loss-Making Firms by Fama-French 12 Industry"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span> </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Next line reorders the FF12 industries to make them appear in order of %loss</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FF12 =</span> forcats<span class="sc">::</span><span class="fu">fct_reorder</span>(<span class="fu">factor</span>(FF12), (pct_loss))) <span class="sc">|&gt;</span> </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> FF12, <span class="at">y=</span> pct_loss)) <span class="sc">+</span> </span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0051ba"</span>) <span class="sc">+</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fill color = Kansas Blue from : https://brand.ku.edu/guidelines/design/color</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"Freq. of Losses"</span>, <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">name =</span> <span class="st">"Fama-French Industry"</span>) <span class="sc">+</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#base_family = serif sets font to times new roman</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"serif"</span>) </span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at it in R  </span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FF12) <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Next line reorders the FF12 industries to make them appear in order of %loss</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FF12 =</span> forcats<span class="sc">::</span><span class="fu">fct_reorder</span>(<span class="fu">factor</span>(FF12), (pct_loss))) <span class="sc">|&gt;</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> FF12, <span class="at">y=</span> pct_loss)) <span class="sc">+</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0051ba"</span>) <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fill color = Kansas Blue from : https://brand.ku.edu/guidelines/design/color</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"Freq. of Losses"</span>, <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">name =</span> <span class="st">"Fama-French Industry"</span>) <span class="sc">+</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#base_family = serif sets font to times new roman</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"serif"</span>) </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at it in R  </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>fig</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#For Latex output you might want to output to PDF</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/ff12_fig.pdf"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#For Word output you might want to output to an image such as .png</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/ff12_fig.png"</span>), fig, <span class="at">width =</span> <span class="fl">4.2</span>, <span class="at">height =</span> <span class="fl">3.6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="visualizations_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<div id="fig-losses-by-industry" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-losses-by-industry-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="visualizations_files/figure-html/fig-losses-by-industry-1.png" id="fig-losses-by-industry" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-losses-by-industry-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.1
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#For Latex output you might want to output to PDF</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/ff12_fig.pdf"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#For Word output you might want to output to an image such as .png</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/ff12_fig.png"</span>), fig, <span class="at">width =</span> <span class="fl">4.2</span>, <span class="at">height =</span> <span class="fl">3.6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>###6.3 Losses by Firm Size Over Time Objective: Compare financial stability across firms of different sizes over the years.</p>
+</section>
+<section id="losses-by-firm-size-over-time" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="losses-by-firm-size-over-time"><span class="header-section-number">6.2</span> Losses by Firm Size Over Time</h2>
+<p>Objective: Compare financial stability across firms of different sizes over the years.</p>
 <p>Plot: Line chart of pct_loss over time, stratified by market value quintiles.</p>
 <p>Interpretation: Smaller firms often exhibit higher volatility and more losses. This dynamic changes across economic cycles</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-losses-by-size</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Proportion of Loss-Making Firms by Size Quintile Over Time"</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span> </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(calyear) <span class="sc">|&gt;</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#create size quintiles by calyear</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">size_qnt =</span> <span class="fu">factor</span>(<span class="fu">ntile</span>(mve,<span class="dv">5</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(calyear, size_qnt) <span class="sc">|&gt;</span> </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> calyear, <span class="at">y=</span> pct_loss, <span class="at">color =</span> size_qnt, <span class="at">linetype =</span> size_qnt)) <span class="sc">+</span> </span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"Freq. of Losses"</span>, <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">name =</span> <span class="st">"Year"</span>, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1970</span>,<span class="dv">2025</span>,<span class="dv">5</span>)) <span class="sc">+</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#If you give these scales the same name they will appear in the same legend</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Size Quintile"</span>) <span class="sc">+</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype_discrete</span>(<span class="at">name =</span> <span class="st">"Size Quintile"</span>) <span class="sc">+</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"serif"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`summarise()` has grouped output by 'calyear'. You can override using the
-`.groups` argument.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at it in R  </span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(calyear) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#create size quintiles by calyear</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">size_qnt =</span> <span class="fu">factor</span>(<span class="fu">ntile</span>(mve,<span class="dv">5</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(calyear, size_qnt) <span class="sc">|&gt;</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">pct_loss =</span> <span class="fu">sum</span>(loss, <span class="at">na.rm =</span> T)<span class="sc">/</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> calyear, <span class="at">y=</span> pct_loss, <span class="at">color =</span> size_qnt, <span class="at">linetype =</span> size_qnt)) <span class="sc">+</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"Freq. of Losses"</span>, <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">name =</span> <span class="st">"Year"</span>, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1970</span>,<span class="dv">2025</span>,<span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#If you give these scales the same name they will appear in the same legend</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">name =</span> <span class="st">"Size Quintile"</span>) <span class="sc">+</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype_discrete</span>(<span class="at">name =</span> <span class="st">"Size Quintile"</span>) <span class="sc">+</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"serif"</span>) </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at it in R  </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>fig</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#For Latex</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/size_year.pdf"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#For Word</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/size_year.png"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="visualizations_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<div id="fig-losses-by-size" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-losses-by-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="visualizations_files/figure-html/fig-losses-by-size-1.png" id="fig-losses-by-size" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-losses-by-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.2
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#For Latex</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/size_year.pdf"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#For Word</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/size_year.png"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>###6.4 Correlation Matrix Objective: Understand relationships between core financial variables and detect multicollinearity.</p>
+</section>
+<section id="correlation-matrix" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="correlation-matrix"><span class="header-section-number">6.3</span> Correlation Matrix</h2>
+<p>Objective: Understand relationships between core financial variables and detect multicollinearity.</p>
 <p>Plot: Heatmap-style correlation matrix (with coefficient values) for ROA, LOSS, R&amp;D, etc.</p>
 <p>Interpretation: Strong correlation between roa and roa_lead_1 shows earnings persistence. Weak correlation between rd and roa may suggest R&amp;D’s delayed or indirect impact.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-correlation-matrix</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Correlation Matrix of Key Financial Variables"</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>corrdata <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span> </span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">ROA_{t+1}</span><span class="st">`</span> <span class="ot">=</span> roa_lead_1,</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">ROA_t</span><span class="st">`</span> <span class="ot">=</span> roa, </span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">LOSS</span><span class="st">`</span> <span class="ot">=</span> loss,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">R</span><span class="sc">\\</span><span class="at">&amp;D</span><span class="st">`</span> <span class="ot">=</span> rd,</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">TA</span><span class="st">`</span> <span class="ot">=</span> at,</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SIZE</span><span class="st">`</span> <span class="ot">=</span> mve)</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>corrdata</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 163,298 × 6
-   `ROA_{t+1}`   ROA_t  LOSS `R\\&amp;D`    TA  SIZE
-         &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
- 1     0.00471 0.0561      0       0  33.4 24.5 
- 2     0.0781  0.00471     0       0  29.3 17.2 
- 3     0.0856  0.0781      0       0  19.9 14.9 
- 4     0.0833  0.0856      0       0  21.8  4.97
- 5     0.0955  0.0833      0       0  25.6  4.57
- 6     0.0890  0.0955      0       0  23.9  9.18
- 7     0.0231  0.0890      0       0  38.6 12.7 
- 8     0.0700  0.0806      0       0  14.1 25.9 
- 9     0.0503  0.0700      0       0  16.3 13.4 
-10     0.0657  0.0355      0       0  13.7  3.51
-# ℹ 163,288 more rows</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>correlation <span class="ot">=</span> <span class="fu">cor</span>(corrdata)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>col2 <span class="ot">=</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">'red'</span>, <span class="st">'white'</span>, <span class="st">'blue'</span>))  </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file=</span><span class="fu">glue</span>(<span class="st">"{data_path}/output/corr_fig.pdf"</span>))</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(correlation, <span class="at">method =</span> <span class="st">'square'</span>, </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">addCoef.col =</span> <span class="st">'black'</span>, </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">diag =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.col=</span><span class="st">'black'</span>, </span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="st">'full'</span>,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.cex =</span> <span class="dv">1</span>,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.srt =</span> <span class="dv">0</span>,</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.offset =</span> <span class="dv">1</span>,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">number.cex =</span> <span class="fl">0.7</span>,</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">cl.ratio =</span> <span class="fl">0.1</span>,</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">cl.pos =</span> <span class="st">"r"</span>,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">col=</span><span class="fu">col2</span>(<span class="dv">20</span>),</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">win.asp =</span> .<span class="dv">8</span>)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>corrdata <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">ROA_{t+1}</span><span class="st">`</span> <span class="ot">=</span> roa_lead_1,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">ROA_t</span><span class="st">`</span> <span class="ot">=</span> roa, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">LOSS</span><span class="st">`</span> <span class="ot">=</span> loss,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">R</span><span class="sc">\\</span><span class="at">&amp;D</span><span class="st">`</span> <span class="ot">=</span> rd,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">TA</span><span class="st">`</span> <span class="ot">=</span> at,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SIZE</span><span class="st">`</span> <span class="ot">=</span> mve)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>correlation <span class="ot">&lt;-</span> <span class="fu">cor</span>(corrdata)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>col2 <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">'red'</span>, <span class="st">'white'</span>, <span class="st">'blue'</span>))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  Show plot in Quarto output</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(correlation, <span class="at">method =</span> <span class="st">'square'</span>, </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">addCoef.col =</span> <span class="st">'black'</span>, </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">diag =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.col =</span> <span class="st">'black'</span>, </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="st">'full'</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.cex =</span> <span class="dv">1</span>,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.srt =</span> <span class="dv">0</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.offset =</span> <span class="dv">1</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">number.cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">cl.ratio =</span> <span class="fl">0.1</span>,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">cl.pos =</span> <span class="st">"r"</span>,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>         <span class="at">col =</span> <span class="fu">col2</span>(<span class="dv">20</span>),</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">win.asp =</span> .<span class="dv">8</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  Save to PDF</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="fu">glue</span>(<span class="st">"{data_path}/output/corr_fig.pdf"</span>))</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(correlation, <span class="at">method =</span> <span class="st">'square'</span>, </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">addCoef.col =</span> <span class="st">'black'</span>, </span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">diag =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.col =</span> <span class="st">'black'</span>, </span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="st">'full'</span>,</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.cex =</span> <span class="dv">1</span>,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.srt =</span> <span class="dv">0</span>,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>         <span class="at">tl.offset =</span> <span class="dv">1</span>,</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>         <span class="at">number.cex =</span> <span class="fl">0.7</span>,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>         <span class="at">cl.ratio =</span> <span class="fl">0.1</span>,</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>         <span class="at">cl.pos =</span> <span class="st">"r"</span>,</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>         <span class="at">col =</span> <span class="fu">col2</span>(<span class="dv">20</span>),</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>         <span class="at">win.asp =</span> .<span class="dv">8</span>)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>png 
   2 </code></pre>
 </div>
-</div>
-<p>###6.5 Yearly Earnings Persistence Objective: Test how well current ROA predicts future ROA, stratified by loss status.</p>
-<p>Plot: Line plot with confidence intervals from yearly regressions</p>
-<p>Interpretation: Firms without losses tend to show stronger earnings persistence. Loss firms show more variation and uncertainty in their earnings trajectory.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-annual-regression-confidence-bands</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Annual Regressions of Future ROA on Current ROA with 95% Confidence Bands"</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># bonus example </span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>figdata <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#nest the regressions by year and loss</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest_by</span>(calyear,loss) <span class="sc">|&gt;</span> </span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit the regressions</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fit =</span> <span class="fu">list</span>(<span class="fu">lm</span>(roa_lead_1 <span class="sc">~</span> roa, <span class="at">data =</span> data))</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use the broom package to tidy the regressions</span></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#option conf.int outputs the confidence intervals so we can plot them</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(broom<span class="sc">::</span><span class="fu">tidy</span>(fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I don't plan to plot the intercept so i will drop it from the data</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span><span class="st">"(Intercept)"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
-dplyr 1.1.0.
-ℹ Please use `reframe()` instead.
-ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
-  always returns an ungrouped data frame and adjust accordingly.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`summarise()` has grouped output by 'calyear', 'loss'. You can override using
-the `.groups` argument.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#can also use this setup to do Fama-Macbeth regressions, etc. </span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#can also use pmg package for Fama-Macbeth</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#now make a ggplot object from the data</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> figdata <span class="sc">|&gt;</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">loss =</span> <span class="fu">factor</span>(loss)) <span class="sc">|&gt;</span> </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>calyear,<span class="at">y=</span>estimate))  <span class="sc">+</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low, <span class="at">ymax=</span>conf.high, </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group =</span> loss),</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">"grey80"</span>) <span class="sc">+</span> </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color=</span>loss)) <span class="sc">+</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color=</span>loss)) <span class="sc">+</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"serif"</span>) </span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at it in R  </span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="visualizations_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<div id="fig-correlation-matrix" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-correlation-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="visualizations_files/figure-html/fig-correlation-matrix-1.png" id="fig-correlation-matrix" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-correlation-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.3
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#For Latex</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/coef_year.pdf"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#For Word</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/coef_year.png"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="yearly-earnings-persistence" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="yearly-earnings-persistence"><span class="header-section-number">6.4</span> Yearly Earnings Persistence</h2>
+<p>Objective: Test how well current ROA predicts future ROA, stratified by loss status.</p>
+<p>Plot: Line plot with confidence intervals from yearly regressions</p>
+<p>Interpretation: Firms without losses tend to show stronger earnings persistence. Loss firms show more variation and uncertainty in their earnings trajectory.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>figdata <span class="ot">&lt;-</span> regdata <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#nest the regressions by year and loss</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest_by</span>(calyear,loss) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># fit the regressions</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fit =</span> <span class="fu">list</span>(<span class="fu">lm</span>(roa_lead_1 <span class="sc">~</span> roa, <span class="at">data =</span> data))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># use the broom package to tidy the regressions</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#option conf.int outputs the confidence intervals so we can plot them</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(broom<span class="sc">::</span><span class="fu">tidy</span>(fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#I don't plan to plot the intercept so i will drop it from the data</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span><span class="st">"(Intercept)"</span>) </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#can also use this setup to do Fama-Macbeth regressions, etc. </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#can also use pmg package for Fama-Macbeth</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#now make a ggplot object from the data</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>fig <span class="ot">&lt;-</span> figdata <span class="sc">|&gt;</span> </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">loss =</span> <span class="fu">factor</span>(loss)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>calyear,<span class="at">y=</span>estimate))  <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low, <span class="at">ymax=</span>conf.high, </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                  <span class="at">group =</span> loss),</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">fill =</span> <span class="st">"grey80"</span>) <span class="sc">+</span> </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color=</span>loss)) <span class="sc">+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color=</span>loss)) <span class="sc">+</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_family =</span> <span class="st">"serif"</span>) </span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co">#Look at it in R  </span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>fig</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co">#For Latex</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/coef_year.pdf"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co">#For Word</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">glue</span>(<span class="st">"{data_path}/output/coef_year.png"</span>), fig, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-annual-regression-confidence-bands" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-annual-regression-confidence-bands-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="visualizations_files/figure-html/fig-annual-regression-confidence-bands-1.png" id="fig-annual-regression-confidence-bands" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-annual-regression-confidence-bands-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.4
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="advanced-visualization-techniques" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="advanced-visualization-techniques"><span class="header-section-number">6.5</span> Advanced Visualization Techniques</h2>
+<p>While the previous visualizations serve well for initial exploration, some contexts—such as formal presentations, reports, or academic publications—call for more polished and flexible visual representations. In this section, we revisit our correlation analysis, using the same set of variables, but exploring alternative tools that offer greater customization and visual clarity.</p>
+<p>The variables used in this enhanced analysis are:</p>
+<ul>
+<li>ROA_{t+1}: Future Return on Assets</li>
+<li>ROA_t: Current Return on Assets</li>
+<li>LOSS: Financial Loss Indicator</li>
+<li>R&amp;D: R&amp;D intensity (scaled by total assets)</li>
+<li>TA: Total Assets</li>
+<li>SIZE: Market Value of Equity</li>
+</ul>
+<p>We illustrate how these variables’ correlations can be displayed with:</p>
+<p>An advanced heatmap using ggcorrplot</p>
+<p>A clean correlation table using gt and gtExtras</p>
+<p>A compact and export-ready summary table using modelsummary</p>
+<section id="enhanced-heatmap-using-ggcorrplot" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="enhanced-heatmap-using-ggcorrplot"><span class="header-section-number">6.5.1</span> Enhanced Heatmap Using ggcorrplot</h3>
+<p>The ggcorrplot package is built on ggplot2 and provides enhanced control over correlation matrix appearance, including color schemes, labels, clustering, and theming.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("ggcorrplot") # Uncomment if not installed</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Reuse previous correlation matrix</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>correlation <span class="ot">&lt;-</span> <span class="fu">cor</span>(corrdata)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(correlation,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">hc.order =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">type =</span> <span class="st">"lower"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">lab =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">lab_size =</span> <span class="dv">3</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">"square"</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"#d73027"</span>, <span class="st">"white"</span>, <span class="st">"#1a9850"</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>           <span class="at">title =</span> <span class="st">"Correlation Matrix of Key Financial Variables"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">ggtheme =</span> <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"serif"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-correlation-ggcorrplot" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-correlation-ggcorrplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="visualizations_files/figure-html/fig-correlation-ggcorrplot-1.png" id="fig-correlation-ggcorrplot" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-correlation-ggcorrplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.5
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Interpretation:This heatmap provides both a visual and numeric view of the relationships between variables. Colors represent the direction and strength of correlation, while labels provide precise values. Variables are automatically grouped based on similarity using hierarchical clustering (hc.order = TRUE).</p>
+</section>
+<section id="correlation-table-using-gt-and-gtextras" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="correlation-table-using-gt-and-gtextras"><span class="header-section-number">6.5.2</span> Correlation Table Using gt and gtExtras</h3>
+<p>In some cases, presenting the correlation data as a table is more appropriate—especially when clarity and precision are required. The gt and gtExtras packages allow us to build attractive, publication-ready tables that include inline visual elements.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtExtras)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to long format</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>corr_long <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">as.table</span>(correlation))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(corr_long) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Variable1"</span>, <span class="st">"Variable2"</span>, <span class="st">"Correlation"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Build table</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>corr_long <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt_plt_bar</span>(<span class="at">column =</span> Correlation, <span class="at">scaled =</span> <span class="cn">TRUE</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="st">"Correlation"</span>, <span class="at">decimals =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Correlation Table of Key Financial Variables"</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variable1 =</span> <span class="st">"Variable (Row)"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variable2 =</span> <span class="st">"Variable (Column)"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Correlation =</span> <span class="st">"Corr"</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-correlation-table-gt" class="cell-output-display">
+<div id="aaaefkmxat" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aaaefkmxat table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#aaaefkmxat thead, #aaaefkmxat tbody, #aaaefkmxat tfoot, #aaaefkmxat tr, #aaaefkmxat td, #aaaefkmxat th {
+  border-style: none;
+}
+
+#aaaefkmxat p {
+  margin: 0;
+  padding: 0;
+}
+
+#aaaefkmxat .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#aaaefkmxat .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#aaaefkmxat .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#aaaefkmxat .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#aaaefkmxat .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#aaaefkmxat .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#aaaefkmxat .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#aaaefkmxat .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#aaaefkmxat .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#aaaefkmxat .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#aaaefkmxat .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#aaaefkmxat .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#aaaefkmxat .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#aaaefkmxat .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#aaaefkmxat .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaaefkmxat .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#aaaefkmxat .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#aaaefkmxat .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#aaaefkmxat .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaaefkmxat .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#aaaefkmxat .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaaefkmxat .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#aaaefkmxat .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaaefkmxat .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aaaefkmxat .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaaefkmxat .gt_left {
+  text-align: left;
+}
+
+#aaaefkmxat .gt_center {
+  text-align: center;
+}
+
+#aaaefkmxat .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#aaaefkmxat .gt_font_normal {
+  font-weight: normal;
+}
+
+#aaaefkmxat .gt_font_bold {
+  font-weight: bold;
+}
+
+#aaaefkmxat .gt_font_italic {
+  font-style: italic;
+}
+
+#aaaefkmxat .gt_super {
+  font-size: 65%;
+}
+
+#aaaefkmxat .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#aaaefkmxat .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#aaaefkmxat .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#aaaefkmxat .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#aaaefkmxat .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#aaaefkmxat .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#aaaefkmxat .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#aaaefkmxat .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#aaaefkmxat div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header gt_heading">
+<th colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border">Correlation Table of Key Financial Variables</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Variable1" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Variable (Row)</th>
+<th id="Variable2" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Variable (Column)</th>
+<th id="Correlation" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Corr</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">ROA_{t+1}</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_{t+1}</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="58.28" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">ROA_t</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_{t+1}</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="44.88" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">LOSS</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_{t+1}</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">R\&amp;D</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_{t+1}</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">TA</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_{t+1}</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="5.83" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">SIZE</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_{t+1}</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="6.99" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">ROA_{t+1}</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_t</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="44.88" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">ROA_t</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_t</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="58.28" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">LOSS</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_t</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">R\&amp;D</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_t</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">TA</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_t</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="5.25" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">SIZE</td>
+<td class="gt_row gt_center" headers="Variable2">ROA_t</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="6.99" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">ROA_{t+1}</td>
+<td class="gt_row gt_center" headers="Variable2">LOSS</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">ROA_t</td>
+<td class="gt_row gt_center" headers="Variable2">LOSS</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">LOSS</td>
+<td class="gt_row gt_center" headers="Variable2">LOSS</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="58.28" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">R\&amp;D</td>
+<td class="gt_row gt_center" headers="Variable2">LOSS</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="20.40" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">TA</td>
+<td class="gt_row gt_center" headers="Variable2">LOSS</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">SIZE</td>
+<td class="gt_row gt_center" headers="Variable2">LOSS</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">ROA_{t+1}</td>
+<td class="gt_row gt_center" headers="Variable2">R\&amp;D</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">ROA_t</td>
+<td class="gt_row gt_center" headers="Variable2">R\&amp;D</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">LOSS</td>
+<td class="gt_row gt_center" headers="Variable2">R\&amp;D</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="20.40" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">R\&amp;D</td>
+<td class="gt_row gt_center" headers="Variable2">R\&amp;D</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="58.28" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">TA</td>
+<td class="gt_row gt_center" headers="Variable2">R\&amp;D</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">SIZE</td>
+<td class="gt_row gt_center" headers="Variable2">R\&amp;D</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">ROA_{t+1}</td>
+<td class="gt_row gt_center" headers="Variable2">TA</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="5.83" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">ROA_t</td>
+<td class="gt_row gt_center" headers="Variable2">TA</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="5.25" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">LOSS</td>
+<td class="gt_row gt_center" headers="Variable2">TA</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">R\&amp;D</td>
+<td class="gt_row gt_center" headers="Variable2">TA</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">TA</td>
+<td class="gt_row gt_center" headers="Variable2">TA</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="58.28" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">SIZE</td>
+<td class="gt_row gt_center" headers="Variable2">TA</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="49.54" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">ROA_{t+1}</td>
+<td class="gt_row gt_center" headers="Variable2">SIZE</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="6.99" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">ROA_t</td>
+<td class="gt_row gt_center" headers="Variable2">SIZE</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="6.99" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">LOSS</td>
+<td class="gt_row gt_center" headers="Variable2">SIZE</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">R\&amp;D</td>
+<td class="gt_row gt_center" headers="Variable2">SIZE</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"></g>
+</svg></td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="Variable1">TA</td>
+<td class="gt_row gt_center" headers="Variable2">SIZE</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="49.54" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="Variable1">SIZE</td>
+<td class="gt_row gt_center" headers="Variable2">SIZE</td>
+<td class="gt_row gt_left" headers="Correlation"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="113.39pt" height="14.17pt" viewbox="0 0 113.39 14.17">
+<defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw=="> <rect x="0.00" y="0.00" width="113.39" height="14.17"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwxMTMuMzl8MC4wMHwxNC4xNw==)"><rect x="45.91" y="0.89" width="58.28" height="12.40" style="stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #A020F0;"></rect><line x1="45.91" y1="14.17" x2="45.91" y2="0.0000000000000018" style="stroke-width: 1.07; stroke-linecap: butt;"></line></g>
+</svg></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Interpretation:This table format makes it easy to compare specific correlation values between variable pairs. The embedded bars add a quick visual cue of magnitude without losing numeric precision</p>
+</section>
+</section>
+<section id="summary" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="summary"><span class="header-section-number">6.6</span> Summary</h2>
+<p>In this chapter, we applied a variety of visualization techniques to explore firm-level financial patterns using WRDS data. From bar and line charts to advanced correlation plots and publication-ready tables, we demonstrated how visuals can clarify industry loss trends, size-based volatility, and variable relationships. We also explored how tools like ggplot2, corrplot, ggcorrplot, gt, and gtExtras enable both exploratory insight and polished presentation—bridging analytical rigor with visual clarity.</p>
+<p>To further enhance your visualizations, R offers many powerful libraries. Some popular ones include:</p>
+<ul>
+<li><a href="https://scales.r-lib.org/">scales</a>: for formatting axes, percentages, and color gradients</li>
+<li><a href="https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/">ggthemes</a>and <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a>: for professional theming</li>
+<li><a href="https://wilkelab.org/ggtext/">ggtext</a>: for adding rich text annotations in plots</li>
+<li><a href="https://plotly.com/r/">plotly</a>: for interactive visualizations</li>
+<li><a href="https://patchwork.data-imaginist.com/">patchwork</a> and <a href="https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html">cowplot</a>: for combining multiple ggplot objects</li>
+<li><a href="https://gganimate.com/">gganimate</a>: for creating animated plots to show change over time</li>
+</ul>
+<p>These tools allow analysts to tailor graphics for slides, reports, or academic journals—elevating both interpretability and impact.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

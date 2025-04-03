@@ -536,8 +536,8 @@ override using the `.groups` argument.</code></pre>
 14  2020  0.220 
 15  2021  0.162 
 16  2022  0.0955
-17  2023  0.0740
-18  2024  0.459 </code></pre>
+17  2023  0.0743
+18  2024  0.466 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check duplicates. It is always a good idea to check duplicates after merging.</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dups <span class="ot">&lt;-</span>  fs_data2 <span class="sc">|&gt;</span> <span class="fu">group_by</span>(gvkey,datadate) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">obs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">filter</span>(obs<span class="sc">&gt;</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -612,8 +612,8 @@ override using the `.groups` argument.</code></pre>
   match    obs
   &lt;dbl&gt;  &lt;int&gt;
 1     0   4682
-2     1 274779
-3    NA  23698</code></pre>
+2     1 274810
+3    NA  23699</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Let's use the minus 12 month approach and create a dataset that merges in sentiment between those two dates</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fs_monthly <span class="ot">&lt;-</span> fs_data3 <span class="sc">|&gt;</span> </span>

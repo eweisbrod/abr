@@ -380,7 +380,7 @@ imported transformation functions</code></pre>
 <span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="co">#stop the tictoc timer</span></span>
 <span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>6.52 sec elapsed</code></pre>
+<pre><code>3.24 sec elapsed</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the data to disk --------------------------------------------------------</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -391,7 +391,7 @@ imported transformation functions</code></pre>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write_dta</span>(raw_funda,<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.dta"</span>)) </span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.87 sec elapsed</code></pre>
+<pre><code>0.72 sec elapsed</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#looks like about 162 MB on my machine</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -407,7 +407,7 @@ imported transformation functions</code></pre>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">write_parquet</span>(raw_funda,<span class="fu">glue</span>(<span class="st">"{data_path}/raw-data-R.parquet"</span>))</span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1.89 sec elapsed</code></pre>
+<pre><code>1.95 sec elapsed</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the parquet operations are faster and the file is only 32MB on my machine</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -464,7 +464,7 @@ imported transformation functions</code></pre>
 <span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">#will preview the first 10 rows (similar to a head function)</span></span>
 <span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>data1 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 303,170 × 25
+<pre><code># A tibble: 303,202 × 25
    conm  gvkey datadate   fyear   fyr cstat_cusip cik   cstat_ticker  sich    ib
    &lt;chr&gt; &lt;chr&gt; &lt;date&gt;     &lt;int&gt; &lt;int&gt; &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt;
  1 A &amp; … 0010… 1968-12-31  1968    12 000032102   &lt;NA&gt;  AE.2            NA 0.347
@@ -477,7 +477,7 @@ imported transformation functions</code></pre>
  8 A &amp; … 0010… 1975-12-31  1975    12 000032102   &lt;NA&gt;  AE.2            NA 2.28 
  9 A &amp; … 0010… 1976-12-31  1976    12 000032102   &lt;NA&gt;  AE.2            NA 3.43 
 10 A &amp; … 0010… 1977-12-31  1977    12 000032102   &lt;NA&gt;  AE.2            NA 1.93 
-# ℹ 303,160 more rows
+# ℹ 303,192 more rows
 # ℹ 15 more variables: spi &lt;dbl&gt;, at &lt;dbl&gt;, xrd &lt;dbl&gt;, ceq &lt;dbl&gt;, sale &lt;dbl&gt;,
 #   csho &lt;dbl&gt;, prcc_f &lt;dbl&gt;, sic &lt;chr&gt;, fic &lt;chr&gt;, gind &lt;chr&gt;, sic4 &lt;dbl&gt;,
 #   sic2 &lt;dbl&gt;, calyear &lt;dbl&gt;, mve &lt;dbl&gt;, e &lt;dbl&gt;</code></pre>
@@ -485,7 +485,7 @@ imported transformation functions</code></pre>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#can also glimpse</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 303,170
+<pre><code>Rows: 303,202
 Columns: 25
 $ conm         &lt;chr&gt; "A &amp; E PLASTIK PAK INC", "A &amp; E PLASTIK PAK INC", "A &amp; E …
 $ gvkey        &lt;chr&gt; "001000", "001000", "001000", "001000", "001000", "001000…
@@ -517,15 +517,15 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     conm              gvkey              datadate              fyear     
- Length:303170      Length:303170      Min.   :1968-06-30   Min.   :1968  
+ Length:303202      Length:303202      Min.   :1968-06-30   Min.   :1968  
  Class :character   Class :character   1st Qu.:1984-10-31   1st Qu.:1984  
  Mode  :character   Mode  :character   Median :1996-01-31   Median :1995  
-                                       Mean   :1996-05-22   Mean   :1995  
-                                       3rd Qu.:2007-08-31   3rd Qu.:2007  
+                                       Mean   :1996-05-23   Mean   :1995  
+                                       3rd Qu.:2007-09-30   3rd Qu.:2007  
                                        Max.   :2025-02-28   Max.   :2024  
                                                                           
       fyr         cstat_cusip            cik            cstat_ticker      
- Min.   : 1.000   Length:303170      Length:303170      Length:303170     
+ Min.   : 1.000   Length:303202      Length:303202      Length:303202     
  1st Qu.: 6.000   Class :character   Class :character   Class :character  
  Median :12.000   Mode  :character   Mode  :character   Mode  :character  
  Mean   : 9.473                                                           
@@ -536,39 +536,39 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
  Min.   : 100     Min.   :-56121.90   Min.   :-51066.20   Min.   :      0.0  
  1st Qu.:2842     1st Qu.:    -2.09   1st Qu.:    -0.24   1st Qu.:     11.7  
  Median :3823     Median :     0.64   Median :     0.00   Median :     62.8  
- Mean   :4549     Mean   :    73.35   Mean   :   -15.53   Mean   :   1654.5  
+ Mean   :4549     Mean   :    73.35   Mean   :   -15.53   Mean   :   1654.3  
  3rd Qu.:5961     3rd Qu.:    10.72   3rd Qu.:     0.00   3rd Qu.:    396.5  
  Max.   :9998     Max.   :104821.00   Max.   :120517.00   Max.   :1153881.0  
- NA's   :106795   NA's   :18729                           NA's   :17546      
+ NA's   :106796   NA's   :18729                           NA's   :17546      
       xrd                ceq                sale               csho         
  Min.   :   -0.65   Min.   :-86154.0   Min.   : -1965.0   Min.   :     0.0  
  1st Qu.:    0.00   1st Qu.:     3.0   1st Qu.:     9.4   1st Qu.:     2.9  
  Median :    0.00   Median :    23.1   Median :    63.1   Median :     9.7  
- Mean   :   34.19   Mean   :   570.5   Mean   :  1386.8   Mean   :    73.2  
+ Mean   :   34.19   Mean   :   570.4   Mean   :  1386.7   Mean   :    73.2  
  3rd Qu.:    2.13   3rd Qu.:   152.1   3rd Qu.:   406.7   3rd Qu.:    32.8  
  Max.   :88544.00   Max.   :649368.0   Max.   :680985.0   Max.   :500796.1  
-                    NA's   :18284      NA's   :18807      NA's   :21318     
+                    NA's   :18282      NA's   :18807      NA's   :21318     
      prcc_f              sic                fic                gind          
- Min.   :     0.00   Length:303170      Length:303170      Length:303170     
+ Min.   :     0.00   Length:303202      Length:303202      Length:303202     
  1st Qu.:     2.39   Class :character   Class :character   Class :character  
  Median :     8.60   Mode  :character   Mode  :character   Mode  :character  
  Mean   :    23.44                                                           
  3rd Qu.:    21.87                                                           
  Max.   :141600.00                                                           
- NA's   :62087                                                               
+ NA's   :62090                                                               
       sic4           sic2          calyear          mve         
  Min.   : 100   Min.   : 1.00   Min.   :1969   Min.   :      0  
  1st Qu.:2836   1st Qu.:28.00   1st Qu.:1985   1st Qu.:     13  
  Median :3714   Median :37.00   Median :1996   Median :     66  
- Mean   :4426   Mean   :43.82   Mean   :1996   Mean   :   2335  
+ Mean   :4426   Mean   :43.82   Mean   :1996   Mean   :   2334  
  3rd Qu.:5812   3rd Qu.:58.00   3rd Qu.:2008   3rd Qu.:    440  
  Max.   :9998   Max.   :99.00   Max.   :2025   Max.   :3522211  
-                                               NA's   :64800    
+                                               NA's   :64803    
        e            
  Min.   :-39656.00  
  1st Qu.:    -1.39  
  Median :     0.86  
- Mean   :    89.91  
+ Mean   :    89.90  
  3rd Qu.:    13.00  
  Max.   :100834.00  
  NA's   :18729      </code></pre>
@@ -1051,8 +1051,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-01-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-04-02</td>
-<td style="text-align: left;">2025-04-02</td>
+<td style="text-align: left;">2025-04-03</td>
+<td style="text-align: left;">2025-04-03</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1060,8 +1060,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-02-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-04-02</td>
-<td style="text-align: left;">2025-04-02</td>
+<td style="text-align: left;">2025-04-03</td>
+<td style="text-align: left;">2025-04-03</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1069,8 +1069,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-03-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-04-02</td>
-<td style="text-align: left;">2025-04-02</td>
+<td style="text-align: left;">2025-04-03</td>
+<td style="text-align: left;">2025-04-03</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1078,8 +1078,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-04-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-04-02</td>
-<td style="text-align: left;">2025-04-02</td>
+<td style="text-align: left;">2025-04-03</td>
+<td style="text-align: left;">2025-04-03</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1087,8 +1087,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-05-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-04-02</td>
-<td style="text-align: left;">2025-04-02</td>
+<td style="text-align: left;">2025-04-03</td>
+<td style="text-align: left;">2025-04-03</td>
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">1995</td>
 </tr>
@@ -1096,8 +1096,8 @@ $ e            &lt;dbl&gt; 0.347, 1.835, 1.878, 0.138, 1.554, 1.863, 2.135, 2.28
 <td style="text-align: left;">1995-06-01</td>
 <td style="text-align: left;">USRECD</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: left;">2025-04-02</td>
-<td style="text-align: left;">2025-04-02</td>
+<td style="text-align: left;">2025-04-03</td>
+<td style="text-align: left;">2025-04-03</td>
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">1995</td>
 </tr>
