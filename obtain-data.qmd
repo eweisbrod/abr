@@ -1,5 +1,5 @@
 # Obtaining and Merging Data
-## Introduction
+
 Parquet files offer significant advantages when dealing with large datasets that need to be retrieved, stored, and merged efficiently. Their columnar storage format allows reading only the necessary columns instead of scanning the entire dataset, making data retrieval much faster compared to traditional formats like CSV or Stata. Additionally, Parquet optimizes input/output operations, reducing the amount of data that needs to be read from disk, which speeds up processing times when merging multiple datasets.
 
 Another key benefit of Parquet is its efficient storage and compression capabilities. Unlike CSV or Stata files, which store data in a row-based format, Parquet applies built-in compression algorithms such as Gzip or Snappy, significantly reducing file size. This not only saves disk space but also speeds up data transfer, especially when obtaining datasets from remote servers like WRDS, AWS, or PostgreSQL databases.
@@ -10,9 +10,8 @@ When merging large datasets, Parquet’s columnar format and filtering capabilit
 
 Parquet’s cross-platform support makes it ideal for working in R, Python (pandas, pyarrow, Polars), SQL databases, and cloud platforms such as AWS S3 and Google BigQuery. This ensures seamless integration with existing workflows, whether working on local machines or in cloud-based data pipelines. Given its speed, storage efficiency, and compatibility, Parquet is a preferred format for obtaining and merging large financial datasets from sources like Compustat, CRSP, and other WRDS databases.
 
-## Obtain data from WRDS
 Let's first learn how to obtain data from WRDS. The code below shows how to connect to WRDS.
-First we load libraries and helper scripts. Then we connect to WRDS.
+
 ```{r}
 # Setup ------------------------------------------------------------------------
 
@@ -50,9 +49,8 @@ wrds <- dbConnect(Postgres(),
 
 ```
 
-The R script below in this section retrieves and processes financial data from the Compustat database using PostgreSQL on the WRDS server. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain U.S. firms from 1967 onward while excluding financial and utility firms.
+The R script below retrieves and processes financial data from the **Compustat** database using **PostgreSQL** on the **WRDS server**. It begins by listing available tables within a specified schema and then loads the necessary datasets (`funda` and `company`). Applying standard filters, it selects key financial variables, merges company-level information, and constructs industry classifications. Additional variables, such as market value of equity (MVE) and earnings before special items, are derived. The dataset is filtered to retain **U.S. firms from 1967 onward** while excluding financial and utility firms.
 
-First we list all of the tables in Compustat.
 ```{r}
 # See a list of tables in a schema ---------------------------------------------
 # Just an example to play with the Postgres server
@@ -67,10 +65,6 @@ wrds |>
 # can replace "comp" with any schema such as "crsp" "ibes" etc.
 # schemas on the Postgres server are similar to WRDS SAS libraries
 
-```
-
-Then we load table references from WRDS.
-```{r}
 # Load table references and download data --------------------------------------
 
 # Load funda as a tbl
@@ -82,14 +76,7 @@ comp.company <- tbl(wrds,in_schema("comp", "company"))
 #it will tell you how long it takes between when you run tic() and when you run 
 # toc()
 tictoc::tic()
-```
 
-In this step, we demonstrate how to retrieve raw firm-level financial data from the Compustat funda table using dbplyr and the PostgreSQL connection to WRDS. We apply standard filters to isolate industrial-format, standardized, domestic, consolidated firm-year observations. Using select() with inline renaming, we extract a focused set of financial and identifying variables. We then merge this data with the company table to bring in additional firm-level information such as SIC and GICS codes.
-
-To enhance comparability across firms, we derive several useful variables. These include a four-digit SIC code (sic4), a two-digit SIC code (sic2), and commonly used financial metrics such as earnings before special items (e) and market value of equity (mve). We exclude highly regulated industries such as financials and utilities, apply missing value handling, and align fiscal years with calendar time following conventions seen in prior literature.
-
-The final collect() statement downloads the filtered dataset to the local R session from the WRDS server, allowing for further manipulation in memory. This approach ensures that only cleaned and relevant data is transferred, minimizing memory usage and processing time.
-```{r}
 # Get some raw Compustat data from funda
 raw_funda <-
   comp.funda |> 
@@ -146,10 +133,7 @@ raw_funda <-
 #stop the tictoc timer
 tictoc::toc()
 
-```
 
-Finally, we save data in dta and parquet forms.
-```{r}
 # Save the data to disk --------------------------------------------------------
 
 # saving to Stata is convenient for working with coauthors
@@ -175,11 +159,8 @@ toc()
 
 ```
 
+Then we play with transforming data. The R script below processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
 
-## Transform WRDS data
-Then we play with transforming data. The R script in this section processes financial panel data by cleaning, transforming, and preparing it for analysis. It begins by loading necessary libraries and reading in raw data, applying filtering criteria to ensure data quality. Key financial variables are computed, including return on assets, R&D intensity, and industry classifications based on Fama-French groupings. To analyze earnings persistence, the script generates lead earnings variables while ensuring continuity in fiscal periods. Exploratory analysis is conducted to summarize industry-level characteristics and visualize loss frequencies. Winsorization is applied to key financial metrics to mitigate the influence of outliers. Finally, the processed dataset is saved in Stata format for further statistical modeling and analysis.
-
-First we load libraries and setup directories.
 ```{r}
 # Setup ------------------------------------------------------------------------
 
@@ -195,10 +176,8 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 source("E:/acct_995_data/abr/-Global-Parameters.R")
 source("E:/acct_995_data/abr/utils.R")
 
-```
 
-Load data.
-```{r}
+
 # read in the data from the previous step --------------------------------------
 
 #let's work with the parquet version
@@ -209,10 +188,7 @@ data1 <- read_parquet(glue("{data_path}/raw-data-R.parquet"))
 #note: if you choose to collect your raw data in SAS or Stata
 # these could easily be read in using haven::read_dta() or haven::read_sas()
 
-```
 
-Some ways to check data at the first stage.
-```{r}
 # Some quick peeks at the data -------------------------------------------------
 
 #since the data is structured as a dplyr tibble, just calling its name
@@ -224,16 +200,8 @@ glimpse(data1)
 
 #or summarize
 summary(data1)
-```
 
-In this step, we transform the raw Compustat dataset into a cleaned and structured panel suitable for empirical analysis. First, we restrict the sample to the desired calendar window using the beg_year and end_year parameters defined in our global configuration script. To avoid extreme scaling issues, we further limit the dataset to firms with total assets (at) greater than or equal to 10.
 
-We then construct several key variables that are widely used in empirical finance research. Using utility functions, we assign Fama-French 12- and 49-industry classifications based on each firm’s SIC code. We generate a binary loss indicator (loss), and compute return on assets (roa) and R&D intensity (rd) by scaling by total assets. These metrics serve as foundational inputs for later descriptive and regression analyses.
-
-To analyze earnings persistence, we calculate lead values of roa and datadate at the firm level. By sorting and grouping the data by firm identifier (gvkey), we ensure the lead function respects firm-level continuity. We retain only observations where the lead date is exactly one year ahead and in the same fiscal month to ensure comparability of year-over-year earnings.
-
-Finally, we filter the dataset to remove rows with missing values across critical variables, including size (mve), industry classification (ff12num), and all constructed earnings variables. The resulting dataset is a balanced and well-prepared panel that is ready for regression modeling and descriptive analysis.
-```{r}
 # Manipulate a few variables ---------------------------------------------------
 
 #many of the below steps could be combined into one. They also could have been
@@ -280,12 +248,7 @@ data2 <- data1 |>
   #Filter multiple variables to require non-missing values
   filter(if_all(c(at, mve,rd,ff12num,starts_with("roa")), ~ !is.na(.x)))
 
-```
 
-We conduct a simple exploratory exercise to examine how loss-making firms are distributed across industries. Using the cleaned dataset, we begin by summarizing the number of firm-year observations in each Fama-French 12 (FF12) industry classification. Next, we compute the proportion of firms with losses in each industry by calculating the percentage of firm-year observations where the loss indicator equals one.
-
-To visualize these patterns, we produce a horizontal bar chart that shows the frequency of losses by FF12 industry. This plot provides an intuitive overview of which sectors are more prone to reporting negative earnings. The use of ggplot2 allows for a clean, professional presentation, with percentage-formatted y-axis labels and a minimalistic theme suitable for inclusion in academic papers.
-```{r}
 # Play around ------------------------------------------------------------------
 
 #how many observations in each FF12 industry?
@@ -308,15 +271,6 @@ data2 |>
   coord_flip() +
   theme_bw() 
 
-
-```
-
-To mitigate the influence of extreme values in financial data, we apply winsorization to key variables. Winsorizing replaces values in the upper and lower tails of the distribution with specified cutoff percentiles, reducing the impact of outliers while preserving the overall structure of the data. We first examine the distribution of return on assets (roa) to assess tail behavior.
-
-Using the default winsorize_x() function, we trim all observations below the 1st percentile and above the 99th percentile for key financial variables such as mve, at, rd, and all variables beginning with "roa". We also demonstrate an alternative approach by adjusting the cutoff to 2.5% and 97.5%, allowing researchers to control the extent of trimming based on empirical needs.
-
-After verifying the modified distributions, we save the winsorized dataset in Stata format for use in later empirical analysis. This step ensures that downstream regression results are not unduly driven by outliers, supporting robustness and interpretability.
-```{r}
 # Winsorize the data -----------------------------------------------------------
 
 #check the tail values as an example
@@ -351,8 +305,9 @@ write_dta(data3,glue("{data_path}/regdata-R.dta"))
 
 ```
 
+This is my first time working on a Quarto book. So, this first post will be very rough for now. I will try to provide a few different examples of ways to obtain and merge data in R, and a few tips of things to keep in mind.
 
-## Obtain and transform data from other sources
+
 We already know how to obtain data from WRDS. Let's use this to obtain some returns for the S&P 500. We could use the formal index data, but let's take a shortcut and just use the popular SPY ETF that tracks the S&P 500. To do this, we need to find the CRSP identifier (PERMNO) for the ticker "SPY." We can look in the WRDS stocknames file for this, and then use the SPY PERMNO to pull data from the CRSP monthly stock file.
 
 ```{r}
@@ -605,14 +560,8 @@ merged_data |>
 
 
 ```
-## Good Practices for naming files and variables, saving data
-Good practices for naming files and variables, as well as saving data, are essential for ensuring clarity, reproducibility, and collaboration in any research or coding project. File and variable names should be descriptive, consistent, and concise, avoiding vague terms or arbitrary abbreviations. Using lowercase letters with underscores or hyphens instead of spaces makes names more readable and compatible with various systems. Including relevant details such as dates (in YYYY-MM-DD format), version numbers, or dataset characteristics in filenames helps track progress and makes organization easier. Variables should reflect the data they contain or the function they serve, using a consistent naming convention like snake_case or camelCase depending on the programming language or project style. When saving data, it is important to separate raw, cleaned, and processed datasets using clear prefixes (such as raw_, clean_, or final_) and to always save files in open, widely-used formats like CSV or TXT when possible, ensuring accessibility and ease of reuse. Backing up data regularly and storing it in structured, well-documented folders also supports long-term usability and minimizes confusion when revisiting or sharing the project.
 
-## Summary 
-In this Chapter we introduced a reproducible and efficient workflow for obtaining, transforming, and saving financial datasets using R and modern data science tools. Emphasizing the advantages of Parquet files, we explored their superior performance in terms of storage efficiency, faster retrieval, and reliable data type handling compared to traditional formats like CSV or Stata. Step by step, we demonstrated how to connect to the WRDS PostgreSQL database, retrieve firm-level data from Compustat, and apply standard filters and transformations to construct a clean, analysis-ready dataset. We discussed strategies for merging datasets, deriving financial variables, applying industry classifications, and preparing panel data for regression analysis. The chapter also highlighted the importance of handling duplicates, aligning fiscal periods, and winsorizing key variables to manage outliers. In the latter part, we extended the analysis by integrating external data sources such as CRSP for market returns and FRED for macroeconomic indicators, and we visualized these data in meaningful ways, including time-series plots with recession shading. Throughout the chapter, we reinforced best practices for naming files and variables, organizing data workflows, and saving datasets in interoperable, well-documented formats to support transparency, collaboration, and long-term research reproducibility.
-
-
-## Some other useful materials:
+Some other useful materials:
 
 <https://cran.r-project.org/web/packages/fredr/vignettes/fredr.html>
 

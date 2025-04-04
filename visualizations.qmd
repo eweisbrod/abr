@@ -1,0 +1,297 @@
+# Visualization 
+EDA is a critical step in any data analysis workflow. After collecting and cleaning our WRDS dataset—focusing on public firms and removing outliers—we now explore key financial patterns. In this chapter, we:
+
+Visualize industry-specific financial losses
+
+Explore firm size and loss trends over time
+
+Examine variable relationships via a correlation matrix
+
+Evaluate earnings persistence using yearly regressions
+
+We use high-quality, publication-ready graphics (PDF) and presentation-ready graphics (PNG) with R packages like ggplot2, corrplot, and modelsummary.
+
+
+To learn more about the R packages used in this chapter, see the following tutorials:
+
+[ggplot](https://ggplot2.tidyverse.org/) – for creating elegant data visualizations
+
+[corrplot](https://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram?utm_source=chatgpt.com) – for visualizing correlation matrices
+
+[modelsummary](https://modelsummary.com/.) – for formatting regression tables and model outputs
+
+
+```{r}
+#| label: load-libraries
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+
+library(modelsummary)
+library(kableExtra)
+library(formattable)
+library(lubridate)
+library(glue)
+library(haven)
+library(fixest)
+library(forcats)
+library(tidyverse)
+library(corrplot)  # if you're using correlation matrix
+```
+
+
+
+
+We work with a cleaned and winsorized version of firm-level financial data. The key variables include:
+
+| Variable     | Description                                                  |
+|--------------|--------------------------------------------------------------|
+| `gvkey`      | Firm identifier                                              |
+| `datadate`   | Date of observation                                          |
+| `calyear`    | Calendar year                                                |
+| `roa`        | Return on Assets                                             |
+| `roa_lead_1` | Return on Assets in next year                                |
+| `loss`       | Dummy: 1 if firm has a financial loss                        |
+| `at`         | Total assets                                                 |
+| `mve`        | Market value of equity                                       |
+| `rd`         | R&D spending scaled by assets                                |
+| `FF12`       | Industry name based on Fama-French 12 classification         |
+| `ff12num`    | Industry code (numeric)                                      |
+
+
+
+###6.2 Visualizing Losses by Industry
+Objective:
+Identify which industries are more prone to reporting losses, using FF12 categories.
+
+Plot: Horizontal bar chart of % of firms with loss == 1 per FF12 category.
+
+Interpretation:
+This figure reveals financial vulnerability patterns. For instance, tech or healthcare might have higher losses due to R&D intensity, while utilities may show fewer.
+
+
+```{r setup}
+
+#| label: setup-path
+#| echo: false
+#| results: 'hide'
+#| message: false
+#| warning: false
+data_path <- "E:/acct_995_data/abr"
+```
+
+
+```{r}
+#| label: load-and-clean-data
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+
+# Load helper scripts
+source("src/-Global-Parameters.R")
+source("src/utils.R")
+
+# Read in the winsorized data
+regdata <- read_dta(glue("{data_path}/regdata-R.dta")) |> 
+  select(gvkey, datadate, calyear, roa, roa_lead_1, loss, at, mve, rd, FF12, ff12num)
+
+```
+
+
+
+
+```{r}
+
+#| label: fig-losses-by-industry
+#| fig-cap: "Proportion of Loss-Making Firms by Fama-French 12 Industry"
+#| echo: false
+#| message: false
+#| warning: false
+
+
+fig <- regdata |> 
+  group_by(FF12) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n()) |> 
+  #Next line reorders the FF12 industries to make them appear in order of %loss
+  mutate(FF12 = forcats::fct_reorder(factor(FF12), (pct_loss))) |> 
+  ggplot(aes(x = FF12, y= pct_loss)) + 
+  geom_col(fill = "#0051ba") +
+  # Fill color = Kansas Blue from : https://brand.ku.edu/guidelines/design/color
+  scale_y_continuous(name = "Freq. of Losses", labels = scales::percent) +
+  scale_x_discrete(name = "Fama-French Industry") +
+  coord_flip() +
+  #base_family = serif sets font to times new roman
+  theme_bw(base_family = "serif") 
+
+#Look at it in R  
+fig
+
+#For Latex output you might want to output to PDF
+ggsave(glue("{data_path}/output/ff12_fig.pdf"), fig, width = 7, height = 6)
+
+#For Word output you might want to output to an image such as .png
+ggsave(glue("{data_path}/output/ff12_fig.png"), fig, width = 4.2, height = 3.6)
+
+```
+###6.3 Losses by Firm Size Over Time
+Objective:
+Compare financial stability across firms of different sizes over the years.
+
+Plot:
+Line chart of pct_loss over time, stratified by market value quintiles.
+
+Interpretation:
+Smaller firms often exhibit higher volatility and more losses. This dynamic changes across economic cycles
+
+```{r}
+
+#| label: fig-losses-by-size
+#| fig-cap: "Proportion of Loss-Making Firms by Size Quintile Over Time"
+#| echo: false
+#| message: false
+#| warning: false
+
+fig <- regdata |> 
+  group_by(calyear) |> 
+  #create size quintiles by calyear
+  mutate(size_qnt = factor(ntile(mve,5))) |> 
+  group_by(calyear, size_qnt) |> 
+  summarize(pct_loss = sum(loss, na.rm = T)/n()) |> 
+  ggplot(aes(x = calyear, y= pct_loss, color = size_qnt, linetype = size_qnt)) + 
+  geom_line() + geom_point() + 
+  scale_y_continuous(name = "Freq. of Losses", labels = scales::percent) +
+  scale_x_continuous(name = "Year", breaks = seq(1970,2025,5)) +
+  #If you give these scales the same name they will appear in the same legend
+  scale_color_discrete(name = "Size Quintile") +
+  scale_linetype_discrete(name = "Size Quintile") +
+  theme_bw(base_family = "serif") 
+
+#Look at it in R  
+fig
+
+#For Latex
+ggsave(glue("{data_path}/output/size_year.pdf"), fig, width = 7, height = 6)
+
+#For Word
+ggsave(glue("{data_path}/output/size_year.png"), fig, width = 7, height = 6)
+
+```
+
+###6.4 Correlation Matrix
+Objective:
+Understand relationships between core financial variables and detect multicollinearity.
+
+Plot:
+Heatmap-style correlation matrix (with coefficient values) for ROA, LOSS, R&D, etc.
+
+Interpretation:
+Strong correlation between roa and roa_lead_1 shows earnings persistence. Weak correlation between rd and roa may suggest R&D’s delayed or indirect impact.
+
+```{r}
+
+
+#| label: fig-correlation-matrix
+#| fig-cap: "Correlation Matrix of Key Financial Variables"
+#| echo: false
+#| message: false
+#| warning: false
+
+
+library(corrplot)
+
+
+corrdata <- regdata |> 
+  select(`ROA_{t+1}` = roa_lead_1,
+         `ROA_t` = roa, 
+         `LOSS` = loss,
+         `R\\&D` = rd,
+         `TA` = at,
+         `SIZE` = mve)
+
+corrdata
+
+correlation = cor(corrdata)
+col2 = colorRampPalette(c('red', 'white', 'blue'))  
+
+pdf(file=glue("{data_path}/output/corr_fig.pdf"))
+corrplot(correlation, method = 'square', 
+         addCoef.col = 'black', 
+         diag = FALSE,
+         tl.col='black', 
+         type = 'full',
+         tl.cex = 1,
+         tl.srt = 0,
+         tl.offset = 1,
+         number.cex = 0.7,
+         cl.ratio = 0.1,
+         cl.pos = "r",
+         col=col2(20),
+         win.asp = .8)
+dev.off()
+
+```
+
+###6.5 Yearly Earnings Persistence
+Objective:
+Test how well current ROA predicts future ROA, stratified by loss status.
+
+Plot:
+Line plot with confidence intervals from yearly regressions
+
+Interpretation:
+Firms without losses tend to show stronger earnings persistence. Loss firms show more variation and uncertainty in their earnings trajectory.
+
+
+
+```{r}
+
+#| label: fig-annual-regression-confidence-bands
+#| fig-cap: "Annual Regressions of Future ROA on Current ROA with 95% Confidence Bands"
+#| echo: false
+#| message: false
+#| warning: false
+
+
+# bonus example 
+
+figdata <- regdata |>
+  #nest the regressions by year and loss
+  nest_by(calyear,loss) |> 
+  # fit the regressions
+  mutate(
+    fit = list(lm(roa_lead_1 ~ roa, data = data))
+  ) |> 
+  # use the broom package to tidy the regressions
+  #option conf.int outputs the confidence intervals so we can plot them
+  summarise(broom::tidy(fit, conf.int = TRUE)) |> 
+  #I don't plan to plot the intercept so i will drop it from the data
+  filter(term !="(Intercept)") 
+
+#can also use this setup to do Fama-Macbeth regressions, etc. 
+#can also use pmg package for Fama-Macbeth
+
+#now make a ggplot object from the data
+fig <- figdata |> 
+  mutate(loss = factor(loss)) |> 
+  ggplot(aes(x=calyear,y=estimate))  +
+  geom_ribbon(aes(ymin = conf.low, ymax=conf.high, 
+                  group = loss),
+                  fill = "grey80") + 
+  geom_line(aes(color=loss)) +
+  geom_point(aes(color=loss)) +
+  theme_bw(base_family = "serif") 
+
+#Look at it in R  
+fig
+
+#For Latex
+ggsave(glue("{data_path}/output/coef_year.pdf"), fig, width = 7, height = 6)
+
+#For Word
+ggsave(glue("{data_path}/output/coef_year.png"), fig, width = 7, height = 6)
+
+
+
+```

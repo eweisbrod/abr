@@ -1,3 +1,4 @@
+
 ## Define Global Parameters ----------------------------------------------------
 
 # 1 - Setup the Data Folder Path -----------------------------------------------
@@ -50,3 +51,4 @@ data_path <- Sys.getenv('DATA_PATH')
 beg_year <- 1970
 # the assignment arrow is an R grammar style, but equal signs work too
 end_year = 2022
+
