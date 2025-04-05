@@ -4,7 +4,7 @@ library(kableExtra)
 library(fixest)
 library(tidyverse)
 
-generate_regression_table <- function() {
+generate_regression_results <- function() {
   # Load and prepare data
   data_path <- Sys.getenv('data_path')
   regdata <- read_dta(glue::glue("{data_path}/regdata-R.dta")) |> 
@@ -39,10 +39,10 @@ generate_regression_table <- function() {
     gof_map = c("nobs", "r.squared", "r2.within")
   )
   
-  # Apply styling directly in the modelsummary call
-  return(tab)
+  # Return BOTH the table and the models
+  return(list(table = tab, models = models))
 }
 
-# Generate the table (don't apply kable_styling here)
-regression_table <- generate_regression_table()
-print(regression_table)
+# Generate and print the table
+results <- generate_regression_results()
+print(results$table)  # This prints the full table

@@ -35,6 +35,7 @@ bibliography: bibliography.bib
 latex-output-dir: out
 format:
   elsevier-pdf:
+    pdf-engine: lualatex
     keep-tex: true
     journal:
       name: Journal of Business Research
@@ -58,7 +59,6 @@ format:
         \usepackage{caption}   % For caption formatting
         \usepackage{siunitx}
         \sisetup{group-separator = {,},group-digits = integer}
-        \usepackage{booktabs}
         \usepackage{graphicx}
         \usepackage{float}
         \usepackage{longtable}
@@ -66,7 +66,10 @@ format:
         \usepackage{lipsum}
         \usepackage{amsmath}
         \usepackage{adjustbox}
-        \newcommand{\halfheading}[3]{\noindent\textbf{\small #1} \label{#2} --- #3}
+        \newcommand{\hidefrompdf}[1]{}
+        \usepackage{amsmath}
+        \usepackage{amssymb}
+        
     include-before-body:
       text: |
         \newgeometry{top=3cm,bottom=3cm,left=3cm,right=3cm}  %default margin
@@ -74,6 +77,8 @@ format:
       text: |
         \afterpage{\restoregeometry}  % Restore default margins after the first page
 ---
+
+<!--# use ctrl+shift+c for a comment section -->
 
 ```{r}
 #| label: packages
@@ -103,9 +108,12 @@ library(tidyverse) # I like to load tidyverse last to avoid package conflicts
 #| echo: FALSE
 #| message: FALSE
 #| warning: FALSE
+#specify the datapath
 data_path <- data_path<- Sys.getenv('DATA_PATH')
 regdata <- read_dta(glue("{data_path}/regdata-R.dta"))
 ```
+
+<!--# use \newpage to go to a newpage -->
 
 \newpage
 
@@ -113,23 +121,61 @@ regdata <- read_dta(glue("{data_path}/regdata-R.dta"))
 
 This document is a Quarto template for creating an academic paper formatted for potential publication in Elsevier journals. If you have received this document as a PDF, a live version including the code used to create this document can be found at: \url{https://github.com/eweisbrod/abr}.
 
+<!--# \url{url address} to insert a url -->
+
 <!--  Use citet for in-text cites and citep for parenthetical cites -->
 
 Here are some examples of in-text and parenthetical citations. You can use latex citation styles inside a Quarto PDF. To add citations to the paper, you must add the bibtex reference information to the \`\`Bibliography.bib" file that is part of the Qaurto project. The easiest way to do this is to look up the paper you wish to cite on Google scholar, then click on the "cite" link below the paper, select bibtex, and cut and paste the reference info into the bib file. The bibtex reference will include a shorthand way to refer to the paper in the latex cite commands (e.g., "blankespoor2019individual"). \citet{blankespoor2019individual} is an in-text cite. There are also parenthetical cites \citep[e.g,][]{doyle2006extreme, livnat2006comparing,black2017non, Bradshaw2018}.\footnote{There are also footnotes. }
 
 Here is a new sentence with a parenthetical cite at the end [@easton2024forecasting].
 
-The second time I cite the paper, I think it will use et al [@easton2024forecasting].
+The second time I cite the paper, I think it will use et al [@easton2024forecasting]
+
+<!--# if you want to hide a section from pdf output use the \newcommand{\hidefrompdf}[1]{} in yaml and use \hidefrompdf{} in quarto -->
+
+\hidefrompdf{
+
+# Bibliography styles
+
+You can also use Quarto syntax to do citations. Here are two sample citations using Quarto syntax: @Feynman1963118 @Dirac1953888.
+
+Here is some information about the bibliography styles from the Elsevier template:
+
+With this template using elsevier class, natbib will be used. Three bibliographic style ﬁles (\*.bst) are provided and their use controled by `cite-style` option:
+
+-   `citestyle: number` (default) will use `elsarticle-num.bst` - can be used for the numbered scheme
+-   `citestyle: numbername` will use `elsarticle-num-names.bst` - can be used for numbered with new options of natbib.sty
+-   `citestyle: authoryear` will use `elsarticle-harv.bst` — can be used for author year scheme
+
+This `citestyle` will insert the right `.bst` and set the correct `classoption` for `elsarticle` document class.
+
+Using `natbiboptions` variable in YAML header, you can set more options for `natbib` itself . Example
+
+``` yaml
+natbiboptions: longnamesfirst,angle,semicolon
+```
+
+## Using CSL
+
+If `cite-method` is set to `citeproc` in `elsevier_article()`, then pandoc is used for citations instead of `natbib`. In this case, the `csl` option is used to format the references. By default, this template will provide an appropriate style, but alternative `csl` files are available from <https://www.zotero.org/styles?q=elsevier>. These can be downloaded and stored locally, or the url can be used as in the example header.
+
+}
 
 # Background and Hypotheses Development {#sec:background}
 
 This template includes some formatting for declaring formal hypotheses or research questions. I think these commands require some of the definitions that were set in the preamble above. Here is an example hypothesis related to the data example that will be used in the tables.
 
-\halfheading{Hypothesis 1 (H1)}{sec:H1}*Ceteris paribus, earnings are less persistent for loss firms than profit firms.*
+<!--  including a Fenced Div in Quarto, just type ::: and press enter. Incude ID for future reference.Fenced Div is useful for cross referencing-->
+
+::: {#hypo1}
+**Hypothesis 1 (H1) :** *Ceteris paribus, earnings are less persistent for loss firms than profit firms.*
+:::
 
 This hypothesis is easy to motivate based on persistent losses driving a firm out of business, curtailments [@lawrence2018losses], the abandonment option [@hayn1995information], etc. However, if we want to define a more open-ended "research question" rather than a "hypothesis," we could format it this way:
 
+::: {#rq1}
 **Research Question 1 (RQ1):** *Are losses less persistent than profits?*
+:::
 
 Next, I will provide examples for defining sub-sections and sub-sub-sections.
 
@@ -158,7 +204,11 @@ $$ {#eq-did}
 
 where *Post* equals 1 for observations in the post-shock period and 0 otherwise, *Treatment* equals 1 for observations with the treatment and 0 otherwise, *Controls* is a vector of variables listed as "Control Variables" in Appendix \[ @tbl-variable-def\], and $FE$ are fixed effects.
 
-Here is the regression equation that we use to test hypothesis 1\~\\ref{sec:H1}, which was defined in [Background and Hypotheses Development] Footnote: Note that since we have dynamically defined and referred to [**Hypothesis (H1)**](#0) you can click on it to jump to the place in the text where H1 is defined. We can do the same thing for \[RQ\@researchq-losses\].
+<!--  to link section header [link text](#section header ID (e.g. #sec:background)-->
+
+Here is the regression equation that we use to test [Hypothesis 1](#hypo1) , which was defined in [Background and Hypotheses Development](#sec:background).
+
+Footnote: Note that since we have dynamically defined and referred to [Hypothesis 1](#hypo1) you can click on it to jump to the place in the text where H1 is defined. We can do the same thing for [Research Question 1](#rq1).
 
 $$
 \begin{aligned}
@@ -167,7 +217,7 @@ $$
 \end{aligned}
 $$ {#eq-losses}
 
-where $ROA_{i,t+1}$ ($ROA_{i,t}$) is return on assets for firm $i$ in year $t+1$ ($t$), calculated as earnings before special items divided by ending total assets. $LOSS_{i,t}$ is an indicator variable that equals 1 for observations with negative earnings before special items and 0 otherwise, and *Controls* is a vector of variables listed as "Control Variables" in [Appendix @vars]. $FE$ are various fixed effects.
+where $ROA_{i,t+1}$ ($ROA_{i,t}$) is return on assets for firm $i$ in year $t+1$ ($t$), calculated as earnings before special items divided by ending total assets. $LOSS_{i,t}$ is an indicator variable that equals 1 for observations with negative earnings before special items and 0 otherwise, and *Controls* is a vector of variables listed as "Control Variables" in [Appendix @tbl-variable-def]. $FE$ are various fixed effects.
 
 ## Results
 
@@ -181,23 +231,48 @@ We can use LaTeX references to refer/link readers to the tables as we discuss th
 
 -   @tbl-corr provides a correlation matrix, created in R.
 
--   @tbl-regression1 provides an example regression table, created in R.
+-   @tbl-regression2 provides an example regression table, created in R.
 
-    Here are some examples of inline table references, including references to the relevant equation and hypothesis. @tbl-corr and @tbl-regression1 present the results from estimating Eq. (\ref{eq:losses}). The significantly negative coefficients on \$ LOSS \times ROA\_{t}\$ in Columns (4) and (5) provide some evidence consistent with H\ref{hyp:losses}. However, it seems to be important to control for firm characteristics when testing this hypothesis.
+    Here are some examples of inline table references, including references to the relevant equation and hypothesis. @tbl-corr and @tbl-regression2 present the results from estimating [Eq. 1](#eq-losses). The significantly negative coefficients on $LOSS_t$\times $ROA_{t}$ in Columns (4) and (5) provide some evidence consistent with [Hypothesis 1](#hypo1). However, it seems to be important to control for firm characteristics when testing this hypothesis.
 
-    We can also link a graph by [here](#fig-FF).
+-   The full results are shown in @tbl-regression2.
+
+    ```{r}
+    #| label: tbl-regression1
+    #| tbl-cap: "Regression"
+    #| echo: FALSE
+    #| message: FALSE
+    #| results: hide
+
+    source('table6_regression.R')
+    # Extract ROA coefficient from first model
+    roa_coef <- unname(results$models[["Base"]]$coefficients["roa"][[1]])
+    roa_se<- unname(results$models[["Base"]]$se["roa"][[1]])
+
+    ```
+
+-   **Key Findings:** Basic Model: The ROA coefficient is `r glue::glue("**{sprintf(\"%.3f\", roa_coef)}**")`. And the standard error is `r format(roa_se, digits = 1)`. Here we take values from the table to generate direct output. This is important as this will help us to automate future changes in the r code to the manuscript.
+
+-   Relevant code to generate some table are sourced from separate r scripts.
+
+-   Some tables have codes within the quarto code chunk.
+
+-   We can also link a graph or chart [here](#fig-FF).
+
+    \newpage
 
 # Appendix
-
-\newpage
 
 ```{r}
 #| label: tbl-variable-def
 #| tbl-cap: "Variable Definition"
 #| echo: false
+#| message: false
 #| results: asis
 #| warning: false
-source("table-a1.R")
+source("table1_vardefinition.R")
+print(generate_var_table())
+
 ```
 
 \newpage
@@ -208,10 +283,7 @@ source("table-a1.R")
 #| echo: false
 #| results: asis
 #| warning: false
-source("sample.R")
-```
-
-```         
+source("table2_sample.R")
 ```
 
 ```{r}
@@ -247,10 +319,10 @@ totalrow <- regdata |>
   mutate(Year = "Total")
 
 #bind together the existing and total rows
-table1 <- bind_rows(table1, totalrow) 
+table <- bind_rows(table1, totalrow) 
 
 # Print the table using kable
-kable(table1,  align = c("l", "r", "r", "r")) %>%
+kable(table,  align = c("l", "r", "r", "r")) %>%
   kable_styling(latex_options = c("striped", "hold_position", "scale_down"))
 ```
 
@@ -264,7 +336,7 @@ kable(table1,  align = c("l", "r", "r", "r")) %>%
 #| results: asis
 #| warning: FALSE
 
-source('summarystat_table.R')
+source('table4_summarystat.R')
 ```
 
 ```         
@@ -308,23 +380,17 @@ combined_corr |>
   )
 ```
 
-``` r
-```
-
-\newpage
-
 ```{r}
-#| label: tbl-regression1
+#| label: tbl-regression2
 #| tbl-cap: "Regression"
 #| echo: FALSE
 #| message: FALSE
 #| results: asis
 
-source('table-4.R')
-
-```
-
-```         
+source('table6_regression.R')
+# Extract ROA coefficient from first model
+roa_coef <- unname(results$models[["Base"]]$coefficients["roa"][[1]])
+roa_se <- unname(sqrt(results$models[["Base"]]$se["roa"][[1]]))
 ```
 
 \newpage
