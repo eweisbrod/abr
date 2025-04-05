@@ -66,9 +66,10 @@ format:
         \usepackage{lipsum}
         \usepackage{amsmath}
         \usepackage{adjustbox}
+        \newcommand{\halfheading}[3]{\noindent\textbf{\small #1} \label{#2} --- #3}
     include-before-body:
       text: |
-        \newgeometry{top=3cm,bottom=3cm,left=3cm,right=3cm}  % Custom margins for the first page
+        \newgeometry{top=3cm,bottom=3cm,left=3cm,right=3cm}  %default margin
     include-after-body:
       text: |
         \afterpage{\restoregeometry}  % Restore default margins after the first page
@@ -124,7 +125,7 @@ The second time I cite the paper, I think it will use et al [@easton2024forecast
 
 This template includes some formatting for declaring formal hypotheses or research questions. I think these commands require some of the definitions that were set in the preamble above. Here is an example hypothesis related to the data example that will be used in the tables.
 
-**Hypothesis 1 (H1) \\label{hypo} :** *Ceteris paribus, earnings are less persistent for loss firms than profit firms.*
+\halfheading{Hypothesis 1 (H1)}{sec:H1}*Ceteris paribus, earnings are less persistent for loss firms than profit firms.*
 
 This hypothesis is easy to motivate based on persistent losses driving a firm out of business, curtailments [@lawrence2018losses], the abandonment option [@hayn1995information], etc. However, if we want to define a more open-ended "research question" rather than a "hypothesis," we could format it this way:
 
@@ -157,8 +158,7 @@ $$ {#eq-did}
 
 where *Post* equals 1 for observations in the post-shock period and 0 otherwise, *Treatment* equals 1 for observations with the treatment and 0 otherwise, *Controls* is a vector of variables listed as "Control Variables" in Appendix \[ @tbl-variable-def\], and $FE$ are fixed effects.
 
-Here is the regression equation that we use to test [@hypo], which was defined in [Section @sec-background]:\
-Footnote: Note that since we have dynamically defined and referred to \[H\@hyp-losses\], you can click on it to jump to the place in the text where H1 is defined. We can do the same thing for \[RQ\@researchq-losses\].
+Here is the regression equation that we use to test hypothesis 1\~\\ref{sec:H1}, which was defined in [Background and Hypotheses Development] Footnote: Note that since we have dynamically defined and referred to [**Hypothesis (H1)**](#0) you can click on it to jump to the place in the text where H1 is defined. We can do the same thing for \[RQ\@researchq-losses\].
 
 $$
 \begin{aligned}
