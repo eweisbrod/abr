@@ -1,7 +1,5 @@
 # Summary
 
-In summary, this book has no content whatsoever.
+This summary section includes a sample journal article project created entirely in Quarto, formatted to follow the Elsevier journal style.
 
-```{r}
-1 + 1
-```
+You can find the relevant quarto (.qmd) file in [this link](quarto_final_khairul.qmd) to render a pdf copy of the sample article. This generated pdf will look like a journal article. [Here](Template for a Business Research Article - quarto_final_khairul) is how it looks.
